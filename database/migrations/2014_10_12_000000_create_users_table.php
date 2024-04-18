@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('valid')->default('yes');
             $table->string('password');
             $table->string('type');
+            $table->string('verificationCode')->nullable();
+            $table->timestamp('verification_code_expires_at')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

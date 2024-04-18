@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AUTH\AuthController;
+use App\Http\Controllers\AUTH\VerificationController;
 use App\Http\Controllers\TESTcontroller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -67,7 +68,10 @@ Route::post('AdminLogin',[AuthController::class,'AdminLogin']);
 
 
 
-
+//لارسال رمز التحقق
+Route::post('/send-verification-email', [VerificationController::class, 'sendVerificationEmail']);
+//للتحقق من رمز التحقق
+Route::post('/verify', [VerificationController::class, 'verify']);
 
 
 

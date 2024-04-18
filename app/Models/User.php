@@ -25,7 +25,10 @@ class User extends Authenticatable
         'password',
         'valid',
         'type',
-        'mobile'
+        'mobile',
+        'verificationCode',
+        'verification_code_expires_at',
+        'email_verified_at'
     ];
 
     /**
