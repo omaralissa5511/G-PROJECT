@@ -76,7 +76,9 @@ Route::post('/verify', [VerificationController::class, 'verify']);
 Route::post('/send-password-reset-email', [VerificationController::class, 'sendPasswordResetEmail']);
 Route::post('/reset-password', [VerificationController::class, 'resetPassword']);
 
-
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/change-password', [VerificationController::class, 'changePassword']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
 

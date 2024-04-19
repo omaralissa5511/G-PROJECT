@@ -7,6 +7,7 @@ use App\Mail\PasswordResetEmail;
 use Illuminate\Http\Request;
 use App\Mail\VerificationEmail;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -165,6 +166,41 @@ class VerificationController extends Controller
             } else {
                 return response()->json([
                     'message' => 'Invalid reset token.',
+                    'status'=>false
+                ], 400);
+            }
+        }
+    }
+
+
+    public function changePassword(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'errors' => $validate->errors(),
+                'status'=>false
+            ], 400);
+        }
+
+        $user = $request->user(); // Get the currently authenticated user
+
+        if ($user) {
+            if (Hash::check($request->current_password, $user->password)) {
+                $user->password = bcrypt($request->new_password);
+                $user->save();
+
+                return response()->json([
+                    'message' => 'Password changed successfully.',
+                    'status'=>true
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Current password is incorrect.',
                     'status'=>false
                 ], 400);
             }
