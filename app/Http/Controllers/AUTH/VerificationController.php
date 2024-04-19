@@ -20,7 +20,10 @@ class VerificationController extends Controller
         ]);
 
         if ($validate->fails()) {
-            return response()->json(['errors' => $validate->errors()], 400);
+            return response()->json([
+                'errors' => $validate->errors(),
+                'status'=>false
+                ], 400);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -33,9 +36,15 @@ class VerificationController extends Controller
 
             Mail::to($user->email)->send(new VerificationEmail($user));
 
-            return response()->json(['message' => 'Verification email sent.']);
+            return response()->json([
+                'message' => 'Verification email sent.',
+                'status'=>true
+            ]);
         } else {
-            return response()->json(['message' => 'User not found.'], 404);
+            return response()->json([
+                'message' => 'User not found.',
+                'status'=>false
+            ], 404);
         }
     }
 
@@ -47,7 +56,10 @@ class VerificationController extends Controller
         ]);
 
         if ($validate->fails()) {
-            return response()->json(['errors' => $validate->errors()], 400);
+            return response()->json([
+                'errors' => $validate->errors(),
+                'status'=>false
+            ], 400);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -60,12 +72,21 @@ class VerificationController extends Controller
                     $user->verificationCode = null;
                     $user->save();
 
-                    return response()->json(['message' => 'Email verified successfully.']);
+                    return response()->json([
+                        'message' => 'Email verified successfully.',
+                        'status'=>true
+                    ]);
                 } else {
-                    return response()->json(['message' => 'Verification code expired.'], 400);
+                    return response()->json([
+                        'message' => 'Verification code expired.',
+                        'status'=>false
+                    ], 400);
                 }
             } else {
-                return response()->json(['message' => 'Invalid verification code.'], 400);
+                return response()->json([
+                    'message' => 'Invalid verification code.',
+                    'status'=>false
+                ], 400);
             }
         }
     }
@@ -79,7 +100,10 @@ class VerificationController extends Controller
         ]);
 
         if ($validate->fails()) {
-            return response()->json(['errors' => $validate->errors()], 400);
+            return response()->json([
+                'errors' => $validate->errors(),
+                'status'=>false
+            ], 400);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -91,9 +115,15 @@ class VerificationController extends Controller
 
             Mail::to($user->email)->send(new PasswordResetEmail($user));
 
-            return response()->json(['message' => 'Password reset email sent.']);
+            return response()->json([
+                'message' => 'Password reset email sent.',
+                'status'=>true
+            ]);
         } else {
-            return response()->json(['message' => 'User not found.'], 404);
+            return response()->json([
+                'message' => 'User not found.',
+                'status'=>false
+            ], 404);
         }
     }
 
@@ -106,7 +136,10 @@ class VerificationController extends Controller
         ]);
 
         if ($validate->fails()) {
-            return response()->json(['errors' => $validate->errors()], 400);
+            return response()->json([
+                'errors' => $validate->errors(),
+                'status'=>false
+            ], 400);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -119,12 +152,21 @@ class VerificationController extends Controller
                     $user->resetToken = null;
                     $user->save();
 
-                    return response()->json(['message' => 'Password reset successful.']);
+                    return response()->json([
+                        'message' => 'Password reset successful.',
+                        'status'=>true
+                    ]);
                 } else {
-                    return response()->json(['message' => 'Reset token expired.'], 400);
+                    return response()->json([
+                        'message' => 'Reset token expired.',
+                        'status'=>false
+                    ], 400);
                 }
             } else {
-                return response()->json(['message' => 'Invalid reset token.'], 400);
+                return response()->json([
+                    'message' => 'Invalid reset token.',
+                    'status'=>false
+                ], 400);
             }
         }
     }
