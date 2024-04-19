@@ -73,6 +73,9 @@ Route::post('/send-verification-email', [VerificationController::class, 'sendVer
 //للتحقق من رمز التحقق
 Route::post('/verify', [VerificationController::class, 'verify']);
 
+Route::post('/send-password-reset-email', [VerificationController::class, 'sendPasswordResetEmail']);
+Route::post('/reset-password', [VerificationController::class, 'resetPassword']);
+
 
 
 Route::middleware('auth:sanctum')->group(function () {

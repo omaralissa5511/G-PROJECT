@@ -28,7 +28,9 @@ class User extends Authenticatable
         'mobile',
         'verificationCode',
         'verification_code_expires_at',
-        'email_verified_at'
+        'email_verified_at',
+        'resetToken',
+        'reset_token_expires_at'
     ];
 
     /**
