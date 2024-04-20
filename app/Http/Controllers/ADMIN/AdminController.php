@@ -29,10 +29,10 @@ class AdminController extends Controller
 
              if ($validate->fails()) {
                  return response()->json([
-                     'status' => 'failed',
                      'message' => 'Validation Error!',
                      'data' => $validate->errors(),
-                 ], 403);
+                     'status' => false
+                 ]);
              }
 
              $file_extension = $request->license->getClientOriginalExtension();
@@ -65,12 +65,12 @@ class AdminController extends Controller
              $user->assignRole('Admin');
 
              $response = [
-                 'status' => 'success',
                  'message' => 'User is created successfully.',
                  'data' => $data,
+                 'status' => true
              ];
 
-             return response()->json($response, 201);
+             return response()->json($response);
      }
 
 
@@ -88,10 +88,10 @@ class AdminController extends Controller
 
          if ($validate->fails()) {
              return response()->json([
-                 'status' => 'failed',
                  'message' => 'Validation Error!',
                  'data' => $validate->errors(),
-             ], 403);
+                 'status' => false
+             ]);
          }
          $file_extension = $request->license->getClientOriginalExtension();
          $filename = time() . '.' . $file_extension;
@@ -120,12 +120,12 @@ class AdminController extends Controller
 
          $user->assignRole('Admin');
          $response = [
-             'status' => 'success',
              'message' => 'User is created successfully.',
              'data' => $data,
+             'status' => true
          ];
 
-         return response()->json($response, 201);
+         return response()->json($response);
      }
 
 
@@ -145,10 +145,10 @@ class AdminController extends Controller
 
          if ($validate->fails()) {
              return response()->json([
-                 'status' => 'failed',
                  'message' => 'Validation Error!',
                  'data' => $validate->errors(),
-             ], 403);
+                 'status' => false
+             ]);
          }
 
          $file_extension = $request->license->getClientOriginalExtension();
@@ -173,12 +173,12 @@ class AdminController extends Controller
          ]);
          $club = Equestrian_clubModel::where('user_id',$userID)->first();
          $response = [
-             'status' => 'success',
              'message' => 'User is updated successfully.',
-             'club' => $club
+             'club' => $club,
+             'status' => true
          ];
 
-         return response()->json($response, 201);
+         return response()->json($response);
      }
 
 
@@ -196,10 +196,10 @@ class AdminController extends Controller
 
          if ($validate->fails()) {
              return response()->json([
-                 'status' => 'failed',
                  'message' => 'Validation Error!',
                  'data' => $validate->errors(),
-             ], 403);
+                 'status' => false
+             ]);
          }
 
          $file_extension = $request->license->getClientOriginalExtension();
@@ -220,11 +220,11 @@ class AdminController extends Controller
          ]);
          $health = HealthCareModel::where('user_id',$userID)->first();
          $response = [
-             'status' => 'success',
              'message' => 'User is updated successfully.',
-             'health' => $health
+             'health' => $health,
+             'status' => true
          ];
 
-         return response()->json($response, 201);
+         return response()->json($response);
      }
 }
