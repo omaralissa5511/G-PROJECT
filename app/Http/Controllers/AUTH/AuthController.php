@@ -255,6 +255,7 @@ class AuthController extends Controller
             return response()->json($response);
         }
 
+        
         if ($request->type == 'Equestrian_club') {
 
             $validate = Validator::make($request->all(), [
@@ -382,6 +383,8 @@ class AuthController extends Controller
         }
 
 
+
+        
         if ($request->type == 'Trainer') {
 
             $validate = Validator::make($request->all(), [
