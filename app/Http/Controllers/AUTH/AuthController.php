@@ -195,6 +195,7 @@ class AuthController extends Controller
                 'email' => 'required',
                 'password' => 'required|string|min:8|confirmed',
                 'license' => 'required',
+                'image' => 'required',
                 'birth' => 'required',
                 'address' => 'required'
             ]);
@@ -254,133 +255,6 @@ class AuthController extends Controller
 
             return response()->json($response, 201);
         }
-
-        if ($request->type == 'Equestrian_club') {
-
-            $validate = Validator::make($request->all(), [
-                'name' => 'required|string|max:250',
-                'mobile' => 'required|max:250',
-                'description' => 'required|string|max:250',
-                'email' => 'required',
-                'password' => 'required|string|min:8|confirmed',
-                'license' => 'required',
-                'lat' => 'required',
-                'long' => 'required',
-                'address' => 'required'
-            ]);
-
-
-        if ($validate->fails()) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Validation Error!',
-                'data' => $validate->errors(),
-            ], 403);
-        }
-
-            $file_extension = $request->license->getClientOriginalExtension();
-            $filename = time() . '.' . $file_extension;
-            $path = public_path('images/USERS/license/Equestrian_club/');
-            $request->license->move($path, $filename);
-
-
-
-            $user = User::create([
-            'mobile' => $request->input('mobile'),
-            'password' => bcrypt($request->input('password')),
-            'email' => $request->input('email'),
-            'type' => $request->input('type'),
-            'valid' => 'yes',
-        ]);
-
-        $club = Equestrian_clubModel::create([
-            'user_id' => $user->id,
-            'name' => $request->name,
-            'description' => $request->description,
-            'address' => $request->address,
-            'long' => $request->long,
-            'lat' => $request->lat,
-            'license' => $filename,
-        ]);
-
-        $data['token'] = $user->createToken($request->email)->plainTextToken;
-        $data['user'] = $user;
-        $data['club'] = $club;
-
-
-        $user->assignRole('Admin');
-
-        $response = [
-            'status' => 'success',
-            'message' => 'User is created successfully.',
-            'data' => $data,
-        ];
-
-        return response()->json($response, 201);
-    }
-
-
-
-        if ($request->type == 'HealthCare') {
-
-            $validate = Validator::make($request->all(), [
-                'name' => 'required|string|max:250',
-                'mobile' => 'required|max:250',
-                'description' => 'required|string|max:250',
-                'email' => 'required',
-                'password' => 'required|string|min:8|confirmed',
-                'license' => 'required',
-                'address' => 'required'
-            ]);
-
-
-            if ($validate->fails()) {
-                return response()->json([
-                    'status' => 'failed',
-                    'message' => 'Validation Error!',
-                    'data' => $validate->errors(),
-                ], 403);
-            }
-
-            $file_extension = $request->license->getClientOriginalExtension();
-            $filename = time() . '.' . $file_extension;
-            $path = public_path('images/USERS/license/HealthCare/');
-            $request->license->move($path, $filename);
-
-
-
-            $user = User::create([
-                'mobile' => $request->input('mobile'),
-                'password' => bcrypt($request->input('password')),
-                'email' => $request->input('email'),
-                'type' => $request->input('type'),
-                'valid' => 'yes',
-            ]);
-
-            $health = HealthCareModel::create([
-                'user_id' => $user->id,
-                'name' => $request->name,
-                'description' => $request->description,
-                'address' => $request->address,
-                'license' => $filename,
-            ]);
-
-            $data['token'] = $user->createToken($request->email)->plainTextToken;
-            $data['user'] = $user;
-            $data['healthCare'] = $health;
-
-
-            $user->assignRole('Admin');
-
-            $response = [
-                'status' => 'success',
-                'message' => 'User is created successfully.',
-                'data' => $data,
-            ];
-
-            return response()->json($response, 201);
-        }
-
 
         if ($request->type == 'Trainer') {
 
@@ -474,7 +348,8 @@ class AuthController extends Controller
                 'FName' => 'required|string|max:250',
                 'mobile' => 'required|max:250',
                 'LName' => 'required|string|max:250',
-                'address' => 'required'
+                'address' => 'required',
+                 'image' => 'required',
             ]);
 
             if ($validate->fails()) {
@@ -519,7 +394,8 @@ class AuthController extends Controller
                 'mobile' => 'required|max:250',
                 'LName' => 'required|string|max:250',
                 'license' => 'required',
-                'address' => 'required'
+                'address' => 'required',
+                'image' => 'required'
             ]);
 
             if ($validate->fails()) {
@@ -588,8 +464,6 @@ class AuthController extends Controller
             $filename = time() . '.' . $file_extension;
             $path = public_path('images/USERS/license/Equestrian_club/');
             $request->license->move($path, $filename);
-
-
 
             $userID = Auth::id();
             $user = User::find($userID);
