@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ADMIN\AdminController;
 use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\AUTH\VerificationController;
 use App\Http\Controllers\TESTcontroller;
@@ -95,6 +96,12 @@ Route::middleware('auth:sanctum')->group(function () {
     ################ ADMIN ROUTE ###############
     Route::group(['middleware' => ['role:Super Admin']], function () {
         Route::post('AdminUpdate',[AuthController::class,'AdminUpdate']);
+        Route::post('AddClub',[AdminController::class,'AddClub']);
+        Route::post('AddHealthCare',[AdminController::class,'AddHealthCare']);
+        Route::post('editClub',[AdminController::class,'editClub']);
+        Route::post('editHealth_care',[AdminController::class,'editHealth_care']);
+
+
     });
 
 });
