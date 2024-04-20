@@ -24,7 +24,7 @@ class VerificationController extends Controller
             return response()->json([
                 'errors' => $validate->errors(),
                 'status'=>false
-                ], 400);
+                ]);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -45,7 +45,7 @@ class VerificationController extends Controller
             return response()->json([
                 'message' => 'User not found.',
                 'status'=>false
-            ], 404);
+            ]);
         }
     }
 
@@ -60,7 +60,7 @@ class VerificationController extends Controller
             return response()->json([
                 'errors' => $validate->errors(),
                 'status'=>false
-            ], 400);
+            ]);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -81,13 +81,13 @@ class VerificationController extends Controller
                     return response()->json([
                         'message' => 'Verification code expired.',
                         'status'=>false
-                    ], 400);
+                    ]);
                 }
             } else {
                 return response()->json([
                     'message' => 'Invalid verification code.',
                     'status'=>false
-                ], 400);
+                ]);
             }
         }
     }
@@ -104,7 +104,7 @@ class VerificationController extends Controller
             return response()->json([
                 'errors' => $validate->errors(),
                 'status'=>false
-            ], 400);
+            ]);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -124,7 +124,7 @@ class VerificationController extends Controller
             return response()->json([
                 'message' => 'User not found.',
                 'status'=>false
-            ], 404);
+            ]);
         }
     }
 
@@ -140,7 +140,7 @@ class VerificationController extends Controller
             return response()->json([
                 'errors' => $validate->errors(),
                 'status'=>false
-            ], 400);
+            ]);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -161,13 +161,13 @@ class VerificationController extends Controller
                     return response()->json([
                         'message' => 'Reset token expired.',
                         'status'=>false
-                    ], 400);
+                    ]);
                 }
             } else {
                 return response()->json([
                     'message' => 'Invalid reset token.',
                     'status'=>false
-                ], 400);
+                ]);
             }
         }
     }
@@ -184,7 +184,7 @@ class VerificationController extends Controller
             return response()->json([
                 'errors' => $validate->errors(),
                 'status'=>false
-            ], 400);
+            ]);
         }
 
         $user = $request->user(); // Get the currently authenticated user
@@ -202,7 +202,7 @@ class VerificationController extends Controller
                 return response()->json([
                     'message' => 'Current password is incorrect.',
                     'status'=>false
-                ], 400);
+                ]);
             }
         }
     }
