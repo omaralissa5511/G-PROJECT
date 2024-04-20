@@ -34,10 +34,10 @@ class AuthController extends Controller
 
         if ($validate->fails()) {
             return response()->json([
-                'status' => 'failed',
                 'message' => 'Validation Error!',
                 'data' => $validate->errors(),
-            ], 403);
+                'status'=>false
+            ]);
         }
 
         $file_extension = $request->image->getClientOriginalExtension();
@@ -63,12 +63,12 @@ class AuthController extends Controller
         $owner->assignRole('Super Admin');
 
         $response = [
-            'status' => 'success',
             'message' => 'admin is created successfully.',
             'data' => $data,
+            'status' => true
         ];
 
-        return response()->json($response, 201);
+        return response()->json($response);
 
     }
 
@@ -84,10 +84,10 @@ class AuthController extends Controller
 
         if ($validate->fails()) {
             return response()->json([
-                'status' => 'failed',
                 'message' => 'Validation Error!',
                 'data' => $validate->errors(),
-            ], 403);
+                'status' => false
+            ]);
         }
 
         $file_extension = $request->image->getClientOriginalExtension();
@@ -108,12 +108,12 @@ class AuthController extends Controller
         $admin = AdminModel::where('token',$token_fromRequest)->first();
 
         $response = [
-            'status' => 'success',
             'message' => 'admin is updated successfully.',
-            'admin' => $admin
+            'admin' => $admin,
+            'status' => true,
         ];
 
-        return response()->json($response, 201);
+        return response()->json($response);
 
     }
 
@@ -138,10 +138,10 @@ class AuthController extends Controller
 
             if ($validate->fails()) {
                 return response()->json([
-                    'status' => 'failed',
                     'message' => 'Validation Error!',
                     'data' => $validate->errors(),
-                ], 403);
+                    'status' => false
+                ]);
             }
 
             $file_extension = $request->image->getClientOriginalExtension();
@@ -177,12 +177,12 @@ class AuthController extends Controller
             $user->assignRole('Normal User');
 
             $response = [
-                'status' => 'success',
                 'message' => 'User is created successfully.',
                 'data' => $data,
+                'status' => true
             ];
 
-            return response()->json($response, 201);
+            return response()->json($response);
         }
 
 
@@ -203,10 +203,10 @@ class AuthController extends Controller
 
             if ($validate->fails()) {
                 return response()->json([
-                    'status' => 'failed',
                     'message' => 'Validation Error!',
                     'data' => $validate->errors(),
-                ], 403);
+                    'status' => false
+                ]);
             }
 
 
@@ -248,12 +248,140 @@ class AuthController extends Controller
             $user->assignRole('Admin');
 
             $response = [
-                'status' => 'success',
                 'message' => 'User is created successfully.',
                 'data' => $data,
+                'status' => true
             ];
 
-            return response()->json($response, 201);
+            return response()->json($response);
+        }
+
+
+        
+        if ($request->type == 'Equestrian_club') {
+
+            $validate = Validator::make($request->all(), [
+                'name' => 'required|string|max:250',
+                'mobile' => 'required|max:250',
+                'description' => 'required|string|max:250',
+                'email' => 'required',
+                'password' => 'required|string|min:8|confirmed',
+                'license' => 'required',
+                'lat' => 'required',
+                'long' => 'required',
+                'address' => 'required'
+            ]);
+
+
+        if ($validate->fails()) {
+            return response()->json([
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+                'status' => false
+            ]);
+        }
+
+            $file_extension = $request->license->getClientOriginalExtension();
+            $filename = time() . '.' . $file_extension;
+            $path = public_path('images/USERS/license/Equestrian_club/');
+            $request->license->move($path, $filename);
+
+
+
+            $user = User::create([
+            'mobile' => $request->input('mobile'),
+            'password' => bcrypt($request->input('password')),
+            'email' => $request->input('email'),
+            'type' => $request->input('type'),
+            'valid' => 'yes',
+        ]);
+
+        $club = Equestrian_clubModel::create([
+            'user_id' => $user->id,
+            'name' => $request->name,
+            'description' => $request->description,
+            'address' => $request->address,
+            'long' => $request->long,
+            'lat' => $request->lat,
+            'license' => $filename,
+        ]);
+
+        $data['token'] = $user->createToken($request->email)->plainTextToken;
+        $data['user'] = $user;
+        $data['club'] = $club;
+
+
+        $user->assignRole('Admin');
+
+        $response = [
+            'message' => 'User is created successfully.',
+            'data' => $data,
+            'status' => true
+        ];
+
+        return response()->json($response);
+    }
+
+
+
+        if ($request->type == 'HealthCare') {
+
+            $validate = Validator::make($request->all(), [
+                'name' => 'required|string|max:250',
+                'mobile' => 'required|max:250',
+                'description' => 'required|string|max:250',
+                'email' => 'required',
+                'password' => 'required|string|min:8|confirmed',
+                'license' => 'required',
+                'address' => 'required'
+            ]);
+
+
+            if ($validate->fails()) {
+                return response()->json([
+                    'message' => 'Validation Error!',
+                    'data' => $validate->errors(),
+                    'status' => false
+                ]);
+            }
+
+            $file_extension = $request->license->getClientOriginalExtension();
+            $filename = time() . '.' . $file_extension;
+            $path = public_path('images/USERS/license/HealthCare/');
+            $request->license->move($path, $filename);
+
+
+
+            $user = User::create([
+                'mobile' => $request->input('mobile'),
+                'password' => bcrypt($request->input('password')),
+                'email' => $request->input('email'),
+                'type' => $request->input('type'),
+                'valid' => 'yes',
+            ]);
+
+            $health = HealthCareModel::create([
+                'user_id' => $user->id,
+                'name' => $request->name,
+                'description' => $request->description,
+                'address' => $request->address,
+                'license' => $filename,
+            ]);
+
+            $data['token'] = $user->createToken($request->email)->plainTextToken;
+            $data['user'] = $user;
+            $data['healthCare'] = $health;
+
+
+            $user->assignRole('Admin');
+
+            $response = [
+                'message' => 'User is created successfully.',
+                'data' => $data,
+                'status' => true
+            ];
+
+            return response()->json($response);
         }
 
         if ($request->type == 'Trainer') {
@@ -274,10 +402,10 @@ class AuthController extends Controller
 
             if ($validate->fails()) {
                 return response()->json([
-                    'status' => 'failed',
                     'message' => 'Validation Error!',
                     'data' => $validate->errors(),
-                ], 403);
+                    'status' => false
+                ]);
             }
 
             $file_extension = $request->image->getClientOriginalExtension();
@@ -318,12 +446,12 @@ class AuthController extends Controller
             $user->assignRole('Admin');
 
             $response = [
-                'status' => 'success',
                 'message' => 'User is created successfully.',
                 'data' => $data,
+                'status' => true
             ];
 
-            return response()->json($response, 201);
+            return response()->json($response);
         }
 
 
@@ -354,10 +482,10 @@ class AuthController extends Controller
 
             if ($validate->fails()) {
                 return response()->json([
-                    'status' => 'failed',
                     'message' => 'Validation Error!',
                     'data' => $validate->errors(),
-                ], 403);
+                    'status' => false
+                ]);
             }
 
             $file_extension = $request->image->getClientOriginalExtension();
@@ -379,12 +507,12 @@ class AuthController extends Controller
             ]);
             $profile = ProfileModel::where('user_id',$userID)->first();
             $response = [
-                'status' => 'success',
                 'message' => 'User is updated successfully.',
-                'profile' => $profile
+                'profile' => $profile,
+                'status' => true
             ];
 
-            return response()->json($response, 201);
+            return response()->json($response);
         }
 
         if ($request->type == 'Seller-Buyer') {
@@ -400,10 +528,10 @@ class AuthController extends Controller
 
             if ($validate->fails()) {
                 return response()->json([
-                    'status' => 'failed',
                     'message' => 'Validation Error!',
                     'data' => $validate->errors(),
-                ], 403);
+                    'status' => false
+                ]);
             }
 
             $file_extension = $request->license->getClientOriginalExtension();
@@ -431,12 +559,12 @@ class AuthController extends Controller
             ]);
             $SB = SellerBuyerModel::where('user_id',$userID)->first();
             $response = [
-                'status' => 'success',
                 'message' => 'User is updated successfully.',
-                'SB' => $SB
+                'SB' => $SB,
+                'status' => true
             ];
 
-            return response()->json($response, 201);
+            return response()->json($response);
         }
 
         if ($request->type == 'Equestrian_club') {
@@ -454,10 +582,10 @@ class AuthController extends Controller
 
             if ($validate->fails()) {
                 return response()->json([
-                    'status' => 'failed',
                     'message' => 'Validation Error!',
                     'data' => $validate->errors(),
-                ], 403);
+                    'status' =>false
+                ]);
             }
 
             $file_extension = $request->license->getClientOriginalExtension();
@@ -480,12 +608,12 @@ class AuthController extends Controller
             ]);
             $club = Equestrian_clubModel::where('user_id',$userID)->first();
             $response = [
-                'status' => 'success',
                 'message' => 'User is updated successfully.',
-                'club' => $club
+                'club' => $club,
+                'status' => true
             ];
 
-            return response()->json($response, 201);
+            return response()->json($response);
         }
 
 
@@ -502,10 +630,10 @@ class AuthController extends Controller
 
             if ($validate->fails()) {
                 return response()->json([
-                    'status' => 'failed',
                     'message' => 'Validation Error!',
                     'data' => $validate->errors(),
-                ], 403);
+                    'status' => false
+                ]);
             }
 
             $file_extension = $request->license->getClientOriginalExtension();
@@ -526,12 +654,12 @@ class AuthController extends Controller
             ]);
             $health = HealthCareModel::where('user_id',$userID)->first();
             $response = [
-                'status' => 'success',
                 'message' => 'User is updated successfully.',
-                'health' => $health
+                'health' => $health,
+                'status' => true
             ];
 
-            return response()->json($response, 201);
+            return response()->json($response);
         }
 
         if ($request->type == 'Trainer') {
@@ -547,10 +675,10 @@ class AuthController extends Controller
             ]);
             if ($validate->fails()) {
                 return response()->json([
-                    'status' => 'failed',
                     'message' => 'Validation Error!',
                     'data' => $validate->errors(),
-                ], 403);
+                    'status' => false
+                ]);
             }
 
             $file_extension = $request->image->getClientOriginalExtension();
@@ -580,12 +708,12 @@ class AuthController extends Controller
             $trainer = TrainerModel::where('user_id',$userID)->first();
 
             $response = [
-                'status' => 'success',
                 'message' => 'TRAINER is UPDATED successfully.',
-                'trainer' => $trainer
+                'trainer' => $trainer,
+                'status' => true
             ];
 
-            return response()->json($response, 201);
+            return response()->json($response);
         }
 
 
@@ -602,10 +730,10 @@ class AuthController extends Controller
 
         if($validate->fails()){
             return response()->json([
-                'status' => 'failed',
                 'message' => 'Validation Error!',
                 'data' => $validate->errors(),
-            ], 403);
+                'status' => false
+            ]);
         }
 
 
@@ -613,21 +741,21 @@ class AuthController extends Controller
 
         if(!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'status' => 'failed',
-                'message' => 'Invalid credentials'
-            ], 401);
+                'message' => 'Invalid credentials',
+                'status' => false
+            ]);
         }
 
         $data['token'] = $user->createToken($request->email)->plainTextToken;
         $data['user'] = $user;
 
         $response = [
-            'status' => 'success',
             'message' => 'User is logged in successfully.',
             'data' => $data,
+            'status' => true
         ];
 
-        return response()->json($response, 200);
+        return response()->json($response);
     }
 
 
@@ -641,10 +769,10 @@ class AuthController extends Controller
 
         if($validate->fails()){
             return response()->json([
-                'status' => 'failed',
                 'message' => 'Validation Error!',
                 'data' => $validate->errors(),
-            ], 403);
+                'status' => false
+            ]);
         }
 
         $admin = AdminModel::where('email', $request->email)->first();
@@ -652,9 +780,9 @@ class AuthController extends Controller
         // Check password
         if(!$admin || !Hash::check($request->password, $admin->password)) {
             return response()->json([
-                'status' => 'failed',
-                'message' => 'Invalid credentials'
-            ], 401);
+                'message' => 'Invalid credentials',
+                'status' => false
+            ]);
         }
 
         $data['token'] = $admin->createToken($request->email)->plainTextToken;
@@ -664,12 +792,12 @@ class AuthController extends Controller
         $admin->update(['token' => $data['token']]);
 
         $response = [
-            'status' => 'success',
             'message' => 'admin is logged in successfully.',
             'data' => $data,
+            'status' => true
         ];
 
-        return response()->json($response, 200);
+        return response()->json($response);
     }
 
 
