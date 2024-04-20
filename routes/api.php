@@ -74,25 +74,20 @@ Route::post('AdminLogin',[AuthController::class,'AdminLogin']);
 Route::middleware('auth:sanctum')->group(function () {
 
 
-    Route::group(['middleware' => ['role_or_permission:Super Admin|Admin|Normal User']], function () {
+    Route::group(['middleware' => ['role_or_permission:Admin|Normal User']], function () {
 
-        Route::get('test',[TESTcontroller::class,'test']);
-        Route::get('store',[TESTcontroller::class,'store']);
         Route::post('update',[AuthController::class,'update']);
-        Route::post('AdminUpdate',[AuthController::class,'AdminUpdate']);
-        Route::post('testontoken',[AuthController::class,'testontoken']);
-
-
-
-
-
-
     });
 
 
 
 
 
+    ################ ADMIN ROUTE ###############
+    Route::group(['middleware' => ['role:Super Admin']], function () {
+        Route::post('AdminUpdate',[AuthController::class,'AdminUpdate']);
+    });
 
 });
+
 

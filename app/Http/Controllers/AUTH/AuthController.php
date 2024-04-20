@@ -95,22 +95,22 @@ class AuthController extends Controller
         $path = public_path('images/ADMIN/PROFILES');
         $request->image->move($path, $filename);
 
-        $owner = AdminModel::create([
+        $token_fromRequest =  $request->bearerToken();
+        $admin = AdminModel::where('token',$token_fromRequest)->first();
+
+
+        $admin -> update([
             'FName' => $request->FName,
             'LName' => $request->LName,
             'mobile' => $request->input('mobile'),
             'image' => $filename
         ]);
-
-        $data['token'] = $owner->createToken($request->email)->plainTextToken;
-        $data['owner'] = $owner;
-
-        $owner->assignRole('Super Admin');
+        $admin = AdminModel::where('token',$token_fromRequest)->first();
 
         $response = [
             'status' => 'success',
-            'message' => 'admin is created successfully.',
-            'data' => $data,
+            'message' => 'admin is updated successfully.',
+            'admin' => $admin
         ];
 
         return response()->json($response, 201);
@@ -786,6 +786,9 @@ class AuthController extends Controller
         $data['token'] = $admin->createToken($request->email)->plainTextToken;
         $data['admin'] = $admin;
 
+        $admin = AdminModel::where('email', $request->email)->first();
+        $admin->update(['token' => $data['token']]);
+
         $response = [
             'status' => 'success',
             'message' => 'admin is logged in successfully.',
@@ -799,7 +802,13 @@ class AuthController extends Controller
 
     public function testontoken(Request $request){
 
-        return $request->bearerToken();
+
+        $token_fromRequest =  $request->bearerToken();
+        $token_fromDB = AdminModel::where('token',$token_fromRequest)
+            ->pluck('token');
+
+
     }
+
 
 }
