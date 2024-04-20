@@ -83,21 +83,20 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
 
 
-    Route::group(['middleware' => ['role_or_permission:Super Admin|edit-role']], function () {
+    Route::group(['middleware' => ['role_or_permission:Admin|Normal User']], function () {
 
-        Route::get('test',[TESTcontroller::class,'test']);
-        Route::get('store',[TESTcontroller::class,'store']);
-
-
-
-
-
+        Route::post('update',[AuthController::class,'update']);
     });
 
 
 
 
 
+    ################ ADMIN ROUTE ###############
+    Route::group(['middleware' => ['role:Super Admin']], function () {
+        Route::post('AdminUpdate',[AuthController::class,'AdminUpdate']);
+    });
 
 });
+
 
