@@ -195,6 +195,7 @@ class AuthController extends Controller
                 'email' => 'required',
                 'password' => 'required|string|min:8|confirmed',
                 'license' => 'required',
+                'image' => 'required',
                 'birth' => 'required',
                 'address' => 'required'
             ]);
@@ -254,6 +255,7 @@ class AuthController extends Controller
 
             return response()->json($response);
         }
+
 
         
         if ($request->type == 'Equestrian_club') {
@@ -382,9 +384,6 @@ class AuthController extends Controller
             return response()->json($response);
         }
 
-
-
-        
         if ($request->type == 'Trainer') {
 
             $validate = Validator::make($request->all(), [
@@ -477,7 +476,8 @@ class AuthController extends Controller
                 'FName' => 'required|string|max:250',
                 'mobile' => 'required|max:250',
                 'LName' => 'required|string|max:250',
-                'address' => 'required'
+                'address' => 'required',
+                 'image' => 'required',
             ]);
 
             if ($validate->fails()) {
@@ -522,7 +522,8 @@ class AuthController extends Controller
                 'mobile' => 'required|max:250',
                 'LName' => 'required|string|max:250',
                 'license' => 'required',
-                'address' => 'required'
+                'address' => 'required',
+                'image' => 'required'
             ]);
 
             if ($validate->fails()) {
@@ -591,8 +592,6 @@ class AuthController extends Controller
             $filename = time() . '.' . $file_extension;
             $path = public_path('images/USERS/license/Equestrian_club/');
             $request->license->move($path, $filename);
-
-
 
             $userID = Auth::id();
             $user = User::find($userID);
