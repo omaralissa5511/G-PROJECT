@@ -20,6 +20,10 @@ return new class extends Migration
             $table->string('address');
             $table->string('license')->nullable();
             $table->string('image')->nullable();
+            $table->text('qualifications')->nullable();
+            $table->text('certifications')->nullable();
+            $table->integer('experience')->nullable();
+            $table->text('specialties')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')
                 ->on('users')->onDelete('cascade')

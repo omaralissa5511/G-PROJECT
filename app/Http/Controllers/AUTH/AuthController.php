@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\AUTH;
 
 use App\Http\Controllers\Controller;
-use App\Models\AdminModel;
-use App\Models\Equestrian_clubModel;
-use App\Models\HealthCareModel;
-use App\Models\ProfileModel;
-use App\Models\SellerBuyerModel;
-use App\Models\TrainerModel;
+use App\Models\Admin;
+use App\Models\CLUB\Equestrian_club;
+use App\Models\HealthCare;
+use App\Models\Profile;
+use App\Models\SellerBuyer;
+use App\Models\CLUB\Trainer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,7 +45,7 @@ class AuthController extends Controller
         $path = public_path('images/ADMIN/PROFILES');
         $request->image->move($path, $filename);
 
-        $owner = AdminModel::create([
+        $owner = Admin::create([
             'FName' => $request->FName,
             'LName' => $request->LName,
             'token' => 'ffdfs',
@@ -96,7 +96,7 @@ class AuthController extends Controller
         $request->image->move($path, $filename);
 
         $token_fromRequest =  $request->bearerToken();
-        $admin = AdminModel::where('token',$token_fromRequest)->first();
+        $admin = Admin::where('token',$token_fromRequest)->first();
 
 
         $admin -> update([
@@ -105,7 +105,7 @@ class AuthController extends Controller
             'mobile' => $request->input('mobile'),
             'image' => $filename
         ]);
-        $admin = AdminModel::where('token',$token_fromRequest)->first();
+        $admin = Admin::where('token',$token_fromRequest)->first();
 
         $response = [
             'message' => 'admin is updated successfully.',
@@ -158,7 +158,7 @@ class AuthController extends Controller
                 'valid' => 'yes',
             ]);
 
-            $profile = ProfileModel::create([
+            $profile = Profile::create([
                 'user_id' => $user->id,
                 'FName' => $request->FName,
                 'LName' => $request->LName,
@@ -229,7 +229,7 @@ class AuthController extends Controller
                 'valid' => 'yes',
             ]);
 
-            $SB = SellerBuyerModel::create([
+            $SB = SellerBuyer::create([
                 'user_id' => $user->id,
                 'FName' => $request->FName,
                 'lName' => $request->LName,
@@ -257,7 +257,7 @@ class AuthController extends Controller
         }
 
 
-        
+
         if ($request->type == 'Equestrian_club') {
 
             $validate = Validator::make($request->all(), [
@@ -296,7 +296,7 @@ class AuthController extends Controller
             'valid' => 'yes',
         ]);
 
-        $club = Equestrian_clubModel::create([
+        $club = Equestrian_club::create([
             'user_id' => $user->id,
             'name' => $request->name,
             'description' => $request->description,
@@ -360,7 +360,7 @@ class AuthController extends Controller
                 'valid' => 'yes',
             ]);
 
-            $health = HealthCareModel::create([
+            $health = HealthCare::create([
                 'user_id' => $user->id,
                 'name' => $request->name,
                 'description' => $request->description,
@@ -426,7 +426,7 @@ class AuthController extends Controller
                 'valid' => 'yes',
             ]);
 
-            $trainer = TrainerModel::create([
+            $trainer = Trainer::create([
                 'user_id' => $user->id,
                 'club_id' => $request->club_id,
                 'FName' => $request->FName,
@@ -498,14 +498,14 @@ class AuthController extends Controller
             $user -> update(['mobile' => $request->mobile]);
 
 
-            $profile = ProfileModel::where('user_id',$userID)->first();
+            $profile = Profile::where('user_id',$userID)->first();
             $profile -> update([
                 'FName' => $request->FName,
                 'LName' => $request->LName,
                 'address' => $request->address,
                 'image' => $filename
             ]);
-            $profile = ProfileModel::where('user_id',$userID)->first();
+            $profile = Profile::where('user_id',$userID)->first();
             $response = [
                 'message' => 'User is updated successfully.',
                 'profile' => $profile,
@@ -549,7 +549,7 @@ class AuthController extends Controller
             $user -> update(['mobile' => $request->mobile]);
 
 
-            $SB = SellerBuyerModel::where('user_id',$userID)->first();
+            $SB = SellerBuyer::where('user_id',$userID)->first();
             $SB -> update([
                 'FName' => $request->FName,
                 'LName' => $request->LName,
@@ -557,7 +557,7 @@ class AuthController extends Controller
                 'license' => $filename,
                 'image' => $filename1
             ]);
-            $SB = SellerBuyerModel::where('user_id',$userID)->first();
+            $SB = SellerBuyer::where('user_id',$userID)->first();
             $response = [
                 'message' => 'User is updated successfully.',
                 'SB' => $SB,
@@ -597,7 +597,7 @@ class AuthController extends Controller
             $user = User::find($userID);
             $user -> update(['mobile' => $request->mobile]);
 
-            $club = Equestrian_clubModel::where('user_id',$userID)->first();
+            $club = Equestrian_club::where('user_id',$userID)->first();
             $club -> update([
                 'name' => $request->name,
                 'description' => $request->description,
@@ -606,7 +606,7 @@ class AuthController extends Controller
                 'lat' => $request->lat,
                 'license' => $filename,
             ]);
-            $club = Equestrian_clubModel::where('user_id',$userID)->first();
+            $club = Equestrian_club::where('user_id',$userID)->first();
             $response = [
                 'message' => 'User is updated successfully.',
                 'club' => $club,
@@ -645,14 +645,14 @@ class AuthController extends Controller
             $user = User::find($userID);
             $user -> update(['mobile' => $request->mobile]);
 
-            $health = HealthCareModel::where('user_id',$userID)->first();
+            $health = HealthCare::where('user_id',$userID)->first();
                 $health -> update([
                 'name' => $request->name,
                 'description' => $request->description,
                 'address' => $request->address,
                 'license' => $filename,
             ]);
-            $health = HealthCareModel::where('user_id',$userID)->first();
+            $health = HealthCare::where('user_id',$userID)->first();
             $response = [
                 'message' => 'User is updated successfully.',
                 'health' => $health,
@@ -695,7 +695,7 @@ class AuthController extends Controller
             $user = User::find($userID);
             $user -> update(['mobile' => $request->mobile]);
 
-            $trainer = TrainerModel::where('user_id',$userID)->first();
+            $trainer = Trainer::where('user_id',$userID)->first();
 
             $trainer -> update([
                 'club_id' => $request->club_id,
@@ -705,7 +705,7 @@ class AuthController extends Controller
                 'license' => $filename1,
                 'image' => $filename
             ]);
-            $trainer = TrainerModel::where('user_id',$userID)->first();
+            $trainer = Trainer::where('user_id',$userID)->first();
 
             $response = [
                 'message' => 'TRAINER is UPDATED successfully.',
@@ -775,7 +775,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $admin = AdminModel::where('email', $request->email)->first();
+        $admin = Admin::where('email', $request->email)->first();
 
         // Check password
         if(!$admin || !Hash::check($request->password, $admin->password)) {
@@ -788,7 +788,7 @@ class AuthController extends Controller
         $data['token'] = $admin->createToken($request->email)->plainTextToken;
         $data['admin'] = $admin;
 
-        $admin = AdminModel::where('email', $request->email)->first();
+        $admin = Admin::where('email', $request->email)->first();
         $admin->update(['token' => $data['token']]);
 
         $response = [
@@ -806,7 +806,7 @@ class AuthController extends Controller
 
 
         $token_fromRequest =  $request->bearerToken();
-        $token_fromDB = AdminModel::where('token',$token_fromRequest)
+        $token_fromDB = Admin::where('token',$token_fromRequest)
             ->pluck('token');
 
 

@@ -4,12 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
+//use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
-class Equestrian_clubModel extends Model
+class Admin extends Model
 {
-    use HasFactory;
+    use HasFactory , HasApiTokens , HasRoles;
     protected $guarded = [];
-    protected $table = 'equestrian_clubs';
+    protected $table = 'admins';
+    protected $guard_name = 'spatie';
 
     protected $hidden = [
         'id',
@@ -17,8 +21,4 @@ class Equestrian_clubModel extends Model
         'updated_at',
         'user_id'
     ];
-
-    public function trainer (){
-        return $this->hasMany(TrainerModel::class,'club_id');
-    }
 }

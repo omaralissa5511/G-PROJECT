@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('equestrian_clubs', function (Blueprint $table) {
+        Schema::create('club_ratings', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('address');
-            $table->string('description');
-            $table->string('license')->nullable();
-            $table->string('website');
-            $table->decimal('lat');
-            $table->decimal('long');
+            $table->integer('rating');
+            $table->text('review')->nullable();
+            $table->unsignedBigInteger('club_id');
+            $table->foreign('club_id')->references('id')
+                ->on('equestrian_clubs')->onDelete('cascade')->onUpdate('cascade');
+
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')
-                ->on('users')->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->on('users')->onDelete('cascade')->onUpdate('cascade');
+
             $table->timestamps();
         });
     }
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('equestrian_clubs');
+        Schema::dropIfExists('_cratings');
     }
 };

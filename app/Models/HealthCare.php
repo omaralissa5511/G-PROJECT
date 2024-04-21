@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProfileModel extends Model
+class HealthCare extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    protected $table = 'profiles';
+    protected $table = 'health_cares';
 
     protected $hidden = [
         'id',
