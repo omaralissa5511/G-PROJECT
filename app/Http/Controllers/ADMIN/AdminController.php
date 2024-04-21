@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\ADMIN;
 
 use App\Http\Controllers\Controller;
-use App\Models\Equestrian_clubModel;
-use App\Models\HealthCareModel;
+use App\Models\CLUB\Equestrian_club;
+use App\Models\HealthCare;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,7 +48,7 @@ class AdminController extends Controller
                  'valid' => 'yes',
              ]);
 
-             $club = Equestrian_clubModel::create([
+             $club = Equestrian_club::create([
                  'user_id' => $user->id,
                  'name' => $request->name,
                  'description' => $request->description,
@@ -106,7 +106,7 @@ class AdminController extends Controller
              'valid' => 'yes',
          ]);
 
-         $health = HealthCareModel::create([
+         $health = HealthCare::create([
              'user_id' => $user->id,
              'name' => $request->name,
              'description' => $request->description,
@@ -162,7 +162,7 @@ class AdminController extends Controller
          $user = User::find($userID);
          $user -> update(['mobile' => $request->mobile]);
 
-         $club = Equestrian_clubModel::where('user_id',$userID)->first();
+         $club = Equestrian_club::where('user_id',$userID)->first();
          $club -> update([
              'name' => $request->name,
              'description' => $request->description,
@@ -171,7 +171,7 @@ class AdminController extends Controller
              'lat' => $request->lat,
              'license' => $filename,
          ]);
-         $club = Equestrian_clubModel::where('user_id',$userID)->first();
+         $club = Equestrian_club::where('user_id',$userID)->first();
          $response = [
              'message' => 'User is updated successfully.',
              'club' => $club,
@@ -211,14 +211,14 @@ class AdminController extends Controller
          $user = User::find($userID);
          $user -> update(['mobile' => $request->mobile]);
 
-         $health = HealthCareModel::where('user_id',$userID)->first();
+         $health = HealthCare::where('user_id',$userID)->first();
          $health -> update([
              'name' => $request->name,
              'description' => $request->description,
              'address' => $request->address,
              'license' => $filename,
          ]);
-         $health = HealthCareModel::where('user_id',$userID)->first();
+         $health = HealthCare::where('user_id',$userID)->first();
          $response = [
              'message' => 'User is updated successfully.',
              'health' => $health,

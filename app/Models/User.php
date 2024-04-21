@@ -3,6 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\CLUB\Course;
+use App\Models\CLUB\CRating;
+use App\Models\CLUB\Equestrian_club;
+use App\Models\CLUB\Trainer;
+use App\Models\CLUB\TRating;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -52,18 +57,30 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     public function equestrian_club () {
-        return $this->hasOne(Equestrian_clubModel::class);
+        return $this->hasOne(Equestrian_club::class);
     }
     public function health_care () {
-        return $this->hasOne(HealthCareModel::class);
+        return $this->hasOne(HealthCare::class);
     }
     public function profiles () {
-        return $this->hasOne(ProfileModel::class);
+        return $this->hasOne(Profile::class);
     }
     public function seller_buyer () {
-        return $this->hasOne(SellerBuyerModel::class);
+        return $this->hasOne(SellerBuyer::class);
     }
     public function trainer () {
-        return $this->hasOne(TrainerModel::class);
+        return $this->hasOne(Trainer::class);
+    }
+    public function clubRates()
+    {
+        return $this->hasMany(CRating::class);
+    }
+    public function trainerRates()
+    {
+        return $this->hasMany(TRating::class);
+    }
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class);
     }
 }
