@@ -1,68 +1,14 @@
 <?php
 
-use App\Http\Controllers\ADMIN\AClubController;
-use App\Http\Controllers\ADMIN\AdminController;
-use App\Http\Controllers\ADMIN\CategoryController;
+
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\AUTH\VerificationController;
-use App\Http\Controllers\CLUB\ClubController;
-use App\Http\Controllers\TESTcontroller;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ClubController;
+use App\Http\Controllers\TrainerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
- // correct way to use middleware auth
-//Route::middleware('auth:sanctum')->get('test', [TESTController::class, 'test']);
-//Route::get('test', [TESTController::class, 'test'])->middleware('auth:sanctum');
-
-
-// correct way to use spatie by permissions
-//    Route::prefix('spatie')->controller(TESTcontroller::class)
-//        ->group(function (){
-//
-//            Route::get('/test','test')
-//                ->middleware('can:delete-user');
-//        });
-
-
-// correct way to use spatie by roles
-//Route::group(['middleware' => ['role:Super Admin']], function () {
-//
-//    Route::get('test',[TESTcontroller::class,'test']);
-//});
-
-// correct way to use spatie by permission
-//Route::group(['middleware' => ['permission:create-user']], function (){
-//    Route::get('test',[TESTcontroller::class,'test']);
-//}
-//);
-
-
-// correct way to use spatie by permission and role
-//    Route::group(['middleware' => ['role_or_permission:delete-user']], function () {
-//        Route::get('test',[TESTcontroller::class,'test']);
-//    });
-
-
-
-
-// correct way to use spatie by multiple permission and role
-//    Route::group(['middleware' => ['role_or_permission:delete-user|Admin']], function () {
-//        Route::get('test',[TESTcontroller::class,'test']);
-//    });
-
-
-
-
 
 
 Route::post('register',[AuthController::class,'register']);
@@ -84,51 +30,62 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/change-password', [VerificationController::class, 'changePassword']);
 });
 
+
+
 Route::middleware('auth:sanctum')->group(function () {
 
 
+    ############### ADMIN ROLE ###############
     Route::group(['middleware' => ['role_or_permission:Admin']], function () {
 
-        ///////////// CLUB ROUTE   ////////////////
-        Route::post('editClub',[ClubController::class,'editClub']);
-        Route::get('MyClub',[ClubController::class,'MyClub']);
-        Route::delete('deleteClub',[ClubController::class,'deleteClub']);
-    });
-
-
-
-
-
-    ################ ADMIN ROUTE ###############
-    Route::group(['middleware' => ['role:Super Admin']], function () {
         Route::post('AdminUpdate',[AuthController::class,'AdminUpdate']);
 
-        ///////////// CLUB ROUTE   ////////////////
-        Route::post('AddClub',[AClubController::class,'AddClub']);
-        Route::get('showClub',[AClubController::class,'showClub']);
-        Route::get('searchClub/{clubID}',[AClubController::class,'searchClub']);
-        Route::delete('deleteClub/{userId}',[AClubController::class,'deleteClub']);
 
-
-
-
-
-
-
-        Route::post('AddHealthCare',[AdminController::class,'AddHealthCare']);
-       // Route::post('editClub',[AdminController::class,'editClub']);
-        Route::post('editHealth_care',[AdminController::class,'editHealth_care']);
-
-        //Category
-        Route::post('create-services-category', [CategoryController::class, 'createCategory']);
-        Route::get('allCategory', [CategoryController::class, 'index']);
-        Route::post('get-category', [CategoryController::class, 'getCategory']);
-        Route::post('update-category', [CategoryController::class, 'updateCategory']);
-        Route::post('delete-category', [CategoryController::class, 'deleteCategory']);
-
-
+        Route::post('createCategory', [AdminController::class, 'createCategory']);
+        Route::get('allCategory', [AdminController::class, 'getCategories']);
+        Route::get('getCategory', [AdminController::class, 'getCategory']);
+        Route::post('updateCategory', [AdminController::class, 'updateCategory']);
+        Route::delete('deleteCategory', [AdminController::class, 'deleteCategory']);
     });
 
-});
+
+        Route::post('AddClub',[AdminController::class,'AddClub']);
+        Route::get('showClubs',[AdminController::class,'showClubs']);
+        Route::delete('deleteClub/{userId}',[AdminController::class,'deleteClub']);
+        Route::get('searchClub/{clubID}',[AdminController::class,'searchClub']);
+    });
+
+
+
+
+
+    ################ CLUB ROLE ###############
+    Route::group(['middleware' => ['role:CLUB']], function () {
+
+        Route::post('editClub', [ClubController::class, 'editClub']);
+        Route::post('MyClub', [ClubController::class, 'MyClub']);
+
+        Route::post('AddTrainer', [ClubController::class, 'AddTrainer']);
+        Route::delete('deleteTrainer/{id}', [ClubController::class, 'deleteTrainer']);
+    });
+
+
+
+    ################ TRAINER ROLE ###############
+    Route::group(['middleware' => ['role:TRAINER']], function () {
+
+        Route::delete('editTrainer',[TrainerController::class,'editTrainer']);
+        Route::post('MyProfile', [TrainerController::class, 'MyProfile']);
+    });
+
+
+    ################## USER ROLE *******************
+    Route::group(['middleware' => ['role_or_permission:USER']], function () {
+
+        Route::get('allCategory', [AdminController::class, 'getCategories']);
+        Route::get('getCategory', [AdminController::class, 'getCategory']);
+        Route::get('getCategoryServices/{id}',[CategoryController::class,'categoryServices']);
+        Route::get('getServiceClubs/{id}',[CategoryController::class,'serviceClubs']);
+    });
 
 

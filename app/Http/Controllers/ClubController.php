@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\CLUB;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\CLUB\ClubImage;
 use App\Models\CLUB\Equestrian_club;
+use App\Models\CLUB\Trainer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -100,27 +101,106 @@ class ClubController extends Controller
 
     }
 
+    ////////////TRAINER SECTION ///////////
+    public function AddTrainer (Request $request){
 
-    public function deleteClub (){
-        $id = Auth::id();
-        $club = User::where('id',$id)->first();
-        if($club) {
-            $club->delete();
-            $response = [
-                'message' => 'club was deleted successfully.',
-                'status' => true
-            ];
+        $validate = Validator::make($request->all(), [
+            'FName' => 'required|string|max:250',
+            'mobile' => 'required|max:250',
+            'LName' => 'required|string|max:250',
+            'email' => 'required',
+            'password' => 'required|string|min:8|confirmed',
+            'gender' => 'required',
+            'license' => 'required',
+            'image' => 'required',
+            'qualifications' => 'required',
+            'certifications' => 'required',
+            'experience' => 'required',
+            'specialties' => 'required',
+            'address' => 'required'
+        ]);
 
-            return $response;}
-        else {
-            $response = [
-                'message' => 'club does not exist.',
+        if ($validate->fails()) {
+            return response()->json([
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
                 'status' => false
-            ];
-            return $response;
+            ]);
         }
 
+        $file_extension = $request->image->getClientOriginalExtension();
+        $filename = time() . '.' . $file_extension;
+        $path = public_path('images/Trainer/PROFILES/');
+        $request->image->move($path, $filename);
+        $realPath = 'images/Trainer/PROFILES/'.$filename;
+
+        $file_extension = $request->license->getClientOriginalExtension();
+        $filename1 = time() . '.' . $file_extension;
+        $path = public_path('images/Trainer/license/');
+        $request->license->move($path, $filename1);
+        $realPath1 = 'images/Trainer/license/'.$filename1;
+
+        $user = User::create([
+            'mobile' => $request->input('mobile'),
+            'password' => bcrypt($request->input('password')),
+            'email' => $request->input('email'),
+            'type' => $request->input('type'),
+            'valid' => 'yes',
+        ]);
+
+        $trainer = Trainer::create([
+            'user_id' => $user->id,
+            'club_id' => $request->club_id,
+            'FName' => $request->FName,
+            'LName' => $request->LName,
+            'birth' => $request->birth,
+            'address' => $request->address,
+            'gender' => $request->gender,
+            'qualifications' => $request->qualifications,
+            'certifications' => $request->certifications,
+            'experience' => $request->experience,
+            'specialties' => $request->gender,
+            'license' => $realPath1,
+            'image' => $realPath
+        ]);
+
+        $data['user'] = $user;
+        $data['trainer'] = $trainer;
+
+        $user->assignRole('Admin');
+        $response = [
+            'message' => 'User is created successfully.',
+            'data' => $data,
+            'status' => true
+        ];
+
+        return response()->json($response);
     }
+
+
+    public function deleteTrainer ($id){
+
+
+            $trainer = User::where('id',$id)->first();
+            if($trainer) {
+                $trainer->delete();
+                $response = [
+                    'message' => 'trainer was removed successfully.',
+                    'status' => true
+                ];
+
+                return $response;}
+            else {
+                $response = [
+                    'message' => 'trainer does not exist.',
+                    'status' => false
+                ];
+                return $response;
+            }
+
+        }
+
+
 
 
 }
