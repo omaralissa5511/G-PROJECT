@@ -13,7 +13,6 @@ class Equestrian_club extends Model
     protected $table = 'equestrian_clubs';
 
     protected $hidden = [
-        'id',
         'created_at',
         'updated_at',
         'user_id'
@@ -31,7 +30,7 @@ class Equestrian_club extends Model
     {
         return $this->hasMany(CRating::class);
     }
-    public function images (){
-        return $this->hasMany(ClubImage::class);
+    public function  images(){
+        return $this->hasOne(ClubImage::class);
     }
 }

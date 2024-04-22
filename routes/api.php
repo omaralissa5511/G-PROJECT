@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\ADMIN\AClubController;
 use App\Http\Controllers\ADMIN\AdminController;
 use App\Http\Controllers\ADMIN\CategoryController;
 use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\AUTH\VerificationController;
+use App\Http\Controllers\CLUB\ClubController;
 use App\Http\Controllers\TESTcontroller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -85,9 +87,12 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
 
 
-    Route::group(['middleware' => ['role_or_permission:Admin|Normal User']], function () {
+    Route::group(['middleware' => ['role_or_permission:Admin']], function () {
 
-        Route::post('update',[AuthController::class,'update']);
+        ///////////// CLUB ROUTE   ////////////////
+        Route::post('editClub',[ClubController::class,'editClub']);
+        Route::get('MyClub',[ClubController::class,'MyClub']);
+        Route::delete('deleteClub',[ClubController::class,'deleteClub']);
     });
 
 
@@ -97,9 +102,21 @@ Route::middleware('auth:sanctum')->group(function () {
     ################ ADMIN ROUTE ###############
     Route::group(['middleware' => ['role:Super Admin']], function () {
         Route::post('AdminUpdate',[AuthController::class,'AdminUpdate']);
-        Route::post('AddClub',[AdminController::class,'AddClub']);
+
+        ///////////// CLUB ROUTE   ////////////////
+        Route::post('AddClub',[AClubController::class,'AddClub']);
+        Route::get('showClub',[AClubController::class,'showClub']);
+        Route::get('searchClub/{clubID}',[AClubController::class,'searchClub']);
+        Route::delete('deleteClub/{userId}',[AClubController::class,'deleteClub']);
+
+
+
+
+
+
+
         Route::post('AddHealthCare',[AdminController::class,'AddHealthCare']);
-        Route::post('editClub',[AdminController::class,'editClub']);
+       // Route::post('editClub',[AdminController::class,'editClub']);
         Route::post('editHealth_care',[AdminController::class,'editHealth_care']);
 
         //Category

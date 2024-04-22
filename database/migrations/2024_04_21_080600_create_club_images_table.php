@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('club_images', function (Blueprint $table) {
             $table->id();
-            $table->string('image_path');
+            $table->json('image_paths');
             $table->unsignedBigInteger('club_id');
             $table->foreign('club_id')->references('id')
                 ->on('equestrian_clubs')->onDelete('cascade')->onUpdate('cascade');
