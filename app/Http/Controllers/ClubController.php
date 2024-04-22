@@ -167,7 +167,7 @@ class ClubController extends Controller
         $data['user'] = $user;
         $data['trainer'] = $trainer;
 
-        $user->assignRole('Admin');
+        $user->assignRole('TRAINER');
         $response = [
             'message' => 'User is created successfully.',
             'data' => $data,

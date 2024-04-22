@@ -60,7 +60,7 @@ class AuthController extends Controller
         $data['owner'] = $owner;
         $owner -> update(['token'=>$data['token']]);
 
-        $owner->assignRole('Super Admin');
+        $owner->assignRole('ADMIN');
 
         $response = [
             'message' => 'admin is created successfully.',
@@ -174,7 +174,7 @@ class AuthController extends Controller
             $data['profile'] = $profile;
 
 
-            $user->assignRole('Normal User');
+            $user->assignRole('USER');
 
             $response = [
                 'message' => 'User is created successfully.',
@@ -245,7 +245,7 @@ class AuthController extends Controller
             $data['SB'] = $SB;
 
 
-            $user->assignRole('Admin');
+            $user->assignRole('SB');
 
             $response = [
                 'message' => 'User is created successfully.',
@@ -308,77 +308,7 @@ class AuthController extends Controller
             $data['healthCare'] = $health;
 
 
-            $user->assignRole('Admin');
-
-            $response = [
-                'message' => 'User is created successfully.',
-                'data' => $data,
-                'status' => true
-            ];
-
-            return response()->json($response);
-        }
-
-        if ($request->type == 'Trainer') {
-
-            $validate = Validator::make($request->all(), [
-                'FName' => 'required|string|max:250',
-                'mobile' => 'required|max:250',
-                'LName' => 'required|string|max:250',
-                'email' => 'required',
-                'password' => 'required|string|min:8|confirmed',
-                'gender' => 'required',
-                'license' => 'required',
-                'image' => 'required',
-                'birth' => 'required',
-                'address' => 'required'
-            ]);
-
-
-            if ($validate->fails()) {
-                return response()->json([
-                    'message' => 'Validation Error!',
-                    'data' => $validate->errors(),
-                    'status' => false
-                ]);
-            }
-
-            $file_extension = $request->image->getClientOriginalExtension();
-            $filename = time() . '.' . $file_extension;
-            $path = public_path('images/USERS/PROFILES/Trainer');
-            $request->image->move($path, $filename);
-
-            $file_extension = $request->license->getClientOriginalExtension();
-            $filename1 = time() . '.' . $file_extension;
-            $path = public_path('images/USERS/license/Trainer');
-            $request->license->move($path, $filename1);
-
-            $user = User::create([
-                'mobile' => $request->input('mobile'),
-                'password' => bcrypt($request->input('password')),
-                'email' => $request->input('email'),
-                'type' => $request->input('type'),
-                'valid' => 'yes',
-            ]);
-
-            $trainer = Trainer::create([
-                'user_id' => $user->id,
-                'club_id' => $request->club_id,
-                'FName' => $request->FName,
-                'LName' => $request->LName,
-                'birth' => $request->birth,
-                'address' => $request->address,
-                'gender' => $request->gender,
-                'license' => $filename1,
-                'image' => $filename
-            ]);
-
-            $data['token'] = $user->createToken($request->email)->plainTextToken;
-            $data['user'] = $user;
-            $data['trainer'] = $trainer;
-
-
-            $user->assignRole('Admin');
+            $user->assignRole('HEALTH');
 
             $response = [
                 'message' => 'User is created successfully.',

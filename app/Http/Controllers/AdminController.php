@@ -79,7 +79,7 @@ class AdminController extends Controller
         $data['user'] = $user;
         $data['club'] = $club;
         $data['clubImages'] = $clubImages;
-        $user->assignRole('Admin');
+        $user->assignRole('CLUB');
         $response = [
             'message' => 'User is created successfully.',
             'data' => $data,
