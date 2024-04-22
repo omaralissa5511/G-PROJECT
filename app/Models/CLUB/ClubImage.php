@@ -13,10 +13,11 @@ class ClubImage extends Model
 
     protected $fillable = [
         'club_id',
-        'image_path',
+        'image_paths',
     ];
 
-    public function club (){
-        return $this->belongsTo(Equestrian_club::class);
-    }
+    protected $casts = [
+        'image_paths' => 'array',
+    ];
+
 }

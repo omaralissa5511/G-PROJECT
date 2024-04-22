@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ADMIN;
 
 use App\Http\Controllers\Controller;
+use App\Models\CLUB\ClubImage;
 use App\Models\CLUB\Equestrian_club;
 use App\Models\HealthCare;
 use App\Models\User;
@@ -12,66 +13,6 @@ use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
-         public function AddClub (Request $request){
-
-
-             $validate = Validator::make($request->all(), [
-                 'name' => 'required|string|max:250',
-                 'mobile' => 'required|max:250',
-                 'description' => 'required|string|max:250',
-                 'email' => 'required',
-                 'password' => 'required|string|min:8|confirmed',
-                 'license' => 'required',
-                 'lat' => 'required',
-                 'long' => 'required',
-                 'address' => 'required'
-             ]);
-
-             if ($validate->fails()) {
-                 return response()->json([
-                     'message' => 'Validation Error!',
-                     'data' => $validate->errors(),
-                     'status' => false
-                 ]);
-             }
-
-             $file_extension = $request->license->getClientOriginalExtension();
-             $filename = time() . '.' . $file_extension;
-             $path = public_path('images/USERS/license/Equestrian_club/');
-             $request->license->move($path, $filename);
-
-             $user = User::create([
-                 'mobile' => $request->input('mobile'),
-                 'password' => bcrypt($request->input('password')),
-                 'email' => $request->input('email'),
-                 'type' => $request->input('type'),
-                 'valid' => 'yes',
-             ]);
-
-             $club = Equestrian_club::create([
-                 'user_id' => $user->id,
-                 'name' => $request->name,
-                 'description' => $request->description,
-                 'address' => $request->address,
-                 'long' => $request->long,
-                 'lat' => $request->lat,
-                 'license' => $filename,
-             ]);
-
-             $data['token'] = $user->createToken($request->email)->plainTextToken;
-             $data['user'] = $user;
-             $data['club'] = $club;
-
-             $user->assignRole('Admin');
-
-             $response = [
-                 'message' => 'User is created successfully.',
-                 'data' => $data,
-                 'status' => true
-             ];
-
-             return response()->json($response);
-     }
 
 
      public function AddHealthCare(Request $request){
@@ -95,7 +36,7 @@ class AdminController extends Controller
          }
          $file_extension = $request->license->getClientOriginalExtension();
          $filename = time() . '.' . $file_extension;
-         $path = public_path('images/USERS/license/HealthCare/');
+         $path = public_path('images/USERS/HealthCare/license/');
          $request->license->move($path, $filename);
 
          $user = User::create([
