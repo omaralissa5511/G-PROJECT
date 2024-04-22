@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ADMIN\AdminController;
+use App\Http\Controllers\ADMIN\CategoryController;
 use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\AUTH\VerificationController;
 use App\Http\Controllers\TESTcontroller;
@@ -100,6 +101,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('AddHealthCare',[AdminController::class,'AddHealthCare']);
         Route::post('editClub',[AdminController::class,'editClub']);
         Route::post('editHealth_care',[AdminController::class,'editHealth_care']);
+
+        //Category
+        Route::post('create-services-category', [CategoryController::class, 'createCategory']);
+        Route::get('allCategory', [CategoryController::class, 'index']);
+        Route::post('get-category', [CategoryController::class, 'getCategory']);
+        Route::post('update-category', [CategoryController::class, 'updateCategory']);
+        Route::post('delete-category', [CategoryController::class, 'deleteCategory']);
 
 
     });
