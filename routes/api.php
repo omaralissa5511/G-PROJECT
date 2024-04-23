@@ -5,10 +5,12 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\AUTH\VerificationController;
 use App\Http\Controllers\CategoryController;
+
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
+
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\TrainerController;
 use Illuminate\Http\Request;
@@ -72,6 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('AddTrainer', [ClubController::class, 'AddTrainer']);
         Route::delete('deleteTrainer/{id}', [ClubController::class, 'deleteTrainer']);
 
+
         Route::post('createService', [ServiceController::class, 'create']);
         Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
         Route::get('showService/{id}', [ServiceController::class, 'show']);
@@ -87,8 +90,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('createClass', [ClassController::class, 'createClass']);
         Route::get('getCourseClasses/{course_id}', [ClassController::class, 'getCourseClasses']);
         Route::post('editClass/{class_id}', [ClassController::class, 'editClass']);
-        Route::delete('deleteClass/{id}', [ClassController::class, 'deleteClass']);
 
+
+        Route::post('createService', [ServiceController::class, 'create']);
+        Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
+        Route::get('showService/{id}', [ServiceController::class, 'show']);
+        Route::post('updateService/{id}', [ServiceController::class, 'update']);
+        Route::post('deleteService/{id}', [ServiceController::class, 'destroy']);
+    });
 
 
     });
@@ -114,7 +123,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('showService/{id}', [ServiceController::class, 'show']);
 
 
+
         Route::post('reserve', [ReservationController::class, 'reserve']);
+
 
     });
 

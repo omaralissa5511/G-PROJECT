@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
@@ -9,6 +10,10 @@ use App\Models\CLUB\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+
+
+
 use Illuminate\Support\Facades\Validator;
 
 class ServiceController extends Controller
@@ -33,9 +38,11 @@ class ServiceController extends Controller
     public function create(Request $request)
     {
 
+
         $user_id = Auth::id();
 
         $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
+
 
         $validate = Validator::make($request->all(), [
             'name' => 'required',
@@ -55,16 +62,22 @@ class ServiceController extends Controller
 
         $file_extension = $request->image->getClientOriginalExtension();
         $filename = time() . '.' . $file_extension;
+
         $path = public_path('images/SERVICES/');
         $request->image->move($path, $filename);
         $realPath = 'images/SERVICES/'.$filename;
+
 
         $service = Service::create([
             'name' => $request->name,
             'description' =>$request->description,
             'image' =>$realPath,
             'category_id'=>$request->category_id,
+
             'club_id'=>$club_id
+
+            
+
         ]);
 
         return response()->json([
@@ -127,9 +140,11 @@ class ServiceController extends Controller
 
         $file_extension = $request->image->getClientOriginalExtension();
         $filename = time() . '.' . $file_extension;
+
         $path = public_path('images/SERVICES/');
         $request->image->move($path, $filename);
         $realPath = 'images/SERVICES/'.$filename;
+
 
 
 
