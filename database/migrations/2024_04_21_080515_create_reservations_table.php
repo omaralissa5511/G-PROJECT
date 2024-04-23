@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->integer('number_of_people');
+            $table->text('clas');
             $table->enum('status', ['pending', 'confirmed', 'canceled'])
                 ->default('pending');
 

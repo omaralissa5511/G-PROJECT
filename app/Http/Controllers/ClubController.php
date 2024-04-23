@@ -82,11 +82,13 @@ class ClubController extends Controller
         $id = Auth::id();
         $club = Equestrian_club::where('user_id',$id)->first();
         if($club) {
+
             $clubImages = ClubImage::where('club_id', $club->id)->get()->pluck('image_paths')->toArray();
+
             $response = [
                 'message' => 'club was found successfully.',
                 'club' => $club,
-                'images' => $clubImages,
+                'images' => $clubImages[0],
                 'status' => true
             ];
 
@@ -147,10 +149,11 @@ class ClubController extends Controller
             'type' => $request->input('type'),
             'valid' => 'yes',
         ]);
-
+           $user_id = Auth::id();
+           $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
         $trainer = Trainer::create([
             'user_id' => $user->id,
-            'club_id' => $request->club_id,
+            'club_id' => $club_id,
             'FName' => $request->FName,
             'LName' => $request->LName,
             'birth' => $request->birth,
@@ -177,6 +180,27 @@ class ClubController extends Controller
         return response()->json($response);
     }
 
+    public function MyTrainers(){
+
+        $user_id = Auth::id();
+        $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
+        $trainers = Trainer::where('club_id',$club_id)->get();
+        if($trainers){
+            $response = [
+                'message' => 'club trainers found : ',
+                'trainers' => $trainers,
+                'status' => true
+            ];
+            return $response;
+        }else{
+            $response = [
+                'message' => 'no trainers for you.',
+                'status' => false
+            ];
+            return $response;
+        }
+
+    }
 
     public function deleteTrainer ($id){
 
@@ -199,8 +223,5 @@ class ClubController extends Controller
             }
 
         }
-
-
-
 
 }

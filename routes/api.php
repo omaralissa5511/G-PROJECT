@@ -5,7 +5,12 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\AUTH\VerificationController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CLUB\ServiceController;
+
+use App\Http\Controllers\ClassController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ServiceController;
+
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\TrainerController;
 use Illuminate\Http\Request;
@@ -63,16 +68,38 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['middleware' => ['role:CLUB']], function () {
 
         Route::post('editClub', [ClubController::class, 'editClub']);
-        Route::post('MyClub', [ClubController::class, 'MyClub']);
+        Route::get('MyClub', [ClubController::class, 'MyClub']);
 
+        Route::get('MyTrainers', [ClubController::class, 'MyTrainers']);
         Route::post('AddTrainer', [ClubController::class, 'AddTrainer']);
         Route::delete('deleteTrainer/{id}', [ClubController::class, 'deleteTrainer']);
+
+
+        Route::post('createService', [ServiceController::class, 'create']);
+        Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
+        Route::get('showService/{id}', [ServiceController::class, 'show']);
+        Route::post('updateService/{id}', [ServiceController::class, 'update']);
+        Route::delete('deleteService/{id}', [ServiceController::class, 'destroy']);
+
+        Route::post('createCourse', [CourseController::class, 'createCourse']);
+        Route::get('MyCourses', [CourseController::class, 'MyCourses']);
+        Route::get('getSpecificCourse/{id}', [CourseController::class, 'getSpecificCourse']);
+        Route::post('editCourse/{CID}', [CourseController::class, 'editCourse']);
+        Route::delete('deleteCourse/{id}', [CourseController::class, 'deleteCourse']);
+
+        Route::post('createClass', [ClassController::class, 'createClass']);
+        Route::get('getCourseClasses/{course_id}', [ClassController::class, 'getCourseClasses']);
+        Route::post('editClass/{class_id}', [ClassController::class, 'editClass']);
+
 
         Route::post('createService', [ServiceController::class, 'create']);
         Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
         Route::get('showService/{id}', [ServiceController::class, 'show']);
         Route::post('updateService/{id}', [ServiceController::class, 'update']);
         Route::post('deleteService/{id}', [ServiceController::class, 'destroy']);
+    });
+
+
     });
 
 
@@ -94,6 +121,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
         Route::get('showService/{id}', [ServiceController::class, 'show']);
+
+
+
+        Route::post('reserve', [ReservationController::class, 'reserve']);
+
+
     });
 
 });

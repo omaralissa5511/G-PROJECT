@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('address');
             $table->string('description');
+            $table->string('profile');
+            $table->date('day')->nullable();
+            $table->time('start')->nullable();
+            $table->time('end')->nullable();
             $table->string('license')->nullable();
             $table->string('website');
             $table->decimal('lat');

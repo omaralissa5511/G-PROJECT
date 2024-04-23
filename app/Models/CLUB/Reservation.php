@@ -14,6 +14,7 @@ class Reservation extends Model
     protected $fillable = [
         'user_id',
         'course_id',
+        'clas',
         'number_of_people',
         'status',
     ];
