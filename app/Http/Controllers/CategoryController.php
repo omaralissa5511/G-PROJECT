@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\CLUB\Category;
+use App\Models\CLUB\ClubServise;
+use App\Models\CLUB\Equestrian_club;
 use App\Models\CLUB\Service;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -20,31 +23,46 @@ class CategoryController extends Controller
     public function categoryServices($Cid)
     {
 
-        $category = Category::find($Cid)->first();
-        $categoryServices = $category->services();
+        $category = Category::where('id',$Cid)->first();
 
-        if ($categoryServices) {
+        if($category){
+            $categoryServices = Service::where('category_id',$category->id)->get();
+
+            if ($categoryServices) {
+                return response()->json([
+                    'services' => $categoryServices,
+                    'status' => true
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'no services for this category',
+                    'status' => false
+                ]);
+            }
+        }
+        else {
             return response()->json([
-                'categories' => $categoryServices,
-                'status' => true
-            ]);
-        } else {
-            return response()->json([
-                'message' => 'no services for this category',
+                'message' => 'no category for this id',
                 'status' => false
             ]);
         }
+
+
     }
 
     public function serviceClubs ($Sid){
 
-        $service = Service::find($Sid)->first();
-        $serviceClubs = $service -> clubs();
+        $club_id =  Service::where('id',$Sid)->first()->club_id;
+        $user_id = Equestrian_club::where('id',$club_id)->first()->user_id;
+        $club = Equestrian_club::where('id',$club_id)->first();
+        $user = User::where('id',$user_id)->first();
 
 
-        if ($serviceClubs) {
+
+        if ($club) {
             return response()->json([
-                'serviceClubs' => $serviceClubs,
+                'club' => $club,
+                'user' => $user,
                 'status' => true
             ]);
         } else {
@@ -53,7 +71,6 @@ class CategoryController extends Controller
                 'status' => false
             ]);
         }
-
 
     }
  }

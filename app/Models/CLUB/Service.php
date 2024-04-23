@@ -13,6 +13,7 @@ class Service extends Model
 
     protected $fillable = [
         'name',
+        'image',
         'description',
         'category_id',
         'club_id'
@@ -24,7 +25,7 @@ class Service extends Model
     }
     public function clubs()
     {
-        return $this->belongsToMany(Equestrian_club::class);
+        return $this->belongsTo(Equestrian_club::class);
     }
     public function trainers()
     {

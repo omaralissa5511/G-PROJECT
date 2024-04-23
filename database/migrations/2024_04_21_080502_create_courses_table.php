@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('begin');
             $table->date('end');
             $table->boolean('valid');
+            $table->integer('club');
             $table->unsignedBigInteger('trainer_id');
             $table->foreign('trainer_id')->references('id')
                 ->on('trainers')->onDelete('cascade')->onUpdate('cascade');

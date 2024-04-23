@@ -25,7 +25,11 @@ class AdminController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'license' => 'required',
             'images' => 'required',
+            'profile' => 'required',
             'website' => 'required',
+            //'day' => 'required',
+            //'start' => 'required',
+            //'end' => 'required',
             'lat' => 'required',
             'long' => 'required',
             'address' => 'required'
@@ -44,6 +48,12 @@ class AdminController extends Controller
         $path = public_path('images/Equestrian_club/license/');
         $request->license->move($path, $filename);
         $realPath = 'images/Equestrian_club/license/' . $filename;
+
+        $file_extension = $request->profile->getClientOriginalExtension();
+        $filename3 = time() . '.' . $file_extension;
+        $path = public_path('images/Equestrian_club/profile/');
+        $request->profile->move($path, $filename3);
+        $realPath1 = 'images/Equestrian_club/profile/' . $filename3;
 
         $images = $request->file('images');
         $imagePaths = [];
@@ -67,7 +77,8 @@ class AdminController extends Controller
             'long' => $request->long,
             'website' => $request->website,
             'lat' => $request->lat,
-            'license' => $realPath
+            'license' => $realPath,
+            'profile' =>$realPath1
         ]);
 
 
@@ -79,7 +90,7 @@ class AdminController extends Controller
         $data['user'] = $user;
         $data['club'] = $club;
         $data['clubImages'] = $clubImages;
-        $user->assignRole('Admin');
+        $user->assignRole('CLUB');
         $response = [
             'message' => 'User is created successfully.',
             'data' => $data,
