@@ -14,6 +14,20 @@ use Illuminate\Support\Facades\Validator;
 class ClubController extends Controller
 {
 
+
+    public function getClubByID ($id){
+
+    $club = Equestrian_club::where('id',$id)->first();
+
+    $response = [
+
+        'trainer' => $club,
+        'status' => true
+    ];
+
+    return $response;
+}
+
     public function editClub (Request $request){
 
         $validate = Validator::make($request->all(), [

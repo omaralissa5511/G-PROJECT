@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\AUTH;
 
+use App\Events\NewUSERAdded;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\CLUB\Equestrian_club;
@@ -172,9 +173,10 @@ class AuthController extends Controller
             $data['token'] = $user->createToken($request->email)->plainTextToken;
             $data['user'] = $user;
             $data['profile'] = $profile;
-
-
             $user->assignRole('USER');
+
+
+            event(new NewUSERAdded($user));
 
             $response = [
                 'message' => 'User is created successfully.',
