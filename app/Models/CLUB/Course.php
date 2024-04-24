@@ -26,4 +26,16 @@ class Course extends Model
     {
         return $this->hasMany(Clas::class);
     }
+
+
+    public function service()
+    {
+        return $this->belongsTo('App\Models\CLUB\Service');
+    }
+
+    public function trainer()
+    {
+        return $this->belongsTo('App\Models\CLUB\Trainer');
+    }
+
 }
