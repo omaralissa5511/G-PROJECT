@@ -120,9 +120,9 @@ class AdminController extends Controller
 
     }
 
-    public function searchClub($clubID)
+    public function searchClubByName($name)
     {
-        $club = Equestrian_club::where('id', $clubID)->first();
+        $club = Equestrian_club::where('name', $name)->first();
 
         if ($club) {
             $clubImages = ClubImage::where('club_id', $club->id)->get()->pluck('image_paths')->toArray();

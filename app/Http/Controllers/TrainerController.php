@@ -93,4 +93,21 @@ class TrainerController extends Controller
 
             return $response;
         }
+
+
+    public function getTrainerByID ($id){
+
+        $trainer = Trainer::where('id',$id)->first();
+
+        $response = [
+
+            'trainer' => $trainer,
+            'status' => true
+        ];
+
+        return $response;
+    }
+
 }
+
+

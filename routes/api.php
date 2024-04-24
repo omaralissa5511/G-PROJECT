@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Events\NewUSERAdded;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\AUTH\VerificationController;
@@ -59,7 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('AddClub', [AdminController::class, 'AddClub']);
         Route::get('showClubs', [AdminController::class, 'showClubs']);
         Route::delete('deleteClub/{userId}', [AdminController::class, 'deleteClub']);
-        Route::get('searchClub/{clubID}', [AdminController::class, 'searchClub']);
+        Route::get('searchClubByname/{name}', [AdminController::class, 'searchClubByName']);
 
         Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
         Route::get('showService/{id}', [ServiceController::class, 'show']);
@@ -102,7 +103,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
 
-    });
+
 
 
     ################ TRAINER ROLE ###############
@@ -125,7 +126,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
         Route::get('showService/{id}', [ServiceController::class, 'show']);
 
-
+        Route::get('showAllClubs', [AdminController::class, 'showClubs']);
+        Route::get('getTrainerByID/{id}', [TrainerController::class, 'getTrainerByID']);
+        Route::get('getClubByID/{id}', [ClubController::class, 'getClubByID']);
+        Route::get('searchClubByName/{name}', [AdminController::class, 'searchClubByName']);
 
         Route::post('reserve', [ReservationController::class, 'reserve']);
 
@@ -147,4 +151,9 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
+
+Route::get('pusher', function (){
+   // event(new NewUSERAdded());
+    echo "hello world";
+});
 
