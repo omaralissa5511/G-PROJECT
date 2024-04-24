@@ -8,11 +8,13 @@ use App\Http\Controllers\CategoryController;
 
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CRatingController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
 
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\TrainerController;
+use App\Http\Controllers\TRatingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -106,11 +108,12 @@ Route::middleware('auth:sanctum')->group(function () {
     ################ TRAINER ROLE ###############
     Route::group(['middleware' => ['role:TRAINER']], function () {
 
+
         Route::post('editTrainer', [TrainerController::class, 'editTrainer']);
         Route::get('MyProfile', [TrainerController::class, 'MyProfile']);
     });
 
-
+Route::middleware('auth:sanctum')->group(function () {
     ################## USER ROLE *******************
     Route::group(['middleware' => ['role_or_permission:USER']], function () {
 
@@ -126,9 +129,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('reserve', [ReservationController::class, 'reserve']);
 
+        //TRating
+        Route::get('allTrainerRating/{trainer_id}',[TRatingController::class,'getAllRatingInTrainer']);
+        Route::get('allAverageTrainerRating/{trainer_id}',[TRatingController::class,'getAverageRating']);
+        Route::post('createTrainerRating',[TRatingController::class,'createRating']);
+        Route::post('updateTrainerRating',[TRatingController::class,'updateRating']);
+        Route::post('deleteTrainerRating',[TRatingController::class,'deleteRating']);
+
+        //CRating
+        Route::get('allClubRating/{club_id}',[CRatingController::class,'getAllRatingInClub']);
+        Route::get('allAverageClubRating/{club_id}',[CRatingController::class,'getAverageRating']);
+        Route::post('createClubRating',[CRatingController::class,'createRating']);
+        Route::post('updateClubRating',[CRatingController::class,'updateRating']);
+        Route::post('deleteClubRating',[CRatingController::class,'deleteRating']);
 
     });
-
 });
+
 
 
