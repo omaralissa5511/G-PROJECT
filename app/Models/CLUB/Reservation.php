@@ -18,4 +18,9 @@ class Reservation extends Model
         'number_of_people',
         'status',
     ];
+
+    public function course()
+    {
+        return $this->belongsTo('App\Models\CLUB\Course');
+    }
 }
