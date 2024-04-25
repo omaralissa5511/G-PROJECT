@@ -19,10 +19,13 @@ class ClubController extends Controller
 
     $club = Equestrian_club::where('id',$id)->first();
 
-    $response = [
+        $clubImages = ClubImage::where('club_id', $club->id)->get()->pluck('image_paths')->toArray();
 
-        'trainer' => $club,
-        'status' => true
+        $response = [
+
+            'club' => $club,
+            'images' => $clubImages[0],
+            'status' => true
     ];
 
     return $response;
@@ -199,6 +202,27 @@ class ClubController extends Controller
         $user_id = Auth::id();
         $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
         $trainers = Trainer::where('club_id',$club_id)->get();
+        if($trainers){
+            $response = [
+                'message' => 'club trainers found : ',
+                'trainers' => $trainers,
+                'status' => true
+            ];
+            return $response;
+        }else{
+            $response = [
+                'message' => 'no trainers for you.',
+                'status' => false
+            ];
+            return $response;
+        }
+
+    }
+
+    public function GetTrainersByClub($id){
+
+
+        $trainers = Trainer::where('club_id',$id)->get();
         if($trainers){
             $response = [
                 'message' => 'club trainers found : ',

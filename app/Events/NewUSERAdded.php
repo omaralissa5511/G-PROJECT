@@ -19,10 +19,12 @@ class NewUSERAdded implements ShouldBroadcast
      * Create a new event instance.
      */
 
-    public $user;
-    public function __construct(User $user)
+    public $user_name;
+    public $message;
+    public function __construct($user_name,$message)
     {
-       $this -> user = $user;
+       $this->user_name = $user_name;
+       $this->message = $message;
     }
 
     /**
@@ -34,7 +36,7 @@ class NewUSERAdded implements ShouldBroadcast
     {
         return [
           //  new PrivateChannel('channel-name'),
-            'new-USER-channel'
+            'CHAT'
         ];
     }
     public function broadcastAs()
