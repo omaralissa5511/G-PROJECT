@@ -41,8 +41,9 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
-
+Route::post('sendMessages',[AdminController::class,'messages']);
 Route::middleware('auth:sanctum')->group(function () {
+
 
 
     ############### ADMIN ROLE ###############
@@ -131,6 +132,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('getTrainerByID/{id}', [TrainerController::class, 'getTrainerByID']);
         Route::get('getClubByID/{id}', [ClubController::class, 'getClubByID']);
         Route::get('searchClubByName/{name}', [AdminController::class, 'searchClubByName']);
+        Route::get('GetTrainersByClub/{id}', [ClubController::class, 'GetTrainersByClub']);
 
         Route::post('reserve', [ReservationController::class, 'reserve']);
 
@@ -155,9 +157,9 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
-
-Route::get('pusher', function (){
-   // event(new NewUSERAdded());
-    echo "hello world";
+//
+//Route::get('pusher', function (){
+//   // event(new NewUSERAdded());
+//    echo "hello world";
 });
 
