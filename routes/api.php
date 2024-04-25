@@ -14,6 +14,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
 
 use App\Http\Controllers\ClubController;
+use App\Http\Controllers\StripeController;
 use App\Http\Controllers\TrainerController;
 use App\Http\Controllers\TRatingController;
 use Illuminate\Http\Request;
@@ -148,6 +149,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('createClubRating',[CRatingController::class,'createRating']);
         Route::post('updateClubRating',[CRatingController::class,'updateRating']);
         Route::post('deleteClubRating',[CRatingController::class,'deleteRating']);
+
+        Route::post('stripe-payment', [StripeController::class,'stripePost']);
+
 
     });
 });
