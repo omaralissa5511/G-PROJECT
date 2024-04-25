@@ -95,6 +95,45 @@ class TrainerController extends Controller
         }
 
 
+    public function allTrainersinService($service_id)
+    {
+        $trainers = Trainer::where('service_id', $service_id)->get();
+
+        return response()->json([
+            'Trainers' => $trainers,
+            'status'=> true
+        ]);
+    }
+
+    public function allTrainers()
+    {
+        $trainers = Trainer::all();
+
+        return response()->json([
+            'trainers' => $trainers,
+            'status'=> true
+        ]);
+    }
+    public function deleteTrainer($id)
+    {
+        $trainer = Trainer::find($id);
+
+        if ($trainer) {
+            $trainer->delete();
+
+            return response()->json([
+                'message' => 'Trainer deleted successfully',
+                'status'=> true
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Trainer not found',
+                'status'=> false
+            ]);
+        }
+    }
+
+
     public function getTrainerByID ($id){
 
         $trainer = Trainer::where('id',$id)->first();

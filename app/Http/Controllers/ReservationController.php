@@ -46,5 +46,34 @@ class ReservationController extends Controller
 
     }
 
+    public function getAllRatingInTrainer($user_id)
+    {
+
+        $reservations =Reservation::where('user_id', $user_id)->get();
+
+        return response()->json([
+            'reservations' => $reservations,
+            'status' => true
+        ]);
+    }
+    public function show($id)
+    {
+        $reservation = Reservation::find($id);
+
+        if (!$reservation) {
+            return response()->json([
+                'message' => 'Reservation not found!',
+                'status' => false
+            ]);
+        }
+
+        return response()->json([
+            'reservation' => $reservation,
+            'status' => true
+        ]);
+    }
+    
+
+
 
 }

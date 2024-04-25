@@ -139,6 +139,17 @@ class CourseController extends Controller
 
     }
 
+    public function allCoursesInTrainer($trainer_id)
+    {
+
+        $courses = Course::where('trainer_id', $trainer_id)->get();
+
+        return response()->json([
+            'courses' => $courses,
+            'status'=> true
+        ]);
+    }
+
 
 
     public function deleteCourse ($id){
