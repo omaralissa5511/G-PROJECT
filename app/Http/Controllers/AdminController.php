@@ -102,7 +102,9 @@ class AdminController extends Controller
     public function showClubs()
     {
         $clubs = Equestrian_club::get();
+
         if ($clubs) {
+
             $response = [
                 'data' => $clubs,
                 'status' => true
@@ -120,14 +122,14 @@ class AdminController extends Controller
 
     }
 
-    public function searchClub($clubID)
+    public function searchClubByName($name)
     {
-        $club = Equestrian_club::where('id', $clubID)->first();
+        $club = Equestrian_club::where('name', $name)->first();
 
         if ($club) {
             $clubImages = ClubImage::where('club_id', $club->id)->get()->pluck('image_paths')->toArray();
 
-            $data['clubImages'] = $clubImages;
+            $data['clubImages'] = $clubImages[0];
             $response = [
                 'message' => 'club was found successfully.',
                 'club' => $club,

@@ -94,6 +94,7 @@ class TrainerController extends Controller
             return $response;
         }
 
+
     public function allTrainersinService($service_id)
     {
         $trainers = Trainer::where('service_id', $service_id)->get();
@@ -131,4 +132,21 @@ class TrainerController extends Controller
             ]);
         }
     }
+
+
+    public function getTrainerByID ($id){
+
+        $trainer = Trainer::where('id',$id)->first();
+
+        $response = [
+
+            'trainer' => $trainer,
+            'status' => true
+        ];
+
+        return $response;
+    }
+
 }
+
+
