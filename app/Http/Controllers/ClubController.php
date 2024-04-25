@@ -18,10 +18,11 @@ class ClubController extends Controller
     public function getClubByID ($id){
 
     $club = Equestrian_club::where('id',$id)->first();
+        $clubImages = ClubImage::where('club_id', $club->id)->get()->pluck('image_paths')->toArray();
 
     $response = [
-
-        'trainer' => $club,
+        'club' => $club,
+        'images' => $clubImages[0],
         'status' => true
     ];
 
