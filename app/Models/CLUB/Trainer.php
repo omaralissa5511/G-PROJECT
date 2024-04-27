@@ -33,4 +33,9 @@ class Trainer extends Model
     {
         return $this->hasMany(Course::class);
     }
+
+    public function trainertimes()
+    {
+        return $this->hasMany(TrainerTime::class);
+    }
 }
