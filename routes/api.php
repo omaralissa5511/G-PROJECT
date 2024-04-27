@@ -138,6 +138,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('getClubByID/{id}', [ClubController::class, 'getClubByID']);
         Route::get('searchClubByName/{name}', [AdminController::class, 'searchClubByName']);
         Route::get('GetTrainersByClub/{id}', [ClubController::class, 'GetTrainersByClub']);
+        Route::get('getCourseClasses/{course_id}', [ClassController::class, 'getCourseClasses']);
 
         Route::get('allTrainersInServiceUser/{id}', [TrainerController::class, 'allTrainersInService']);
         Route::get('getTrainerByIDUser/{id}', [TrainerController::class, 'getTrainerByID']);
@@ -173,11 +174,4 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-
-
-
-//
-//Route::get('pusher', function (){
-//   // event(new NewUSERAdded());
-//    echo "hello world";
 });

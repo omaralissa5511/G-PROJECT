@@ -86,4 +86,5 @@ class ReservationController extends Controller
             'status' => true
         ]);
     }
+
 }
