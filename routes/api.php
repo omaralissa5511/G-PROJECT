@@ -129,6 +129,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('getCategory', [AdminController::class, 'getCategory']);
         Route::get('getCategoryServices/{id}', [CategoryController::class, 'categoryServices']);
         Route::get('getServiceClubs/{id}', [CategoryController::class, 'serviceClubs']);
+        Route::get('getClubsInCategory/{id}', [CategoryController::class, 'clubsInCategory']);
 
         Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
         Route::get('showService/{id}', [ServiceController::class, 'show']);

@@ -132,29 +132,28 @@ class AdminController extends Controller
 
     public function searchClubByName($name)
     {
-        $club = Equestrian_club::where('name', $name)->first();
 
-        if ($club) {
-            $clubImages = ClubImage::where('club_id', $club->id)->get()->pluck('image_paths')->toArray();
+        $clubs = Equestrian_club::where('name', 'LIKE', $name . '%')->get();
 
-            $data['clubImages'] = $clubImages[0];
+        if ($clubs->isEmpty()) {
             $response = [
-                'message' => 'club was found successfully.',
-                'club' => $club,
-                'images' => $data['clubImages'],
-                'status' => true
-            ];
-
-            return $response;
-        } else {
-            $response = [
-                'message' => 'club does not exist.',
+                'message' => 'No clubs found.',
                 'status' => false
             ];
-            return $response;
+        } else {
+            $clubImages = ClubImage::where('club_id', $clubs[0]->id)->pluck('image_paths')->toArray();
+
+            $response = [
+                'message' => 'Club(s) found successfully.',
+                'clubs' => $clubs,
+                'images' => $clubImages,
+                'status' => true
+            ];
         }
 
+        return $response;
     }
+
 
     public function deleteClub($userId)
     {

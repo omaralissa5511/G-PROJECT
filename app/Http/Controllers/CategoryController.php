@@ -46,8 +46,6 @@ class CategoryController extends Controller
                 'status' => false
             ]);
         }
-
-
     }
 
     public function serviceClubs ($id){
@@ -73,4 +71,36 @@ class CategoryController extends Controller
         }
 
     }
- }
+
+
+    public function clubsInCategory($Cid)
+    {
+
+        $category = Category::where('id', $Cid)->first();
+
+        if ($category) {
+
+            $clubsWithServices = Equestrian_club::whereHas('services', function ($query) use ($Cid) {
+                $query->where('category_id', $Cid);
+            })->get();
+
+            if ($clubsWithServices->isEmpty()) {
+                return response()->json([
+                    'message' => 'No clubs contain services for this category',
+                    'status' => false
+                ]);
+            } else {
+                return response()->json([
+                    'clubs' => $clubsWithServices,
+                    'status' => true
+                ]);
+            }
+        } else {
+            return response()->json([
+                'message' => 'No category found with this identifier',
+                'status' => false
+            ]);
+        }
+    }
+
+}
