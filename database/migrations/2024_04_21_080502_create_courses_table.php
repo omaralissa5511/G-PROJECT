@@ -18,7 +18,8 @@ return new class extends Migration
             $table->integer('duration')->nullable();
             $table->date('begin');
             $table->date('end');
-            $table->boolean('valid');
+            $table->string('days');
+            $table->boolean('valid')->default(true);
             $table->integer('club');
             $table->unsignedBigInteger('trainer_id');
             $table->foreign('trainer_id')->references('id')
@@ -37,4 +38,8 @@ return new class extends Migration
     {
         Schema::dropIfExists('courses');
     }
+
+    protected $casts = [
+        'days' => 'array',
+    ];
 };
