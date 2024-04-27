@@ -72,8 +72,10 @@ class ReservationController extends Controller
             'status' => true
         ]);
     }
-    
 
+    public function getCourseClasses(Request $request){
+
+    }
 
 
 }

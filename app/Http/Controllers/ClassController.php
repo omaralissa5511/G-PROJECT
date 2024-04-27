@@ -98,11 +98,11 @@ class ClassController extends Controller
         if($classes){
             $response = [
                 'message' => 'classes found : ',
-                'trainers' => $classes,
+                'classes' => $classes,
                 'status' => true
             ];
             return $response;
-        }else{
+        } else{
             $response = [
                 'message' => 'no classes for you.',
                 'status' => false

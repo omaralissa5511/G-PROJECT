@@ -133,6 +133,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('getClubByID/{id}', [ClubController::class, 'getClubByID']);
         Route::get('searchClubByName/{name}', [AdminController::class, 'searchClubByName']);
         Route::get('GetTrainersByClub/{id}', [ClubController::class, 'GetTrainersByClub']);
+        Route::get('getCourseClasses/{course_id}', [ClassController::class, 'getCourseClasses']);
 
         Route::post('reserve', [ReservationController::class, 'reserve']);
 
@@ -156,10 +157,5 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-
-//
-//Route::get('pusher', function (){
-//   // event(new NewUSERAdded());
-//    echo "hello world";
 });
 

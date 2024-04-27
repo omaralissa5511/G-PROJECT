@@ -20,8 +20,6 @@ class ClubController extends Controller
     $club = Equestrian_club::where('id',$id)->first();
         $clubImages = ClubImage::where('club_id', $club->id)->get()->pluck('image_paths')->toArray();
 
-
-
         $response = [
 
             'club' => $club,
