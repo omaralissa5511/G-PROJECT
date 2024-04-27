@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CLUB\TRating;
 use App\Models\CLUB\Reservation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -22,6 +23,25 @@ class TRatingController extends Controller
             'status' => true
         ]);
     }
+
+    public function getAllReviewsInTrainer($trainer_id)
+    {
+        $reviews = TRating::where('trainer_id', $trainer_id)
+            ->whereNotNull('review')  // تحقق من أن الحقل 'review' غير فارغ
+            ->with('user.profile') // إضافة معلومات المدرب
+            ->get();
+
+        // تحويل الوقت إلى شكل مقروء بشكل أكبر
+        foreach ($reviews as $review) {
+            $review->review_time = Carbon::parse($review->created_at)->diffForHumans();
+        }
+
+        return response()->json([
+            'reviews' => $reviews,
+            'status' => true
+        ]);
+    }
+
 
     public function getAverageRating($trainer_id)
     {
@@ -52,17 +72,18 @@ class TRatingController extends Controller
             ]);
         }
 
-        // تحقق من الحجز
-        $booking = Reservation::whereHas('course', function ($query) use ($request) {
-            $query->where('trainer_id', $request->trainer_id);
-        })->where('user_id', $request->user_id)->first();
-
-        if (!$booking) {
-            return response()->json([
-                'message' => 'You can only rate if you have made a booking previously.',
-                'status' => false
-            ]);
-        }
+//        // تحقق من الحجز
+//        $booking = Reservation::whereHas('course', function ($query) use ($request) {
+//            $query->where('trainer_id', $request->trainer_id);
+//        })->where('user_id', $request->user_id)->first();
+//
+//        if (!$booking) {
+//            return response()->json([
+//                'message' => 'You can only rate if you have made a booking previously.',
+//                'status' => false
+//            ]);
+//        }
+//
 
         // تحقق من أن المستخدم لم يقم بتقييم المدرب من قبل
         $existingRating = TRating::where('trainer_id', $request->trainer_id)
@@ -78,7 +99,8 @@ class TRatingController extends Controller
         $rating = TRating::create([
             'trainer_id' => $request->trainer_id,
             'user_id' => $request->user_id,
-            'rating' => $request->rating
+            'rating' => $request->rating,
+            'review' => $request->review
         ]);
 
         return response()->json([

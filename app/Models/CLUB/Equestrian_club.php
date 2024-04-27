@@ -33,4 +33,9 @@ class Equestrian_club extends Model
     public function  images(){
         return $this->hasOne(ClubImage::class);
     }
+
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'favorite_clubs');
+    }
 }

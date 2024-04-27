@@ -13,16 +13,16 @@ class TRating extends Model
     protected $table = 'trainer_ratings';
 
     protected $fillable = [
-        'club_id',
+        'trainer_id',
         'user_id',
         'rating',
         'review',
     ];
-    public function users()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
-    public function trainers()
+    public function trainer()
     {
         return $this->belongsTo(Trainer::class);
     }

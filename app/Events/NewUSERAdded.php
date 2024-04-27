@@ -15,32 +15,29 @@ class NewUSERAdded implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     */
 
     public $user_name;
     public $message;
     public function __construct($user_name,$message)
     {
-       $this->user_name = $user_name;
-       $this->message = $message;
+
+        $this->user_name = $user_name;
+        $this->message = $message;
+
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
+
     public function broadcastOn(): array
     {
         return [
+
           //  new PrivateChannel('channel-name'),
             'CHAT'
+
         ];
     }
     public function broadcastAs()
     {
-        return 'my-event';
+        return 'my-event1122';
     }
 }

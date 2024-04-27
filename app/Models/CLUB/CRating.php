@@ -2,6 +2,7 @@
 
 namespace App\Models\CLUB;
 
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,8 +23,10 @@ class CRating extends Model
     {
         return $this->belongsTo(Equestrian_club::class);
     }
-    public function users()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+
 }
