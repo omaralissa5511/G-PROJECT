@@ -15,18 +15,22 @@ class Trainer extends Model
         'id',
         'created_at',
         'updated_at',
-        'user_id'
     ];
 
     public function services()
     {
-        return $this->belongsToMany(Service::class);
+        return $this->belongsToMany(Service::class,'courses');
     }
     public function clubs (){
         return $this->belongsTo(Equestrian_club::class);
     }
-    public function trainerRates()
+    public function TRatings()
     {
         return $this->hasMany(TRating::class);
+    }
+
+    public function Courses()
+    {
+        return $this->hasMany(Course::class);
     }
 }

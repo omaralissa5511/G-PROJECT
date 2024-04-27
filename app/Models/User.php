@@ -62,7 +62,7 @@ class User extends Authenticatable
     public function health_care () {
         return $this->hasOne(HealthCare::class);
     }
-    public function profiles () {
+    public function profile () {
         return $this->hasOne(Profile::class);
     }
     public function seller_buyer () {
@@ -71,16 +71,21 @@ class User extends Authenticatable
     public function trainer () {
         return $this->hasOne(Trainer::class);
     }
-    public function clubRates()
+    public function CRating()
     {
         return $this->hasMany(CRating::class);
     }
-    public function trainerRates()
+    public function TRating()
     {
         return $this->hasMany(TRating::class);
     }
     public function courses()
     {
         return $this->belongsToMany(Course::class);
+    }
+
+    public function favoriteClubs()
+    {
+        return $this->belongsToMany(Equestrian_club::class, 'favorite_clubs');
     }
 }

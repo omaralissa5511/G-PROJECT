@@ -46,7 +46,7 @@ class ReservationController extends Controller
 
     }
 
-    public function getAllRatingInTrainer($user_id)
+    public function allReservationForUser($user_id)
     {
 
         $reservations =Reservation::where('user_id', $user_id)->get();
@@ -56,6 +56,20 @@ class ReservationController extends Controller
             'status' => true
         ]);
     }
+
+
+    public function allReservationForTrainer($trainer_id)
+    {
+        $reservations = Reservation::whereHas('course.trainer', function($query) use ($trainer_id) {
+            $query->where('id', $trainer_id);
+        })->get();
+
+        return response()->json([
+            'reservations' => $reservations,
+            'status' => true
+        ]);
+    }
+
     public function show($id)
     {
         $reservation = Reservation::find($id);
@@ -72,10 +86,5 @@ class ReservationController extends Controller
             'status' => true
         ]);
     }
-
-    public function getCourseClasses(Request $request){
-
-    }
-
 
 }

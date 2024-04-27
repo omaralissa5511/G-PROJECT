@@ -22,7 +22,7 @@ class Course extends Model
     {
         return $this->hasMany(Reservation::class);
     }
-    public function clases()
+    public function classes()
     {
         return $this->hasMany(Clas::class);
     }

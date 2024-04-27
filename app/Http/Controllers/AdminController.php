@@ -23,7 +23,6 @@ class AdminController extends Controller
     }
 
 
-
     public function AddClub(Request $request)
     {
         $validate = Validator::make($request->all(), [

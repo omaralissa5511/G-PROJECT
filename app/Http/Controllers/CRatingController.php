@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\CLUB\CRating;
 use App\Models\CLUB\Reservation;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class CRatingController extends Controller
@@ -22,6 +24,26 @@ class CRatingController extends Controller
             'status' => true
         ]);
     }
+
+
+    public function getAllReviewsInClub($club_id)
+    {
+        $reviews = CRating::where('club_id', $club_id)
+            ->whereNotNull('review')  // تحقق من أن الحقل 'review' غير فارغ
+            ->with('user.profile') // إضافة معلومات المستخدم
+            ->get();
+
+        // تحويل الوقت إلى شكل مقروء بشكل أكبر
+        foreach ($reviews as $review) {
+            $review->review_time = Carbon::parse($review->created_at)->diffForHumans();
+        }
+
+        return response()->json([
+            'reviews' => $reviews,
+            'status' => true
+        ]);
+    }
+
 
     public function getAverageRating($club_id)
     {
@@ -52,18 +74,18 @@ class CRatingController extends Controller
             ]);
         }
 
-        // تحقق من الحجز
-        $booking = Reservation::whereHas('course.service', function ($query) use ($request) {
-            $query->where('club_id', $request->club_id);
-        })->where('user_id', $request->user_id)->first();
-
-        if (!$booking) {
-            return response()->json([
-                'message' => 'You can only rate if you have made a booking previously in this club.',
-                'status' => false
-            ]);
-        }
-
+//        // تحقق من الحجز
+//        $booking = Reservation::whereHas('course.service', function ($query) use ($request) {
+//            $query->where('club_id', $request->club_id);
+//        })->where('user_id', $request->user_id)->first();
+//
+//        if (!$booking) {
+//            return response()->json([
+//                'message' => 'You can only rate if you have made a booking previously in this club.',
+//                'status' => false
+//            ]);
+//        }
+//
 
         // تحقق من أن المستخدم لم يقم بتقييم المدرب من قبل
         $existingRating = CRating::where('club_id', $request->club_id)
