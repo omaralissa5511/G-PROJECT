@@ -50,9 +50,9 @@ class CategoryController extends Controller
 
     }
 
-    public function serviceClubs ($Sid){
+    public function serviceClubs ($id){
 
-        $club_id =  Service::where('id',$Sid)->first()->club_id;
+        $club_id =  Service::where('id',$id)->first()->club_id;
         $user_id = Equestrian_club::where('id',$club_id)->first()->user_id;
         $club = Equestrian_club::where('id',$club_id)->first();
         $user = User::where('id',$user_id)->first();

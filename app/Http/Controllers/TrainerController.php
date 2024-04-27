@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CLUB\ClubImage;
 use App\Models\CLUB\Equestrian_club;
+use App\Models\CLUB\Service;
 use App\Models\CLUB\Trainer;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -95,43 +96,25 @@ class TrainerController extends Controller
         }
 
 
-    public function allTrainersinService($service_id)
+    public function allTrainersInService($service_id)
     {
-        $trainers = Trainer::where('service_id', $service_id)->get();
+        $service = Service::find($service_id);
+
+        if (!$service) {
+            return response()->json([
+                'message' => 'Service not found',
+                'status' => false
+            ]);
+        }
+
+        $trainers = $service->trainers;
 
         return response()->json([
             'Trainers' => $trainers,
-            'status'=> true
+            'status' => true
         ]);
     }
 
-    public function allTrainers()
-    {
-        $trainers = Trainer::all();
-
-        return response()->json([
-            'trainers' => $trainers,
-            'status'=> true
-        ]);
-    }
-    public function deleteTrainer($id)
-    {
-        $trainer = Trainer::find($id);
-
-        if ($trainer) {
-            $trainer->delete();
-
-            return response()->json([
-                'message' => 'Trainer deleted successfully',
-                'status'=> true
-            ]);
-        } else {
-            return response()->json([
-                'message' => 'Trainer not found',
-                'status'=> false
-            ]);
-        }
-    }
 
 
     public function getTrainerByID ($id){

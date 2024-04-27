@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewUSERAdded;
 use App\Http\Controllers\Controller;
 use App\Models\CLUB\Category;
 use App\Models\CLUB\ClubImage;
@@ -14,6 +15,11 @@ use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
+
+    public function messages(Request $request){
+        event(new NewUSERAdded($request->name,$request->message));
+        return [];
+    }
 
     public function AddClub(Request $request)
     {

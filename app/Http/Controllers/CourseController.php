@@ -5,8 +5,10 @@ use App\Models\CLUB\Course;
 use App\Models\CLUB\Equestrian_club;
 use App\Models\CLUB\Trainer;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
@@ -172,4 +174,6 @@ class CourseController extends Controller
         }
 
     }
+
+
 }

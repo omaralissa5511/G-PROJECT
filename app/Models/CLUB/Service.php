@@ -29,6 +29,6 @@ class Service extends Model
     }
     public function trainers()
     {
-        return $this->belongsToMany(Trainer::class);
+        return $this->belongsToMany(Trainer::class,'courses');
     }
 }

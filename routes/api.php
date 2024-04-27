@@ -10,6 +10,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CRatingController;
+use App\Http\Controllers\FavoriteClubController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
 
@@ -26,7 +27,7 @@ Route::post('AdminRegister',[AuthController::class,'AdminRegister']);
 Route::post('login',[AuthController::class,'login']);
 Route::post('AdminLogin',[AuthController::class,'AdminLogin']);
 
-
+Route::post('sendMessages',[AdminController::class,'messages']);
 
 //لارسال رمز التحقق
 Route::post('/send-verification-email', [VerificationController::class, 'sendVerificationEmail']);
@@ -77,6 +78,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('MyTrainers', [ClubController::class, 'MyTrainers']);
         Route::post('AddTrainer', [ClubController::class, 'AddTrainer']);
         Route::delete('deleteTrainer/{id}', [ClubController::class, 'deleteTrainer']);
+
+
+        Route::get('allTrainersInService/{id}', [TrainerController::class, 'allTrainersInService']);
+        Route::get('getTrainerByID/{id}', [TrainerController::class, 'getTrainerByID']);
 
 
         Route::post('createService', [ServiceController::class, 'create']);
@@ -132,11 +137,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('getClubByID/{id}', [ClubController::class, 'getClubByID']);
         Route::get('searchClubByName/{name}', [AdminController::class, 'searchClubByName']);
 
+        Route::get('allTrainersInServiceUser/{id}', [TrainerController::class, 'allTrainersInService']);
+        Route::get('getTrainerByIDUser/{id}', [TrainerController::class, 'getTrainerByID']);
+
+
         Route::post('reserve', [ReservationController::class, 'reserve']);
 
         //TRating
         Route::get('allTrainerRating/{trainer_id}',[TRatingController::class,'getAllRatingInTrainer']);
         Route::get('allAverageTrainerRating/{trainer_id}',[TRatingController::class,'getAverageRating']);
+        Route::get('getAllReviewsInTrainer/{trainer_id}',[TRatingController::class,'getAllReviewsInTrainer']);
         Route::post('createTrainerRating',[TRatingController::class,'createRating']);
         Route::post('updateTrainerRating',[TRatingController::class,'updateRating']);
         Route::post('deleteTrainerRating',[TRatingController::class,'deleteRating']);
@@ -144,20 +154,24 @@ Route::middleware('auth:sanctum')->group(function () {
         //CRating
         Route::get('allClubRating/{club_id}',[CRatingController::class,'getAllRatingInClub']);
         Route::get('allAverageClubRating/{club_id}',[CRatingController::class,'getAverageRating']);
+        Route::get('getAllReviewsInClub/{club_id}',[CRatingController::class,'getAllReviewsInClub']);
         Route::post('createClubRating',[CRatingController::class,'createRating']);
         Route::post('updateClubRating',[CRatingController::class,'updateRating']);
         Route::post('deleteClubRating',[CRatingController::class,'deleteRating']);
+
+        // favorite
+        Route::post('addClubToFavorites',[FavoriteClubController::class,'addClubToFavorites']);
+        Route::post('removeClubFromFavorites',[FavoriteClubController::class,'removeClubFromFavorites']);
+        Route::get('getFavoriteClubs/{user_id}',[FavoriteClubController::class,'getFavoriteClubs']);
+
 
         Route::post('stripe-payment', [StripeController::class,'stripePost']);
 
 
     });
 });
-
-
-
-Route::get('pusher', function (){
-   // event(new NewUSERAdded());
-    echo "hello world";
 });
+
+
+
 
