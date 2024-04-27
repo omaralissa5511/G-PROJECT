@@ -21,6 +21,7 @@ class CourseController extends Controller
             'price' => 'required',
             'begin' => 'required',
             'end' => 'required',
+            'days' => 'required',
             'duration' => 'required',
             'trainer_id' => 'required',
             'service_id' => 'required',
@@ -33,6 +34,7 @@ class CourseController extends Controller
                 'status' => false
             ]);
         }
+        $days = json_encode($request->days);
         $user_id = Auth::id();
         $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
         $course = Course::create([
@@ -40,6 +42,7 @@ class CourseController extends Controller
             'price' => $request->price,
             'begin' => $request->begin,
             'end' => $request->end,
+            'days' => $days,
             'valid' => true,
             'club'=>$club_id,
             'duration' => $request->duration,
@@ -65,6 +68,8 @@ class CourseController extends Controller
             'price' => 'required',
             'begin' => 'required',
             'end' => 'required',
+            'days' => 'required',
+            'valid' => 'required',
             'duration' => 'required',
             'trainer_id' => 'required',
         ]);
@@ -83,6 +88,8 @@ class CourseController extends Controller
             'price' => $request->price,
             'begin' => $request->begin,
             'end' => $request->end,
+            'days' => $request->days,
+            'valid' => $request->valid,
             'duration' => $request->duration,
             'trainer_id' => $request->trainer_id,
         ]);
@@ -102,10 +109,14 @@ class CourseController extends Controller
             $user_id = Auth::id();
             $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
             $courses = Course::where('club',$club_id)->get();
+            foreach ($courses as $course){
+                $course->days = json_decode($course->days) ;
+            }
+
             if($courses){
                 $response = [
                     'message' => 'courses found : ',
-                    'trainers' => $courses,
+                    'courses' => $courses,
                     'status' => true
                 ];
                 return $response;
@@ -177,3 +188,4 @@ class CourseController extends Controller
 
 
 }
+

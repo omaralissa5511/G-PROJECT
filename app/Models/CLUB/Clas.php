@@ -10,8 +10,8 @@ class Clas extends Model
     use HasFactory;
     protected $table = 'classes';
     protected $fillable = [
-        'day','class','start',
-        'end','course_id'
+        'class','start','capacity','status',
+        'counter','end','course_id'
     ];
 
     public function courses (){
