@@ -19,7 +19,7 @@ class ClassController extends Controller
             'start' => 'required',
             'end' => 'required',
             'class' => 'required',
-            'day' => 'required',
+            'capacity' => 'required',
             'course_id' => 'required',
         ]);
 
@@ -34,7 +34,7 @@ class ClassController extends Controller
 
         $clas = Clas::create([
             'class' => $request->class,
-            'day' => $request->day,
+            'capacity' => $request->capacity,
             'start' => $request->start,
             'end' => $request->end,
             'course_id' => $request->course_id,
@@ -59,7 +59,7 @@ class ClassController extends Controller
             'start' => 'required',
             'end' => 'required',
             'class' => 'required',
-            'day' => 'required',
+            'capacity' => 'required',
             'course_id' => 'required',
         ]);
 
@@ -74,7 +74,7 @@ class ClassController extends Controller
         $clas = Clas::where('id',$class_id)->first();
         $clas -> update([
             'class' => $request->class,
-            'day' => $request->day,
+            'capacity' => $request->capacity,
             'start' => $request->start,
             'end' => $request->end,
             'course_id' => $request->course_id,

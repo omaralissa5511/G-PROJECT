@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('classes', function (Blueprint $table) {
             $table->id();
             $table->string('class');
-            $table->date('day');
             $table->time('start');
             $table->time('end');
+            $table->bigInteger('counter')->default(0);
+            $table->integer('capacity');
+            $table->integer('status')->default(0);
             $table->unsignedBigInteger('course_id');
             $table->foreign('course_id')->references('id')
                 ->on('courses')->onDelete('cascade')->onUpdate('cascade');

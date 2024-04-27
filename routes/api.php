@@ -143,8 +143,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('allTrainersInServiceUser/{id}', [TrainerController::class, 'allTrainersInService']);
         Route::get('getTrainerByIDUser/{id}', [TrainerController::class, 'getTrainerByID']);
 
-
+////// RESERVATION
         Route::post('reserve', [ReservationController::class, 'reserve']);
+        Route::post('editReserve/{Rid}', [ReservationController::class, 'editReservation']);
+        Route::get('UserReservations/{Uid}', [ReservationController::class, 'UserReservations']);
+        Route::get('TrainerReservation/{Tid}', [ReservationController::class, 'TrainerReservation']);
+        Route::get('showSpecificReservation/{Rid}', [ReservationController::class, 'showSpecificReservation']);
 
         //TRating
         Route::get('allTrainerRating/{trainer_id}',[TRatingController::class,'getAllRatingInTrainer']);

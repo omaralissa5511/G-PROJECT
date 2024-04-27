@@ -12,7 +12,7 @@ class Course extends Model
     protected $table = 'courses';
     protected $fillable = [
         'description','price','duration','begin','club',
-        'end','valid','trainer_id','service_id'
+        'days','end','valid','trainer_id','service_id'
     ];
     public function users()
     {
