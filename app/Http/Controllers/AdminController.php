@@ -16,10 +16,12 @@ use Illuminate\Support\Facades\Validator;
 class AdminController extends Controller
 {
 
+
     public function messages(Request $request){
         event(new NewUSERAdded($request->name,$request->message));
         return [];
     }
+
 
     public function AddClub(Request $request)
     {

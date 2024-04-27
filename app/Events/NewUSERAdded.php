@@ -20,16 +20,20 @@ class NewUSERAdded implements ShouldBroadcast
     public $message;
     public function __construct($user_name,$message)
     {
+
         $this->user_name = $user_name;
         $this->message = $message;
+
     }
 
 
     public function broadcastOn(): array
     {
         return [
-            //  new PrivateChannel('channel-name'),
-            'CHAT121'
+
+          //  new PrivateChannel('channel-name'),
+            'CHAT'
+
         ];
     }
     public function broadcastAs()
