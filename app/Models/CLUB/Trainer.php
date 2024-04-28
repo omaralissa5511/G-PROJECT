@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Trainer extends Model
 {
     use HasFactory;
-    protected $guarded = [];
+    //protected $guarded = [];
+    protected $fillable = ['FName','channelName','lName','birth','gender',
+        'address','license','image','qualifications','certifications',
+        'experience','specialties','user_id','club_id'];
     protected $table = 'trainers';
 
     protected $hidden = [

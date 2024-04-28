@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationE;
 use App\Http\Controllers\Controller;
 use App\Models\CLUB\Clas;
+use App\Models\CLUB\Course;
 use App\Models\CLUB\Reservation;
+use App\Models\Profile;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -73,6 +78,23 @@ class ReservationController extends Controller
             'status' => true
         ];
 
+        $user_name = Profile::where('id',$user_id)->first()->FName;
+        $course_description = Course::where('id',$request->course_id)
+            ->first()->description;
+        $course_price = Course::where('id',$request->course_id)
+            ->first()->price;
+
+            $message['message'] = 'reservation is done successfully.';
+            $message['user_name'] = $user_name;
+            $message['course_description'] = $course_description;
+            $message['number_of_people'] = $reserve->number_of_people;
+            $message['class'] = $reserve->clas;
+            $message['status'] = $reserve->status;
+
+
+        broadcast(new NotificationE($user_id, $message));
+
+
         return response()->json($response);
 
     }
@@ -114,7 +136,7 @@ class ReservationController extends Controller
             ];
         }
 
-     Reservation::where('id',$Rid)->update
+     $reserve = Reservation::where('id',$Rid)->update
      ([ 'number_of_people' => $request -> number_of_people]);
 
         $oldCounter = Clas::where('course_id',$request->course_id)
@@ -137,14 +159,67 @@ class ReservationController extends Controller
                 ->where('class',$request->clas)->update(['status' => 1]);
         }
 
+        $booking = Reservation::where('id',$Rid)->first();
         $response = [
             'message' => 'reservation is edited successfully.',
+            'booking' => $booking,
             'status' => true
         ];
+
+
+        $user_name = Profile::where('id',$user_id)->first()->FName;
+
+        $message['message'] = 'reservation is edited successfully.';
+        $message['user_name'] = $user_name;
+        $message['number_of_people'] = $request -> number_of_people;
+
+
+        broadcast(new NotificationE($user_id, $message));
 
         return response()->json($response);
 
     }
+            public function cancelReservation($reservationId)
+            {
+
+                $user_id = Auth::id();
+                    $reservation = Reservation::find($reservationId);
+                    $courseStartDate = Course::where('id', $reservation->course_id)->first()->begin;
+                    $courseStartDate = Carbon::parse($courseStartDate);
+                    $now = Carbon::now();
+
+                    if ($courseStartDate->diffInDays($now) <= 1) {
+                        return response()->json([
+                            'message' => 'لا يمكن إلغاء الحجز قبل بدء الدورة بيوم أو أقل.',
+                            'status' => false
+                        ]);
+                    }
+
+                    $numberOFpeople = $reservation->number_of_people;
+                    $clas = Clas::where('course_id', $reservation->course_id)
+                        ->where('class', '=', $reservation->clas)->first();
+                    $newCounter = $clas->counter-$numberOFpeople;
+
+                    $clas->update(['counter' => $newCounter]);
+                    $clas->save();
+                    $reservation->delete();
+
+                $user_name = Profile::where('id',$user_id)->first()->FName;
+
+                $message['message'] = 'تم إلغاء الحجز بنجاح.';
+                $message['user_name'] = $user_name;
+
+
+
+                broadcast(new NotificationE($user_id, $message));
+
+                return response()->json([
+                        'message' => 'تم إلغاء الحجز بنجاح.',
+                        'status' => true,
+                        'class' => $clas
+                    ]);
+
+            }
 
     public function UserReservations($user_id)
     {
