@@ -5,6 +5,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\AUTH\VerificationController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CategoryController;
 
 use App\Http\Controllers\ClassController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\TrainerController;
+use App\Http\Controllers\TrainerServiceController;
 use App\Http\Controllers\TRatingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -82,9 +84,11 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
         Route::get('MyTrainers', [ClubController::class, 'MyTrainers']);
         Route::post('AddTrainer', [ClubController::class, 'AddTrainer']);
         Route::delete('deleteTrainer/{id}', [ClubController::class, 'deleteTrainer']);
+        Route::post('addTrainerToService', [TrainerServiceController::class, 'addTrainerToService']);
+        Route::post('removeTrainerFromService', [TrainerServiceController::class, 'removeTrainerFromService']);
+        Route::get('allTrainersInServiceBooking/{id}', [TrainerServiceController::class, 'allTrainersInServiceBooking']);// للحجز الفردي
 
-
-        Route::get('allTrainersInService/{id}', [TrainerController::class, 'allTrainersInService']);
+        Route::get('allTrainersInServiceCourse/{id}', [TrainerController::class, 'allTrainersInServiceCourse']);
         Route::get('getTrainerByID/{id}', [TrainerController::class, 'getTrainerByID']);
 
 
@@ -144,8 +148,12 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
             Route::get('GetTrainersByClub/{id}', [ClubController::class, 'GetTrainersByClub']);
             Route::get('getCourseClasses/{course_id}', [ClassController::class, 'getCourseClasses']);
 
-            Route::get('allTrainersInServiceUser/{id}', [TrainerController::class, 'allTrainersInService']);
+            Route::get('allTrainersInServiceUserBooking/{id}', [TrainerServiceController::class, 'allTrainersInServiceBooking']);// للحجز الفردي
+
+            Route::get('allTrainersInServiceUserCourse/{id}', [TrainerController::class, 'allTrainersInServiceCourse']);
             Route::get('getTrainerByIDUser/{id}', [TrainerController::class, 'getTrainerByID']);
+
+            Route::get('allTrainersInServiceUserCourse/{id}', [TrainerController::class, 'allTrainersInServiceCourse']);
 
 
 ////// RESERVATION
@@ -183,6 +191,9 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
             Route::post('reserveTrainerTimes',[TrainerController::class,'reserveTrainerTimes']);
 
 
+            //Booking
+            Route::post('addBooking',[BookingController::class,'addBooking']);
+            Route::get('getAllBookingByUser/{user_id}',[BookingController::class,'getAllBookingByUser']);
 
             Route::post('stripe-payment', [StripeController::class,'stripePost']);
         });

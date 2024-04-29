@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\CLUB\Booking;
 use App\Models\CLUB\Course;
 use App\Models\CLUB\CRating;
 use App\Models\CLUB\Equestrian_club;
@@ -87,5 +88,10 @@ class User extends Authenticatable
     public function favoriteClubs()
     {
         return $this->belongsToMany(Equestrian_club::class, 'favorite_clubs');
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
     }
 }
