@@ -21,6 +21,10 @@ class Trainer extends Model
     {
         return $this->belongsToMany(Service::class,'courses');
     }
+    public function services_trianers()
+    {
+        return $this->belongsToMany(Service::class,'service');
+    }
     public function clubs (){
         return $this->belongsTo(Equestrian_club::class);
     }
@@ -37,5 +41,14 @@ class Trainer extends Model
     public function trainertimes()
     {
         return $this->hasMany(TrainerTime::class);
+    }
+// للحجز الفردي
+    public function b_services()
+    {
+        return $this->belongsToMany(Service::class, 'trainer_service');
+    }
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
     }
 }

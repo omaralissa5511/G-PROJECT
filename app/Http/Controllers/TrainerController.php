@@ -8,6 +8,7 @@ use App\Models\CLUB\Service;
 use App\Models\CLUB\Trainer;
 use App\Models\CLUB\TrainerTime;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -99,7 +100,7 @@ class TrainerController extends Controller
     }
 
 
-    public function allTrainersInService($service_id)
+public function allTrainersInServiceCourse($service_id)
     {
         $service = Service::find($service_id);
 
@@ -136,6 +137,17 @@ class TrainerController extends Controller
     {
         $trainer_id = $request->trainer_id;
         $date = $request->date;
+
+        $date_obj = Carbon::createFromFormat('Y-m-d', $date);
+        $day_name = $date_obj->format('l');
+        if ($date_obj->isToday() || $date_obj->isFuture()) {
+        if ($day_name === 'Friday' || $day_name === 'Saturday') {
+            return response()->json([
+                'message' => 'It\'s the weekend! No available times.',
+                'status' => false
+            ]);
+        }
+
         // ابحث عن السجل الموجود لهذا اليوم
         $existingRecord = TrainerTime::where('trainer_id', $trainer_id)
             ->where('date', $date)
@@ -180,15 +192,19 @@ class TrainerController extends Controller
             'Available Times' => $availableTimes,
             'status' => true
         ]);
+        } else {
+            return response()->json([
+                'message' => 'The given date is before today.',
+                'status' => false
+            ]);
+        }
     }
 
 
     public function reserveTrainerTimes(Request $request)
     {
-        $trainerId = $request->trainer_id;
-        $date = $request->date;
-        $start_time = $request->start_time;
-        $end_time = $request->end_time;
+        $trainerTime_id = $request->trainerTime_id;
+
 //        $reservedTimes = $request->reserved_times;
 //
 //        foreach ($reservedTimes as $time) {
@@ -196,10 +212,7 @@ class TrainerController extends Controller
 //            $end_time = $time['end_time'];
 
         TrainerTime::where([
-            'trainer_id' => $trainerId,
-            'date' => $date,
-            'start_time' => $start_time,
-            'end_time' => $end_time,
+            'id' => $trainerTime_id
         ])->update(['is_available' => false]);
 
 //        }
