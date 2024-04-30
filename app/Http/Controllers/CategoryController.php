@@ -8,6 +8,7 @@ use App\Models\CLUB\Equestrian_club;
 use App\Models\CLUB\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -80,9 +81,13 @@ class CategoryController extends Controller
 
         if ($category) {
 
-            $clubsWithServices = Equestrian_club::whereHas('services', function ($query) use ($Cid) {
-                $query->where('category_id', $Cid);
-            })->get();
+            $clubsWithServices = DB::table('equestrian_clubs')
+                ->join('services', 'equestrian_clubs.id', '=', 'services.club_id')
+                ->where('services.category_id', $Cid)
+                ->select('equestrian_clubs.*')
+                ->distinct()
+                ->get();
+
 
             if ($clubsWithServices->isEmpty()) {
                 return response()->json([
