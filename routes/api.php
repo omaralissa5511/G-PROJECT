@@ -1,21 +1,18 @@
 <?php
-
-
-//      المدربين حسب الخدمة خدمات حسب النادي
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\AUTH\VerificationController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CategoryController;
-
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CRatingController;
 use App\Http\Controllers\FavoriteClubController;
+use App\Http\Controllers\HorseController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
-
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\TrainerController;
@@ -32,7 +29,8 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
     Route::post('login',[AuthController::class,'login']);
     Route::post('AdminLogin',[AuthController::class,'AdminLogin']);
 
-    Route::post('sendMessages',[AdminController::class,'messages']);
+
+
 
     //لارسال رمز التحقق
     Route::post('/send-verification-email', [VerificationController::class, 'sendVerificationEmail']);
@@ -47,10 +45,8 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
     });
 
 
-    Route::post('sendMessages',[AdminController::class,'messages']);
+
     Route::middleware('auth:sanctum')->group(function () {
-
-
 
     ############### ADMIN ROLE ###############
     Route::group(['middleware' => ['role_or_permission:ADMIN']], function () {
@@ -132,7 +128,6 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
 
     });
 
-    Route::middleware('auth:sanctum')->group(function () {
     ################## USER ROLE *******************
         Route::group(['middleware' => ['role_or_permission:USER']], function () {
 
@@ -142,6 +137,7 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
             Route::get('getServiceClubs/{id}', [CategoryController::class, 'serviceClubs']);
             Route::get('getClubsInCategory/{id}', [CategoryController::class, 'clubsInCategory']);
 
+            Route::get('allTrainersInService/{id}', [TrainerController::class, 'allTrainersInService']);
             Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
             Route::get('showService/{id}', [ServiceController::class, 'show']);
 
@@ -195,12 +191,25 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
             Route::post('reserveTrainerTimes',[TrainerController::class,'reserveTrainerTimes']);
 
 
+            ////////// AUCTIONS ||||||||||||||
+            Route::post('AddAuction',[AuctionController::class,'AddAuction']);
+            Route::post('EditAuction/{id}',[AuctionController::class,'EditAuction']);
+            Route::get('showHorseByID/{id}',[AuctionController::class,'showHorseByID']);
+            Route::get('showAuctionByID/{id}',[AuctionController::class,'showAuctionByID']);
+            Route::get('getCurrentBid/{id}',[AuctionController::class,'getCurrentBid']);
+            Route::post('AddBid/{id}',[AuctionController::class,'AddBid']);
+            Route::get('getBuyersIN_Auction/{id}',[AuctionController::class,'getBuyersIN_Auction']);
+
+
             //Booking
             Route::post('addBooking',[BookingController::class,'addBooking']);
             Route::get('getAllBookingByUser/{user_id}',[BookingController::class,'getAllBookingByUser']);
             Route::get('getBookingDescription/{booking_id}',[BookingController::class,'getBooking']);
 
+
             Route::post('stripe-payment', [StripeController::class,'stripePost']);
         });
     });
-});
+
+
+//التحقق من فلترة المصفوفة للتخلص من الاشخاص المتشابهين
