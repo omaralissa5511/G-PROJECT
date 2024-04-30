@@ -1,7 +1,7 @@
 <?php
 
 
-use App\Events\NewUSERAdded;
+//      المدربين حسب الخدمة خدمات حسب النادي
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\AUTH\VerificationController;
@@ -12,6 +12,7 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CRatingController;
 use App\Http\Controllers\FavoriteClubController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
 
@@ -22,6 +23,8 @@ use App\Http\Controllers\TrainerServiceController;
 use App\Http\Controllers\TRatingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+Route::post('sendMessage',[MessageController::class,'sendMessage']);
 
 
     Route::post('register',[AuthController::class,'register']);
@@ -163,6 +166,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('UserReservations/{Uid}', [ReservationController::class, 'UserReservations']);
         Route::get('TrainerReservation/{Tid}', [ReservationController::class, 'TrainerReservation']);
         Route::get('showSpecificReservation/{Rid}', [ReservationController::class, 'showSpecificReservation']);
+        Route::delete('cancelReservation/{Rid}', [ReservationController::class, 'cancelReservation']);
 
 
             //TRating

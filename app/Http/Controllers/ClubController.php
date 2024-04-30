@@ -179,12 +179,17 @@ class ClubController extends Controller
             'certifications' => $request->certifications,
             'experience' => $request->experience,
             'specialties' => $request->gender,
+            'channelName' => $request->channelName,
             'license' => $realPath1,
             'image' => $realPath
         ]);
+        $channelName =  'trainer_'. $trainer->id;
+        $trainer->channelName = $channelName;
+        $trainer->save();
 
         $data['user'] = $user;
         $data['trainer'] = $trainer;
+
 
         $user->assignRole('TRAINER');
         $response = [

@@ -150,9 +150,11 @@ class AuthController extends Controller
 
             $file_extension = $request->image->getClientOriginalExtension();
             $filename = time() . '.' . $file_extension;
-            $path = public_path('images/USERS/PROFILES');
+            $path = public_path('images/USERS/PROFILES/');
             $request->image->move($path, $filename);
-            $realPath = 'images/USERS/PROFILES' . $filename;
+            $realPath = 'images/USERS/PROFILES/'.$filename;
+
+
 
             $user = User::create([
                 'mobile' => $request->input('mobile'),
@@ -179,7 +181,7 @@ class AuthController extends Controller
             $user->assignRole('USER');
 
 
-//            event(new NewUSERAdded($user));
+            //event(new NewUSERAdded($user));
 
             $response = [
                 'message' => 'User is created successfully.',
