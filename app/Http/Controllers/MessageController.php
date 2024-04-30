@@ -18,20 +18,21 @@ class MessageController extends Controller
             'trainer_id' => 'required',
             'content' => 'required',
         ]);
-
-        $images = $request->file('images');
-        $imagePaths = [];
-        foreach ($images as $image) {
-            $new_name = rand() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images/CHAT/'), $new_name);
-            $imagePaths[] = 'images/CHAT/'. $new_name;
+        $message = new MessageM();
+        if($request->file('images')){
+            $images = $request->file('images');
+            $imagePaths = [];
+            foreach ($images as $image) {
+                $new_name = rand() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('images/CHAT/'), $new_name);
+                $imagePaths[] = 'images/CHAT/'. $new_name;
+            }
+            $message->image = $imagePaths;
         }
 
-        $message = new MessageM();
         $message->user_id = $validatedData['user_id'];
         $message->trainer_id = $validatedData['trainer_id'];
         $message->content = $validatedData['content'];
-        $message->image = $imagePaths;
         $message->save();
 
         Trainer::where('id',$request->trainer_id)

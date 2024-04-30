@@ -17,4 +17,12 @@ class Profile extends Model
         'updated_at',
         'user_id'
     ];
+    public function auctions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Auction::class);
+    }
+    public function bids(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Bid::class);
+    }
 }

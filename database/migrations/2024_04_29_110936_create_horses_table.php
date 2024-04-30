@@ -11,20 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sellerbuyers' , function (Blueprint $table){
+        Schema::create('horses', function (Blueprint $table) {
 
             $table->id();
-            $table->string('FName');
-            $table->string('lName')->nullable();
+            $table->string('name');
+            $table->string('color');
+            $table->string('category');
             $table->date('birth')->nullable();
             $table->string('gender')->nullable();
             $table->string('address');
-            $table->string('image')->nullable();
-            $table->string('license')->nullable();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')
-                ->on('users')->onDelete('cascade')
-                ->onUpdate('cascade');
+            $table->string('images');
+            $table->unsignedBigInteger('auction_id');
+            $table->foreign('auction_id')->references('id')->on('auctions')
+                ->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -34,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('horses');
     }
 };

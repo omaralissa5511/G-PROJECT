@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\AUTH;
 
-use App\Events\NewUSERAdded;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\CLUB\Equestrian_club;
@@ -43,8 +42,9 @@ class AuthController extends Controller
 
         $file_extension = $request->image->getClientOriginalExtension();
         $filename = time() . '.' . $file_extension;
-        $path = public_path('images/ADMIN/PROFILES');
+        $path = public_path('images/ADMIN/PROFILES/');
         $request->image->move($path, $filename);
+        $realPath = 'images/ADMIN/PROFILES/'.$filename;
 
         $owner = Admin::create([
             'FName' => $request->FName,
@@ -53,7 +53,7 @@ class AuthController extends Controller
             'mobile' => $request->input('mobile'),
             'password' => bcrypt($request->input('password')),
             'email' => $request->input('email'),
-            'image' => $filename
+            'image' => $realPath
 
         ]);
 
@@ -93,8 +93,9 @@ class AuthController extends Controller
 
         $file_extension = $request->image->getClientOriginalExtension();
         $filename = time() . '.' . $file_extension;
-        $path = public_path('images/ADMIN/PROFILES');
+        $path = public_path('images/ADMIN/PROFILES/');
         $request->image->move($path, $filename);
+        $realPath = 'images/ADMIN/PROFILES/'.$filename;
 
         $token_fromRequest =  $request->bearerToken();
         $admin = Admin::where('token',$token_fromRequest)->first();
@@ -104,7 +105,7 @@ class AuthController extends Controller
             'FName' => $request->FName,
             'LName' => $request->LName,
             'mobile' => $request->input('mobile'),
-            'image' => $filename
+            'image' => $realPath
         ]);
         $admin = Admin::where('token',$token_fromRequest)->first();
 
@@ -215,14 +216,15 @@ class AuthController extends Controller
 
             $file_extension = $request->license->getClientOriginalExtension();
             $filename = time() . '.' . $file_extension;
-            $path = public_path('images/USERS/license/SELLER-BUYER');
+            $path = public_path('images/USERS/license/SELLER-BUYER/');
             $request->license->move($path, $filename);
+            $realPath = 'images/USERS/license/SELLER-BUYER/'.$filename;
 
             $file_extension = $request->image->getClientOriginalExtension();
             $filename1 = time() . '.' . $file_extension;
             $path = public_path('images/USERS/PROFILES/SELLER-BUYER/');
             $request->image->move($path, $filename1);
-
+            $realPath1 = 'images/USERS/PROFILES/SELLER-BUYER/'.$filename1;
 
             $user = User::create([
                 'mobile' => $request->input('mobile'),
@@ -239,8 +241,8 @@ class AuthController extends Controller
                 'birth' => $request->birth,
                 'address' => $request->address,
                 'gender' => $request->gender,
-                'license' => $filename,
-                'image' => $filename1
+                'license' => $realPath,
+                'image' => $realPath1
             ]);
 
             $data['token'] = $user->createToken($request->email)->plainTextToken;
@@ -287,6 +289,7 @@ class AuthController extends Controller
             $filename = time() . '.' . $file_extension;
             $path = public_path('images/USERS/license/HealthCare/');
             $request->license->move($path, $filename);
+            $realPath = 'images/USERS/license/HealthCare/'.$filename;
 
 
 
@@ -303,7 +306,7 @@ class AuthController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'address' => $request->address,
-                'license' => $filename,
+                'license' => $realPath,
             ]);
 
             $data['token'] = $user->createToken($request->email)->plainTextToken;
@@ -358,8 +361,9 @@ class AuthController extends Controller
 
             $file_extension = $request->image->getClientOriginalExtension();
             $filename = time() . '.' . $file_extension;
-            $path = public_path('images/USERS/PROFILES');
+            $path = public_path('images/USERS/PROFILES/');
             $request->image->move($path, $filename);
+            $realPath = 'images/USERS/PROFILES/'.$filename;
 
             $userID = Auth::id();
             $user = User::find($userID);
@@ -371,7 +375,7 @@ class AuthController extends Controller
                 'FName' => $request->FName,
                 'LName' => $request->LName,
                 'address' => $request->address,
-                'image' => $filename
+                'image' => $realPath
             ]);
             $profile = Profile::where('user_id',$userID)->first();
             $response = [
@@ -404,13 +408,15 @@ class AuthController extends Controller
 
             $file_extension = $request->license->getClientOriginalExtension();
             $filename = time() . '.' . $file_extension;
-            $path = public_path('images/USERS/license/SELLER-BUYER');
+            $path = public_path('images/USERS/license/SELLER-BUYER/');
             $request->license->move($path, $filename);
+            $realPath = 'images/USERS/license/SELLER-BUYER/'.$filename;
 
             $file_extension = $request->image->getClientOriginalExtension();
             $filename1 = time() . '.' . $file_extension;
             $path = public_path('images/USERS/PROFILES/SELLER-BUYER/');
             $request->image->move($path, $filename1);
+            $realPath1 = 'images/USERS/PROFILES/SELLER-BUYER/'.$filename1;
 
             $userID = Auth::id();
             $user = User::find($userID);
@@ -422,8 +428,8 @@ class AuthController extends Controller
                 'FName' => $request->FName,
                 'LName' => $request->LName,
                 'address' => $request->address,
-                'license' => $filename,
-                'image' => $filename1
+                'license' => $realPath,
+                'image' => $realPath1
             ]);
             $SB = SellerBuyer::where('user_id',$userID)->first();
             $response = [
@@ -460,6 +466,7 @@ class AuthController extends Controller
             $filename = time() . '.' . $file_extension;
             $path = public_path('images/USERS/license/Equestrian_club/');
             $request->license->move($path, $filename);
+            $realPath = 'images/USERS/license/Equestrian_club/'.$filename;
 
             $userID = Auth::id();
             $user = User::find($userID);
@@ -472,7 +479,7 @@ class AuthController extends Controller
                 'address' => $request->address,
                 'long' => $request->long,
                 'lat' => $request->lat,
-                'license' => $filename,
+                'license' => $realPath,
             ]);
             $club = Equestrian_club::where('user_id',$userID)->first();
             $response = [
@@ -508,6 +515,7 @@ class AuthController extends Controller
             $filename = time() . '.' . $file_extension;
             $path = public_path('images/USERS/license/HealthCare/');
             $request->license->move($path, $filename);
+            $realPath = 'images/USERS/license/HealthCare/'.$filename;
 
             $userID = Auth::id();
             $user = User::find($userID);
@@ -518,7 +526,7 @@ class AuthController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'address' => $request->address,
-                'license' => $filename,
+                'license' => $realPath,
             ]);
             $health = HealthCare::where('user_id',$userID)->first();
             $response = [
@@ -551,13 +559,15 @@ class AuthController extends Controller
 
             $file_extension = $request->image->getClientOriginalExtension();
             $filename = time() . '.' . $file_extension;
-            $path = public_path('images/USERS/PROFILES/Trainer');
+            $path = public_path('images/USERS/PROFILES/Trainer/');
             $request->image->move($path, $filename);
+            $realPath = 'images/USERS/PROFILES/Trainer/'.$filename;
 
             $file_extension = $request->license->getClientOriginalExtension();
             $filename1 = time() . '.' . $file_extension;
-            $path = public_path('images/USERS/license/Trainer');
+            $path = public_path('images/USERS/license/Trainer/');
             $request->license->move($path, $filename1);
+            $realPath1 = 'images/USERS/license/Trainer/'.$filename1;
 
             $userID = Auth::id();
             $user = User::find($userID);
@@ -570,8 +580,8 @@ class AuthController extends Controller
                 'FName' => $request->FName,
                 'LName' => $request->LName,
                 'address' => $request->address,
-                'license' => $filename1,
-                'image' => $filename
+                'license' => $realPath1,
+                'image' => $realPath
             ]);
             $trainer = Trainer::where('user_id',$userID)->first();
 

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewUSERAdded;
 use App\Http\Controllers\Controller;
 use App\Models\CLUB\Category;
 use App\Models\CLUB\ClubImage;
@@ -17,10 +16,10 @@ class AdminController extends Controller
 {
 
 
-    public function messages(Request $request){
-        event(new NewUSERAdded($request->name,$request->message));
-        return [];
-    }
+//    public function messages(Request $request){
+//        event(new NewUSERAdded($request->name,$request->message));
+//        return [];
+//    }
 
 
     public function AddClub(Request $request)
@@ -300,9 +299,9 @@ class AdminController extends Controller
 
         $file_extension = $request->image->getClientOriginalExtension();
         $filename = time() . '.' . $file_extension;
-        $path = public_path('images/CATEGORY');
+        $path = public_path('images/CATEGORY/');
         $request->image->move($path, $filename);
-        $realPath = 'images/CATEGORY'.$filename;
+        $realPath = 'images/CATEGORY/'.$filename;
 
         $category = Category::create([
             'name' => $request->name,
@@ -371,9 +370,9 @@ class AdminController extends Controller
 
         $file_extension = $request->image->getClientOriginalExtension();
         $filename = time() . '.' . $file_extension;
-        $path = public_path('images/ADMIN/PROFILES');
+        $path = public_path('images/CATEGORY/');
         $request->image->move($path, $filename);
-        $realPath = 'images/CATEGORY'.$filename;
+        $realPath = 'images/CATEGORY/'.$filename;
 
 
         $category->update([
@@ -409,4 +408,7 @@ class AdminController extends Controller
     }
 
 }
+
+
+
 
