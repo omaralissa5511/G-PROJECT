@@ -139,49 +139,8 @@ public function allTrainersInServiceCourse($service_id)
         $date = $request->date;
 
         $date_obj = Carbon::createFromFormat('Y-m-d', $date);
-//        $day_name = $date_obj->format('l');
         if ($date_obj->isToday() || $date_obj->isFuture()) {
-//        if ($day_name === 'Friday' || $day_name === 'Saturday') {
-//            return response()->json([
-//                'message' => 'It\'s the weekend! No available times.',
-//                'status' => false
-//            ]);
-//        }
-//
-//        // ابحث عن السجل الموجود لهذا اليوم
-//        $existingRecord = TrainerTime::where('trainer_id', $trainer_id)
-//            ->where('date', $date)
-//            ->first();
-//
-//        if (!$existingRecord) {
-//            // إذا لم يكن موجود أنشئ سجلات لكل ساعة في اليوم
-//            $availableTimes = [];
-//            $currentHour = 9;
-//
-//            while ($currentHour < 17) {
-//                $start_time = sprintf('%02d:00', $currentHour);
-//                $end_time = sprintf('%02d:00', $currentHour + 1);
-//
-//                $newRecord = TrainerTime::create([
-//                    'trainer_id' => $trainer_id,
-//                    'date' => $date,
-//                    'start_time' => $start_time,
-//                    'end_time' => $end_time,
-//                    'is_available' => true,
-//                ]);
-//
-//                $availableTimes[] = $newRecord;
-//
-//                $currentHour++;
-//            }
-//
-//            return response()->json([
-//                'Available Times' => $availableTimes,
-//                'status' => true
-//            ]);
-//
-//        }
-//
+
         // إذا كان اليوم موجود يعيد الأوقات المتاحة
         $availableTimes = TrainerTime::where('trainer_id', $trainer_id)
             ->where('date', $date)

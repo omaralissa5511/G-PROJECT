@@ -201,6 +201,7 @@ class AdminController extends Controller
         $filename = time() . '.' . $file_extension;
         $path = public_path('images/USERS/HealthCare/license/');
         $request->license->move($path, $filename);
+        $realPath = 'images/USERS/HealthCare/license/' . $filename;
 
         $user = User::create([
             'mobile' => $request->input('mobile'),
@@ -215,7 +216,7 @@ class AdminController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'address' => $request->address,
-            'license' => $filename,
+            'license' => $realPath,
         ]);
 
         $data['token'] = $user->createToken($request->email)->plainTextToken;
@@ -256,6 +257,7 @@ class AdminController extends Controller
          $filename = time() . '.' . $file_extension;
          $path = public_path('images/USERS/license/HealthCare/');
          $request->license->move($path, $filename);
+         $realPath = 'images/USERS/license/HealthCare/' . $filename;
 
          $userID = Auth::id();
          $user = User::find($userID);
@@ -300,9 +302,9 @@ class AdminController extends Controller
 
         $file_extension = $request->image->getClientOriginalExtension();
         $filename = time() . '.' . $file_extension;
-        $path = public_path('images/CATEGORY');
+        $path = public_path('images/CATEGORY/');
         $request->image->move($path, $filename);
-        $realPath = 'images/CATEGORY'.$filename;
+        $realPath = 'images/CATEGORY/'.$filename;
 
         $category = Category::create([
             'name' => $request->name,
@@ -371,9 +373,9 @@ class AdminController extends Controller
 
         $file_extension = $request->image->getClientOriginalExtension();
         $filename = time() . '.' . $file_extension;
-        $path = public_path('images/ADMIN/PROFILES');
+        $path = public_path('images/CATEGORY/');
         $request->image->move($path, $filename);
-        $realPath = 'images/CATEGORY'.$filename;
+        $realPath = 'images/CATEGORY/'.$filename;
 
 
         $category->update([

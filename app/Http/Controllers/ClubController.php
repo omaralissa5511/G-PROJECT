@@ -145,6 +145,16 @@ class ClubController extends Controller
                 'status' => false
             ]);
         }
+        $email = $request->email;
+        $user = User::where('email', $email)->first();
+
+        if ($user) {
+            return response()->json([
+                'message' => 'Email already in use.',
+                'status' => false
+            ]);
+        }
+
 
         $file_extension = $request->image->getClientOriginalExtension();
         $filename = time() . '.' . $file_extension;
