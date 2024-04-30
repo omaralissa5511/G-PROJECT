@@ -104,7 +104,7 @@ class CRatingController extends Controller
             'club_id' => $request->club_id,
             'user_id' => $request->user_id,
             'rating' => $request->rating,
-            'raview' => $request->raview
+            'review' => $request->review
         ]);
 
         return response()->json([

@@ -11,6 +11,7 @@ use App\Http\Controllers\CRatingController;
 use App\Http\Controllers\FavoriteClubController;
 use App\Http\Controllers\HorseController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ClubController;
@@ -155,6 +156,7 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
 
             Route::get('allTrainersInServiceUserCourse/{id}', [TrainerController::class, 'allTrainersInServiceCourse']);
 
+            Route::get('getProfile/{id}', [ProfileController::class, 'getProfile']);
 
 ////// RESERVATION
         Route::post('reserve', [ReservationController::class, 'reserve']);
@@ -205,6 +207,9 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
             Route::post('addBooking',[BookingController::class,'addBooking']);
             Route::get('getAllBookingByUser/{user_id}',[BookingController::class,'getAllBookingByUser']);
             Route::get('getBookingDescription/{booking_id}',[BookingController::class,'getBooking']);
+            Route::post('deleteBooking',[BookingController::class,'deleteBooking']);
+            Route::post('cancelBookingTime',[BookingController::class,'cancelBookingTime']);
+
 
 
             Route::post('stripe-payment', [StripeController::class,'stripePost']);

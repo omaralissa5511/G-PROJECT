@@ -25,6 +25,6 @@ class TrainerTime extends Model
     }
     public function booking()
     {
-        return $this->belongsTo(Booking::class, 'id', 'trainerTime_id');
+        return $this->belongsTo(Booking::class);
     }
 }
