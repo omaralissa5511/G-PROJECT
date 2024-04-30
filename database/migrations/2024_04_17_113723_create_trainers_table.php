@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('birth')->nullable();
             $table->string('gender')->nullable();
             $table->string('address');
-            $table->text('channelName')->default('hi');
+//             $table->text('channelName')->default('hi');
             $table->string('license')->nullable();
             $table->string('image')->nullable();
             $table->text('qualifications')->nullable();

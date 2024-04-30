@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CLUB\Booking;
 use App\Models\CLUB\TRating;
 use App\Models\CLUB\Reservation;
 use Carbon\Carbon;
@@ -72,18 +73,17 @@ class TRatingController extends Controller
             ]);
         }
 
-//        // تحقق من الحجز
-//        $booking = Reservation::whereHas('course', function ($query) use ($request) {
-//            $query->where('trainer_id', $request->trainer_id);
-//        })->where('user_id', $request->user_id)->first();
-//
-//        if (!$booking) {
-//            return response()->json([
-//                'message' => 'You can only rate if you have made a booking previously.',
-//                'status' => false
-//            ]);
-//        }
-//
+
+        $booking =Booking::where('trainer_id', $request->trainer_id)
+        ->where('user_id', $request->user_id)->first();
+
+        if (!$booking) {
+            return response()->json([
+                'message' => 'You can only rate if you have made a booking previously.',
+                'status' => false
+            ]);
+        }
+
 
         // تحقق من أن المستخدم لم يقم بتقييم المدرب من قبل
         $existingRating = TRating::where('trainer_id', $request->trainer_id)

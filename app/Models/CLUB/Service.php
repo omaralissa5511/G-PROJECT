@@ -23,12 +23,21 @@ class Service extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    public function clubs()
+    public function club()
     {
         return $this->belongsTo(Equestrian_club::class);
     }
     public function trainers()
     {
         return $this->belongsToMany(Trainer::class,'courses');
+    }
+// للحجز الفردي
+    public function b_trainers()
+    {
+        return $this->belongsToMany(Trainer::class, 'trainer_service');
+    }
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
     }
 }

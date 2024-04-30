@@ -200,6 +200,7 @@ class AdminController extends Controller
         $filename = time() . '.' . $file_extension;
         $path = public_path('images/USERS/HealthCare/license/');
         $request->license->move($path, $filename);
+        $realPath = 'images/USERS/HealthCare/license/' . $filename;
 
         $user = User::create([
             'mobile' => $request->input('mobile'),
@@ -214,7 +215,7 @@ class AdminController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'address' => $request->address,
-            'license' => $filename,
+            'license' => $realPath,
         ]);
 
         $data['token'] = $user->createToken($request->email)->plainTextToken;
@@ -255,6 +256,7 @@ class AdminController extends Controller
          $filename = time() . '.' . $file_extension;
          $path = public_path('images/USERS/license/HealthCare/');
          $request->license->move($path, $filename);
+         $realPath = 'images/USERS/license/HealthCare/' . $filename;
 
          $userID = Auth::id();
          $user = User::find($userID);
