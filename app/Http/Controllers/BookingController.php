@@ -107,6 +107,7 @@ class BookingController extends Controller
             $service = $booking->service;
             $club = $service->club;
 
+            $totalPrice = 0;
             $trainerTimesInfo=[];
 
             foreach ($trainerTimes as $trainerTime){
@@ -115,6 +116,7 @@ class BookingController extends Controller
                 'start_time' => $trainerTime->start_time,
                 'end_time' => $trainerTime->end_time,
                     ];
+                $totalPrice=$totalPrice + $trainerTime->price;
                 $trainerTimesInfo[]=$trainertimesss;
 
             }
@@ -135,7 +137,9 @@ class BookingController extends Controller
                 'trainer_lName' => $trainer->lName,
                 'trainer_image' => $trainer->image,
                 'booking_status' => $booking->status,
-                'trainerTimesInfo'=> $trainerTimesInfo
+                'amount'=> $totalPrice,
+                'trainerTimesInfo'=> $trainerTimesInfo,
+
             ];
 
         return response()->json([
@@ -145,4 +149,87 @@ class BookingController extends Controller
         ]);
     }
 
+    public function cancelBookingTime(Request $request)
+    {
+        $trainerTime = TrainerTime::find($request->trainerTime_id);
+
+        if (!$trainerTime) {
+            return response()->json([
+                'message' => 'Trainer time not found!',
+                'status' => false
+            ]);
+        }
+
+
+        $currentUserId = $request->user_id;
+        if ($trainerTime->booking->user_id != $currentUserId) {
+            return response()->json([
+                'message' => 'You are not authorized to cancel this booking time.',
+                'status' => false
+            ]);
+        }
+
+
+        $now = \Carbon\Carbon::now();
+        $bookingDateTime = \Carbon\Carbon::parse($trainerTime->date . ' ' . $trainerTime->start_time);
+        $diffInHours = $now->diffInHours($bookingDateTime);
+        if ($diffInHours < 24) {
+            return response()->json([
+                'message' => 'You cannot cancel a booking time less than 24 hours before it starts.',
+                'status' => false
+            ]);
+        }
+
+        $trainerTime->update([
+            'booking_id' => null,
+            'is_available' => true
+        ]);
+
+        return response()->json([
+            'message' => 'Booking time cancelled successfully.',
+            'status' => true
+        ]);
+    }
+
+    public function deleteBooking(Request $request)
+    {
+        $booking = Booking::find($request->booking_id);
+
+        if (!$booking) {
+            return response()->json([
+                'message' => 'Booking not found!',
+                'status' => false
+            ]);
+        }
+
+        $currentUserId = $request->user_id;
+        if ($booking->user_id != $currentUserId) {
+            return response()->json([
+                'message' => 'You are not authorized to delete this booking.',
+                'status' => false
+            ]);
+        }
+
+        $now = \Carbon\Carbon::now();
+        $bookingDateTime = \Carbon\Carbon::parse($booking->trainerTimes()->min('date') . ' ' . $booking->trainerTimes()->min('start_time'));
+        $diffInHours = $now->diffInHours($bookingDateTime);
+        if ($diffInHours < 24) {
+            return response()->json([
+                'message' => 'You cannot delete a booking less than 24 hours before it starts.',
+                'status' => false
+            ]);
+        }
+
+        TrainerTime::where('booking_id', $request->booking_id)->update([
+            'booking_id' => null,
+            'is_available' => true
+        ]);
+
+        $booking->delete();
+
+        return response()->json([
+            'message' => 'Booking deleted successfully.',
+            'status' => true
+        ]);
+    }
 }
