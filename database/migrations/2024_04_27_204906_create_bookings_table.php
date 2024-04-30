@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('trainerTime_id');
             $table->unsignedBigInteger('service_id');
             $table->unsignedBigInteger('trainer_id');
 
@@ -22,7 +21,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('trainerTime_id')->references('id')->on('trainer_times');
             $table->foreign('service_id')->references('id')->on('services');
             $table->foreign('trainer_id')->references('id')->on('trainers');
         });

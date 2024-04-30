@@ -13,14 +13,11 @@ class Booking extends Model
       'user_id',
       'service_id',
       'trainer_id',
-      'trainerTime_id',
       'status',
+      'price'
     ];
 
-    public function trainerTime()
-    {
-        return $this->hasOne(TrainerTime::class, 'id', 'trainerTime_id');
-    }
+
     public function service()
     {
         return $this->belongsTo(Service::class);
@@ -32,5 +29,9 @@ class Booking extends Model
     public function trainer()
     {
         return $this->belongsTo(Trainer::class);
+    }
+    public function trainerTimes()
+    {
+        return $this->hasMany(TrainerTime::class);
     }
 }

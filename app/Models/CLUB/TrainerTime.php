@@ -11,9 +11,11 @@ class TrainerTime extends Model
     use HasFactory;
     protected $fillable = [
         'trainer_id',
+        'booking_id',
         'date',
         'start_time',
         'end_time',
+        'price',
         'is_available',
     ];
 

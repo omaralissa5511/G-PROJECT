@@ -139,49 +139,49 @@ public function allTrainersInServiceCourse($service_id)
         $date = $request->date;
 
         $date_obj = Carbon::createFromFormat('Y-m-d', $date);
-        $day_name = $date_obj->format('l');
+//        $day_name = $date_obj->format('l');
         if ($date_obj->isToday() || $date_obj->isFuture()) {
-        if ($day_name === 'Friday' || $day_name === 'Saturday') {
-            return response()->json([
-                'message' => 'It\'s the weekend! No available times.',
-                'status' => false
-            ]);
-        }
-
-        // ابحث عن السجل الموجود لهذا اليوم
-        $existingRecord = TrainerTime::where('trainer_id', $trainer_id)
-            ->where('date', $date)
-            ->first();
-
-        if (!$existingRecord) {
-            // إذا لم يكن موجود أنشئ سجلات لكل ساعة في اليوم
-            $availableTimes = [];
-            $currentHour = 9;
-
-            while ($currentHour < 17) {
-                $start_time = sprintf('%02d:00', $currentHour);
-                $end_time = sprintf('%02d:00', $currentHour + 1);
-
-                $newRecord = TrainerTime::create([
-                    'trainer_id' => $trainer_id,
-                    'date' => $date,
-                    'start_time' => $start_time,
-                    'end_time' => $end_time,
-                    'is_available' => true,
-                ]);
-
-                $availableTimes[] = $newRecord;
-
-                $currentHour++;
-            }
-
-            return response()->json([
-                'Available Times' => $availableTimes,
-                'status' => true
-            ]);
-
-        }
-
+//        if ($day_name === 'Friday' || $day_name === 'Saturday') {
+//            return response()->json([
+//                'message' => 'It\'s the weekend! No available times.',
+//                'status' => false
+//            ]);
+//        }
+//
+//        // ابحث عن السجل الموجود لهذا اليوم
+//        $existingRecord = TrainerTime::where('trainer_id', $trainer_id)
+//            ->where('date', $date)
+//            ->first();
+//
+//        if (!$existingRecord) {
+//            // إذا لم يكن موجود أنشئ سجلات لكل ساعة في اليوم
+//            $availableTimes = [];
+//            $currentHour = 9;
+//
+//            while ($currentHour < 17) {
+//                $start_time = sprintf('%02d:00', $currentHour);
+//                $end_time = sprintf('%02d:00', $currentHour + 1);
+//
+//                $newRecord = TrainerTime::create([
+//                    'trainer_id' => $trainer_id,
+//                    'date' => $date,
+//                    'start_time' => $start_time,
+//                    'end_time' => $end_time,
+//                    'is_available' => true,
+//                ]);
+//
+//                $availableTimes[] = $newRecord;
+//
+//                $currentHour++;
+//            }
+//
+//            return response()->json([
+//                'Available Times' => $availableTimes,
+//                'status' => true
+//            ]);
+//
+//        }
+//
         // إذا كان اليوم موجود يعيد الأوقات المتاحة
         $availableTimes = TrainerTime::where('trainer_id', $trainer_id)
             ->where('date', $date)
@@ -201,26 +201,79 @@ public function allTrainersInServiceCourse($service_id)
     }
 
 
-    public function reserveTrainerTimes(Request $request)
+    public function reserveTrainerTimes($trainerTime_ids)
     {
-        $trainerTime_id = $request->trainerTime_id;
+        foreach ($trainerTime_ids as $trainerTime_id) {
 
-//        $reservedTimes = $request->reserved_times;
-//
-//        foreach ($reservedTimes as $time) {
-//            $start_time = $time['start_time'];
-//            $end_time = $time['end_time'];
 
         TrainerTime::where([
             'id' => $trainerTime_id
         ])->update(['is_available' => false]);
-
-//        }
+       }
 
         return response()->json([
             'message' => 'Times have been booked successfully!',
             'status'=>true
             ]);
     }
+
+    public function setAvailableTimes(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'trainer_id' => 'required',
+            'date' => 'required',
+            'available_times' => 'required|array',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+                'status' => false
+            ]);
+        }
+
+        $trainerId = $request->trainer_id;
+        $date = $request->date;
+        $availableTimes = $request->available_times;
+
+        // حفظ الأوقات المتاحة في جدول وقت المدرب
+        foreach ($availableTimes as $time) {
+            $startTime = $time['start_time'];
+            $endTime = $time['end_time'];
+            $price = $time['price']; // إضافة السعر
+
+            $existingTime = TrainerTime::where('trainer_id', $trainerId)
+                ->where('date', $date)
+                ->where('start_time', $startTime)
+                ->where('end_time', $endTime)
+                ->first();
+
+            if ($existingTime) {
+                return response()->json([
+                    'message' => 'This time slot is already available.',
+                    'date' => $date,
+                    'start_time' => $startTime,
+                    'end_time' => $endTime,
+                    'status' => false
+                ]);
+            }
+
+            TrainerTime::create([
+                'trainer_id' => $trainerId,
+                'date' => $date,
+                'start_time' => $time['start_time'],
+                'end_time' => $time['end_time'],
+                'price' => $price, // إضافة السعر
+                'is_available' => true,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'The times have been filled successfully.',
+            'status' => true
+        ]);
+    }
+
 
 }
