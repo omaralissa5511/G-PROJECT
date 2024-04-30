@@ -102,7 +102,8 @@ class CRatingController extends Controller
         $rating = CRating::create([
             'club_id' => $request->club_id,
             'user_id' => $request->user_id,
-            'rating' => $request->rating
+            'rating' => $request->rating,
+            'raview' => $request->raview
         ]);
 
         return response()->json([

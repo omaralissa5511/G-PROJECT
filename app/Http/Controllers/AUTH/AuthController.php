@@ -45,6 +45,8 @@ class AuthController extends Controller
         $filename = time() . '.' . $file_extension;
         $path = public_path('images/ADMIN/PROFILES');
         $request->image->move($path, $filename);
+        $realPath = 'images/ADMIN/PROFILES' . $filename;
+
 
         $owner = Admin::create([
             'FName' => $request->FName,
@@ -53,7 +55,7 @@ class AuthController extends Controller
             'mobile' => $request->input('mobile'),
             'password' => bcrypt($request->input('password')),
             'email' => $request->input('email'),
-            'image' => $filename
+            'image' => $realPath
 
         ]);
 
@@ -95,6 +97,7 @@ class AuthController extends Controller
         $filename = time() . '.' . $file_extension;
         $path = public_path('images/ADMIN/PROFILES');
         $request->image->move($path, $filename);
+        $realPath = 'images/ADMIN/PROFILES' . $filename;
 
         $token_fromRequest =  $request->bearerToken();
         $admin = Admin::where('token',$token_fromRequest)->first();
@@ -104,7 +107,7 @@ class AuthController extends Controller
             'FName' => $request->FName,
             'LName' => $request->LName,
             'mobile' => $request->input('mobile'),
-            'image' => $filename
+            'image' => $realPath
         ]);
         $admin = Admin::where('token',$token_fromRequest)->first();
 
@@ -150,6 +153,7 @@ class AuthController extends Controller
             $path = public_path('images/USERS/PROFILES/');
             $request->image->move($path, $filename);
             $realPath = 'images/USERS/PROFILES/'.$filename;
+
 
 
             $user = User::create([

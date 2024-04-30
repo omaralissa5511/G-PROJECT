@@ -91,6 +91,8 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
         Route::get('allTrainersInServiceCourse/{id}', [TrainerController::class, 'allTrainersInServiceCourse']);
         Route::get('getTrainerByID/{id}', [TrainerController::class, 'getTrainerByID']);
 
+        Route::post('/addAvailableTimes', [TrainerController::class, 'setAvailableTimes']);
+
 
         Route::post('createService', [ServiceController::class, 'create']);
         Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
@@ -126,6 +128,8 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
 
         Route::post('editTrainer', [TrainerController::class, 'editTrainer']);
         Route::get('MyProfile', [TrainerController::class, 'MyProfile']);
+
+
     });
 
     Route::middleware('auth:sanctum')->group(function () {
@@ -194,6 +198,7 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
             //Booking
             Route::post('addBooking',[BookingController::class,'addBooking']);
             Route::get('getAllBookingByUser/{user_id}',[BookingController::class,'getAllBookingByUser']);
+            Route::get('getBookingDescription/{booking_id}',[BookingController::class,'getBooking']);
 
             Route::post('stripe-payment', [StripeController::class,'stripePost']);
         });

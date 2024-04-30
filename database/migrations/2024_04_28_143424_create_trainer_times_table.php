@@ -14,11 +14,14 @@ return new class extends Migration
         Schema::create('trainer_times', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('trainer_id');
-            $table->foreign('trainer_id')->references('id')->on('trainers')->onDelete('cascade');
+            $table->foreign('trainer_id')->references('id')->on('trainers');
+            $table->unsignedBigInteger('booking_id')->nullable();
+            $table->foreign('booking_id')->references('id')->on('bookings');
             $table->date('date');
             $table->time('start_time');
             $table->time('end_time');
             $table->boolean('is_available')->default(1); // 1=available
+            $table->integer('price');
             $table->timestamps();
         });
     }
