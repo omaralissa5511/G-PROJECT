@@ -6,6 +6,7 @@ use App\Events\NotificationE;
 use App\Http\Controllers\Controller;
 use App\Models\CLUB\Clas;
 use App\Models\CLUB\Course;
+use App\Models\CLUB\Equestrian_club;
 use App\Models\CLUB\Reservation;
 use App\Models\Profile;
 use App\Models\User;
@@ -18,9 +19,8 @@ class ReservationController extends Controller
 {
     public function reserve(Request $request){
 
-        $user_id = Auth::id();
+         $user_id = Auth::id();
         $validate = Validator::make($request->all(), [
-
             'course_id' => 'required',
             'clas' => 'required',
             'number_of_people' => 'required',
@@ -33,6 +33,9 @@ class ReservationController extends Controller
                 'status' => false
             ]);
         }
+
+        $price = Clas::where('class',$request->clas)->first()->price;
+        $price = $price*$request->number_of_people;
         $capacity = Clas::where('course_id',$request->course_id)
             ->where('class','=',$request->clas)->first()-> capacity;
 
@@ -53,6 +56,7 @@ class ReservationController extends Controller
             'course_id' => $request-> course_id,
             'number_of_people' => $request -> number_of_people,
             'clas' => $request -> clas,
+            'price' =>$price,
             'status' => 'pending'
         ]);
         $clas = Clas::where('course_id',$request->course_id)
@@ -78,7 +82,7 @@ class ReservationController extends Controller
             'status' => true
         ];
 
-        $user_name = Profile::where('id',$user_id)->first()->FName;
+        $user_name = Profile::where('user_id',$user_id)->first()->FName;
         $course_description = Course::where('id',$request->course_id)
             ->first()->description;
         $course_price = Course::where('id',$request->course_id)
@@ -181,8 +185,7 @@ class ReservationController extends Controller
     }
             public function cancelReservation($reservationId)
             {
-
-                $user_id = Auth::id();
+                    $user_id = Auth::id();
                     $reservation = Reservation::find($reservationId);
                     $courseStartDate = Course::where('id', $reservation->course_id)->first()->begin;
                     $courseStartDate = Carbon::parse($courseStartDate);
@@ -204,7 +207,7 @@ class ReservationController extends Controller
                     $clas->save();
                     $reservation->delete();
 
-                $user_name = Profile::where('id',$user_id)->first()->FName;
+                $user_name = Profile::where('user_id',$user_id)->first()->FName;
 
                 $message['message'] = 'تم إلغاء الحجز بنجاح.';
                 $message['user_name'] = $user_name;
@@ -221,15 +224,44 @@ class ReservationController extends Controller
 
             }
 
-    public function UserReservations($user_id)
+    public function Reserved_User_clubs()
     {
+        $user_id = Auth::id();
+        $reservations =Reservation::where('user_id', $user_id)->get('course_id');
+        $ids = collect($reservations)->unique()->values()->all();
+        foreach ($ids as $id){
+            $Cid[] = $id->course_id;
+        }
+        foreach ($Cid as $id){
+            $clubsID[] = Course::where('id',$id)->first()->club;
+        }
+        foreach ($clubsID as $id){
+            $clubs[] = Equestrian_club::where('id',$id)->first();
+        }
 
-        $reservations =Reservation::where('user_id', $user_id)->get();
+        return response()->json([
+            'clubs' => $clubs,
+            'status' => true
+        ]);
+    }
+
+
+    public function UserReservation($cID){
+
+        $user_id = Auth::id();
+        $coursesID = Course::where('club',$cID)->pluck('id');
+
+        foreach ($coursesID as $cid){
+          $reservations[] =  Reservation::where('course_id',$cid)
+              ->where('user_id',$user_id)->get();
+        }
+
 
         return response()->json([
             'reservations' => $reservations,
             'status' => true
         ]);
+
     }
 
 

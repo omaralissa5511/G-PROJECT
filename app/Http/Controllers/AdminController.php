@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Auction;
 use App\Models\CLUB\Category;
 use App\Models\CLUB\ClubImage;
 use App\Models\CLUB\Equestrian_club;
@@ -14,13 +15,6 @@ use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
-
-
-//    public function messages(Request $request){
-//        event(new NewUSERAdded($request->name,$request->message));
-//        return [];
-//    }
-
 
     public function AddClub(Request $request)
     {
@@ -34,9 +28,6 @@ class AdminController extends Controller
             'images' => 'required',
             'profile' => 'required',
             'website' => 'required',
-            //'day' => 'required',
-            //'start' => 'required',
-            //'end' => 'required',
             'lat' => 'required',
             'long' => 'required',
             'address' => 'required'
@@ -104,6 +95,51 @@ class AdminController extends Controller
             'status' => true
         ];
         return response()->json($response);
+    }
+
+    public function getPending_Auctions(){
+
+        $auction = Auction::where('status','pending')->get();
+        if($auction){
+            $response = [
+                'auction' => $auction,
+                'status' => true
+            ];
+            return response()->json($response);
+        }
+        $response = [
+            'message' => 'no pending auctions now',
+            'status' => false
+        ];
+        return response()->json($response);
+
+    }
+
+    public function AuctionApproval($AID,Request $request){
+
+        $auction = Auction::find($AID);
+
+        if($request->status == 'confirmed'){
+            $auction -> update(['status' => 'confirmed']);
+            $auction->save();
+            $response = [
+                'message' => 'CONFIRMED AUCTION ',
+                'auction : ' => $auction,
+                'status' => true
+            ];
+            return response()->json($response);
+        }
+        else {
+            $auction -> update(['status' => 'canceled']);
+            $auction->save();
+            $response = [
+                'message' => 'CANCELED AUCTION ',
+                'auction : ' => $auction,
+                'status' => false
+            ];
+            return response()->json($response);
+        }
+
     }
 
     public function showClubs()

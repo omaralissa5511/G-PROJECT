@@ -17,6 +17,7 @@ class Reservation extends Model
         'clas',
         'number_of_people',
         'status',
+        'price'
     ];
 
     public function course()

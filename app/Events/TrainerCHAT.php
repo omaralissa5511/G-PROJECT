@@ -28,11 +28,11 @@ class TrainerCHAT implements ShouldBroadcast
 //        return [new PrivateChannel('channel-name'),
 //           return 'CHAT'];
 
-        return new Channel('trainer_' . $this->message->trainer_id);
+        return new Channel('trainer');
     }
     public function broadcastAs()
     {
-        return 'my-event';
+        return 'BENZO';
     }
     public function broadcastWith()
     {

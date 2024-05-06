@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('clas');
             $table->enum('status', ['pending', 'confirmed', 'canceled'])
                 ->default('pending');
-
+            $table->integer('price');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')
                 ->onDelete('cascade')->onUpdate('cascade');

@@ -6,6 +6,7 @@ use App\Models\Auction;
 use App\Models\Bid;
 use App\Models\Horse;
 use App\Models\Profile;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -185,12 +186,6 @@ class AuctionController extends Controller
     }
 
 
-
-
-
-
-
-
     public function AddBid ($Aid,Request $request){
 
     $lockKey = "auc_lock_{$Aid}";
@@ -279,7 +274,9 @@ class AuctionController extends Controller
 
         $currentBid = Bid::where('auction_id',$Aid)->pluck('offeredPrice');
         $MAX_CurrentBid = collect($currentBid)->max();
-
+        $MAX_CurrentBid_owner_id = Bid::where
+        ('offeredPrice','=',70000)->first()->profile_id;
+        $ownerOFBigBid = Profile::find($MAX_CurrentBid_owner_id);
         if($currentBid->isEmpty()){
 
             $InitialPrice = Auction::where('id',$Aid)->first()->initialPrice;
@@ -292,6 +289,7 @@ class AuctionController extends Controller
 
             $amountPAY = ($MAX_CurrentBid+(($MAX_CurrentBid*5)/100));
             $data['CURRENT BID : '] = $MAX_CurrentBid;
+            $data['ownerOFBigBid'] = $ownerOFBigBid;
             $data['THE NEXT OFFER : '] = $amountPAY;
 
                 return response()->json($data);
@@ -300,12 +298,66 @@ class AuctionController extends Controller
 
     public function getBuyersIN_Auction($id)
     {
-        $profiles = Bid::where('auction_id', $id)->pluck('profile_id');
-        $TheBuyers_id = collect($profiles)->unique()->values()->all();
-        foreach ($TheBuyers_id as $id){
-            $TheBuyers[] = Profile::find($id);
+         $profiles = Bid::where('auction_id', $id)->pluck('profile_id');
+          $TheBuyers_id = collect($profiles)->unique()->values()->all();
+        foreach ($TheBuyers_id as $Pid){
+
+            $TheBuyers[] = Profile::find($Pid);
+            $TheBuyers[] = Bid::where('profile_id',$Pid)->where
+            ('auction_id',$id)->orderBy('id','desc')->first()->offeredPrice;
         }
         return response()->json($TheBuyers);
+    }
+
+    public function getTodayAuctions(){
+
+        $today = Carbon::now();
+        $auctions = Auction::query()
+            ->whereDate('begin','<=',$today)
+            ->whereDate('end','>=',$today)
+            ->where('status','confirmed')->get();
+
+        if($auctions->isEmpty()){
+            $response = [
+                'message' => 'no active auctions now.',
+                'status' => false
+            ];
+        return response()->json($response);
+        }else {
+            $response = [
+                'message' => 'get successfully.',
+                'auctions' => $auctions,
+                'status' => true
+            ];
+            return response()->json($response);
+        }
+    }
+
+
+    public function upcoming(){
+
+        $today = Carbon::now();
+        $todayPlusOne = $today->copy()->addDay(1);
+        $towMonthLater = $today->copy()->addMonth(2);
+        $auctions = Auction::query()
+            ->whereDate('begin','>=',$todayPlusOne)
+            ->whereDate('end','<=',$towMonthLater)
+            ->where('status','confirmed')->get();
+
+        if($auctions->isEmpty()){
+            $response = [
+                'message' => 'no active auctions now.',
+                'status' => false
+            ];
+            return response()->json($response);
+        }else {
+            $response = [
+                'message' => 'get successfully.',
+                'auctions' => $auctions,
+                'status' => true
+            ];
+            return response()->json($response);
+        }
     }
 }
 

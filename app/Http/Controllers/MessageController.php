@@ -35,8 +35,8 @@ class MessageController extends Controller
         $message->content = $validatedData['content'];
         $message->save();
 
-        Trainer::where('id',$request->trainer_id)
-            ->first()->channelName;
+//        Trainer::where('id',$request->trainer_id)
+//            ->first()->channelName;
         broadcast(new TrainerCHAT($message))->toOthers();
 
         return response()->json(['success' => true,

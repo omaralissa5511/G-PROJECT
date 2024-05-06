@@ -18,6 +18,7 @@ class ClassController extends Controller
 
             'start' => 'required',
             'end' => 'required',
+            'price' => 'required',
             'class' => 'required',
             'capacity' => 'required',
             'course_id' => 'required',
@@ -35,9 +36,12 @@ class ClassController extends Controller
         $clas = Clas::create([
             'class' => $request->class,
             'capacity' => $request->capacity,
+            'price' => $request->price,
             'start' => $request->start,
             'end' => $request->end,
             'course_id' => $request->course_id,
+            'counter' => 0,
+            'status' => 0,
         ]);
 
         $response = [
@@ -58,6 +62,7 @@ class ClassController extends Controller
 
             'start' => 'required',
             'end' => 'required',
+            'price' => 'required',
             'class' => 'required',
             'capacity' => 'required',
             'course_id' => 'required',
@@ -76,6 +81,7 @@ class ClassController extends Controller
             'class' => $request->class,
             'capacity' => $request->capacity,
             'start' => $request->start,
+            'price' => $request->price,
             'end' => $request->end,
             'course_id' => $request->course_id,
         ]);
