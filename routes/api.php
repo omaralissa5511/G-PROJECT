@@ -55,6 +55,11 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
         Route::post('AdminUpdate', [AuthController::class, 'AdminUpdate']);
 
 
+        ///// AUCTIONS ////////
+        Route::get('getPending_Auctions',[AdminController::class,'getPending_Auctions']);
+        Route::post('AuctionApproval/{id}',[AdminController::class,'AuctionApproval']);
+
+
         Route::post('createCategory', [AdminController::class, 'createCategory']);
         Route::get('allCategory', [AdminController::class, 'getCategories']);
         Route::get('getCategory', [AdminController::class, 'getCategory']);
@@ -132,6 +137,9 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
     ################## USER ROLE *******************
         Route::group(['middleware' => ['role_or_permission:USER']], function () {
 
+            Route::post('update', [AuthController::class, 'update']);
+
+
             Route::get('allCategory', [AdminController::class, 'getCategories']);
             Route::get('getCategory', [AdminController::class, 'getCategory']);
             Route::get('getCategoryServices/{id}', [CategoryController::class, 'categoryServices']);
@@ -161,7 +169,8 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
 ////// RESERVATION
         Route::post('reserve', [ReservationController::class, 'reserve']);
         Route::post('editReserve/{Rid}', [ReservationController::class, 'editReservation']);
-        Route::get('UserReservations/{Uid}', [ReservationController::class, 'UserReservations']);
+        Route::get('Reserved_User_clubs', [ReservationController::class, 'Reserved_User_clubs']);
+        Route::get('UserReservation/{id}', [ReservationController::class, 'UserReservation']);
         Route::get('TrainerReservation/{Tid}', [ReservationController::class, 'TrainerReservation']);
         Route::get('showSpecificReservation/{Rid}', [ReservationController::class, 'showSpecificReservation']);
         Route::delete('cancelReservation/{Rid}', [ReservationController::class, 'cancelReservation']);
@@ -201,6 +210,8 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
             Route::get('getCurrentBid/{id}',[AuctionController::class,'getCurrentBid']);
             Route::post('AddBid/{id}',[AuctionController::class,'AddBid']);
             Route::get('getBuyersIN_Auction/{id}',[AuctionController::class,'getBuyersIN_Auction']);
+            Route::get('getTodayAuctions',[AuctionController::class,'getTodayAuctions']);
+            Route::get('upcoming',[AuctionController::class,'upcoming']);
 
 
             //Booking
@@ -210,6 +221,10 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
             Route::post('deleteBooking',[BookingController::class,'deleteBooking']);
             Route::post('cancelBookingTime',[BookingController::class,'cancelBookingTime']);
 
+
+
+
+            Route::post('getCoursesByUser', [CourseController::class, 'getCoursesByUser']);
 
 
             Route::post('stripe-payment', [StripeController::class,'stripePost']);

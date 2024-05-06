@@ -11,7 +11,7 @@ class Clas extends Model
     protected $table = 'classes';
     protected $fillable = [
         'class','start','capacity','status',
-        'counter','end','course_id'
+        'counter','end','course_id','price'
     ];
 
     public function courses (){

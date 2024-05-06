@@ -416,7 +416,7 @@ class AuthController extends Controller
             $file_extension = $request->license->getClientOriginalExtension();
             $filename = time() . '.' . $file_extension;
             $path = public_path('images/USERS/license/SELLER-BUYER/');
-            $request->license->move($path, $filename
+            $request->license->move($path, $filename);
             $realPath = 'images/USERS/license/SELLER-BUYER/'.$filename;
 
 

@@ -18,7 +18,6 @@ class CourseController extends Controller
         $validate = Validator::make($request->all(), [
 
             'description' => 'required|string|max:250',
-            'price' => 'required',
             'begin' => 'required',
             'end' => 'required',
             'days' => 'required',
@@ -39,7 +38,6 @@ class CourseController extends Controller
         $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
         $course = Course::create([
             'description' => $request->description,
-            'price' => $request->price,
             'begin' => $request->begin,
             'end' => $request->end,
             'days' => $days,
@@ -65,7 +63,6 @@ class CourseController extends Controller
         $validate = Validator::make($request->all(), [
 
             'description' => 'required|string|max:250',
-            'price' => 'required',
             'begin' => 'required',
             'end' => 'required',
             'days' => 'required',
@@ -85,7 +82,6 @@ class CourseController extends Controller
         $course = Course::where('id',$CID)->first();
         $course -> update([
             'description' => $request->description,
-            'price' => $request->price,
             'begin' => $request->begin,
             'end' => $request->end,
             'days' => $request->days,
@@ -129,6 +125,50 @@ class CourseController extends Controller
             }
 
         }
+
+
+    public function getCoursesByUser (Request $request){
+
+        $validate = Validator::make($request->all(), [
+
+            'club_id' => 'required',
+            'trainer_id' => 'required',
+            'service_id' => 'required',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+                'status' => false
+            ]);
+        }
+
+
+        $courses = Course::where('club',$request->club_id)
+                           ->where('trainer_id',$request->trainer_id)
+                           ->where('service_id',$request->service_id)->get();
+        foreach ($courses as $course){
+            $course->days = json_decode($course->days) ;
+        }
+
+        if($courses){
+            $response = [
+                'message' => 'courses found : ',
+                'courses' => $courses,
+                'status' => true
+            ];
+            return $response;
+        }else{
+            $response = [
+                'message' => 'no courses for you.',
+                'status' => false
+            ];
+            return $response;
+        }
+
+    }
+
 
     public function getSpecificCourse ($id){
 

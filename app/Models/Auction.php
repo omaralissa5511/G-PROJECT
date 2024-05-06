@@ -9,7 +9,8 @@ class Auction extends Model
 {
     use HasFactory;
     protected $table = 'auctions';
-    protected $fillable = ['initialPrice','end','begin','description','profile_id'];
+    protected $fillable = ['initialPrice','end','begin',
+                   'description','profile_id','status'];
     protected $hidden = [
         'id',
         'created_at',

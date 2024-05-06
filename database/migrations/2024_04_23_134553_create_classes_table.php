@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('class');
             $table->time('start');
             $table->time('end');
+            $table->integer('price');
             $table->bigInteger('counter')->default(0);
             $table->integer('capacity');
             $table->integer('status')->default(0);

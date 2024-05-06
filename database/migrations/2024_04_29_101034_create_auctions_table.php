@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('description');
             $table->integer('initialPrice');
             $table->unsignedBigInteger('profile_id');
+            $table->enum('status', ['pending', 'confirmed', 'canceled'])
+                ->default('pending');
             $table->foreign('profile_id')->references('id')->on('profiles')
                 ->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
