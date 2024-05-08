@@ -18,6 +18,7 @@ class AdminController extends Controller
 
     public function AddClub(Request $request)
     {
+
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:250',
             'mobile' => 'required|max:250',
@@ -40,6 +41,7 @@ class AdminController extends Controller
                 'status' => false
             ]);
         }
+
 
         $file_extension = $request->license->getClientOriginalExtension();
         $filename = time() . '.' . $file_extension;

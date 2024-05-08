@@ -212,6 +212,7 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
             Route::get('getBuyersIN_Auction/{id}',[AuctionController::class,'getBuyersIN_Auction']);
             Route::get('getTodayAuctions',[AuctionController::class,'getTodayAuctions']);
             Route::get('upcoming',[AuctionController::class,'upcoming']);
+            Route::post('upcoming1',[AuctionController::class,'upcoming2']);
 
 
             //Booking

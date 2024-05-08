@@ -189,7 +189,7 @@ class ClubController extends Controller
             'certifications' => $request->certifications,
             'experience' => $request->experience,
             'specialties' => $request->gender,
-            'channelName' => $request->channelName,
+            'channelName' => 'testCHANNEL',
             'license' => $realPath1,
             'image' => $realPath
         ]);

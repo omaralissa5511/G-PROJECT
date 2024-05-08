@@ -634,26 +634,59 @@ class AuthController extends Controller
             ]);
         }
 
-
         $user = User::where('email', $request->email)->first();
+        $admin = Admin::where('email', $request->email)->first();
+        if($user){
+            if(!$user || !Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    'message' => 'Invalid credentials',
+                    'status' => false
+                ]);
+            }
+            $data['token'] = $user->createToken($request->email)->plainTextToken;
+            $data['user'] = $user;
+            $role =  $user->roles;
 
-        if(!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json([
-                'message' => 'Invalid credentials',
+            $response = [
+                'message' => 'User is logged in successfully.',
+                'data' => $data,
+                'role' => $role[0]->name,
+                'status' => true
+            ];
+            return response()->json($response);
+
+        }
+        elseif ($admin){
+            if(!$admin || !Hash::check($request->password, $admin->password)) {
+                return response()->json([
+                    'message' => 'Invalid credentials',
+                    'status' => false
+                ]);
+            }
+
+            $data['token'] = $admin->createToken($request->email)->plainTextToken;
+            $data['admin'] = $admin;
+            $role =  $admin->roles;
+
+            $admin = Admin::where('email', $request->email)->first();
+            $admin->update(['token' => $data['token']]);
+
+            $response = [
+                'message' => 'admin is logged in successfully.',
+                'data' => $data,
+                'role' => $role[0]->name,
+                'status' => true
+            ];
+
+            return response()->json($response);
+        }   else{
+            $response = [
+                'message' => 'this email does not exist',
                 'status' => false
-            ]);
+            ];
+            return response()->json($response);
         }
 
-        $data['token'] = $user->createToken($request->email)->plainTextToken;
-        $data['user'] = $user;
-
-        $response = [
-            'message' => 'User is logged in successfully.',
-            'data' => $data,
-            'status' => true
-        ];
-
-        return response()->json($response);
     }
 
 
@@ -685,6 +718,7 @@ class AuthController extends Controller
 
         $data['token'] = $admin->createToken($request->email)->plainTextToken;
         $data['admin'] = $admin;
+        $role =  $admin->roles;
 
         $admin = Admin::where('email', $request->email)->first();
         $admin->update(['token' => $data['token']]);
@@ -692,6 +726,7 @@ class AuthController extends Controller
         $response = [
             'message' => 'admin is logged in successfully.',
             'data' => $data,
+            'role' => $role[0]->name,
             'status' => true
         ];
 
@@ -709,6 +744,5 @@ class AuthController extends Controller
 
 
     }
-
 
 }
