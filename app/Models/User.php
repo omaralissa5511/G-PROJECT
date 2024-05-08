@@ -66,9 +66,9 @@ class User extends Authenticatable
     public function profile () {
         return $this->hasOne(Profile::class);
     }
-    public function seller_buyer () {
-        return $this->hasOne(SellerBuyer::class);
-    }
+//    public function seller_buyer () {
+//        return $this->hasOne(SellerBuyer::class);
+//    }
     public function trainer () {
         return $this->hasOne(Trainer::class);
     }

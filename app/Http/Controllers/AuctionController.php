@@ -336,13 +336,47 @@ class AuctionController extends Controller
 
     public function upcoming(){
 
+
+
         $today = Carbon::now();
         $todayPlusOne = $today->copy()->addDay(1);
         $towMonthLater = $today->copy()->addMonth(2);
         $auctions = Auction::query()
             ->whereDate('begin','>=',$todayPlusOne)
             ->whereDate('end','<=',$towMonthLater)
-            ->where('status','confirmed')->get();
+            ->where('status','confirmed')
+            ->with('horses')
+            ->join('profiles','profiles.id','=', 'auctions.id')
+            ->get();
+
+        if($auctions->isEmpty()){
+            $response = [
+                'message' => 'no active auctions now.',
+                'status' => false
+            ];
+            return response()->json($response);
+        }else {
+            $response = [
+                'message' => 'get successfully.',
+                'auctions' => $auctions,
+                'status' => true
+            ];
+            return response()->json($response);
+        }
+    }
+
+
+    public function upcoming2(Request $request){
+
+
+        $date =  $request->date;
+        $auctions = Auction::query()
+            ->whereDate('begin','=',$date)
+            ->where('status','confirmed')
+            ->join('profiles','profiles.id','='
+                ,'auctions.id')
+            ->with('horses')
+            ->get();
 
         if($auctions->isEmpty()){
             $response = [
