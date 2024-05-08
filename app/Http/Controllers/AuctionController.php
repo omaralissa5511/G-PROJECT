@@ -336,8 +336,6 @@ class AuctionController extends Controller
 
     public function upcoming(){
 
-
-
         $today = Carbon::now();
         $todayPlusOne = $today->copy()->addDay(1);
         $towMonthLater = $today->copy()->addMonth(2);
@@ -345,9 +343,8 @@ class AuctionController extends Controller
             ->whereDate('begin','>=',$todayPlusOne)
             ->whereDate('end','<=',$towMonthLater)
             ->where('status','confirmed')
-            ->with('horses')
-            ->join('profiles','profiles.id','=', 'auctions.id')
-            ->get();
+            ->pluck('begin');
+
 
         if($auctions->isEmpty()){
             $response = [
@@ -358,7 +355,7 @@ class AuctionController extends Controller
         }else {
             $response = [
                 'message' => 'get successfully.',
-                'auctions' => $auctions,
+                'dates' => $auctions,
                 'status' => true
             ];
             return response()->json($response);
