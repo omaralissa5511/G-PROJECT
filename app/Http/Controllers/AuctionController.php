@@ -318,7 +318,7 @@ class AuctionController extends Controller
             ->whereDate('end','>=',$today)
             ->where('status','confirmed')
             ->join('profiles','profiles.id',
-                '=','auctions.id')
+                '=','auctions.profile_id')
             ->with('horses')->get();
 
         if($auctions->isEmpty()){
@@ -375,7 +375,7 @@ class AuctionController extends Controller
             ->whereDate('begin','=',$date)
             ->where('status','confirmed')
             ->join('profiles','profiles.id','='
-                ,'auctions.id')
+                ,'auctions.profile_id')
             ->with('horses')
             ->get();
 
@@ -400,14 +400,14 @@ class AuctionController extends Controller
         $auction = Auction::findOrFail($AID);
         $end = Carbon::parse($auction->end) ;
         $endHours = Carbon::parse($auction->limit) ;
-          $DiffInHours =  $timeNow->DiffInHours($endHours)-2;
+          $DiffInHours =  $timeNow->DiffInHours($endHours)-3;
+        $DiffInMinutes =  $timeNow->DiffInMinutes($endHours)-180;
          $diff_in_days = $timeNow->DiffInDays($end) ;
-
-       $diff =  ( $diff_in_days * 24) + $DiffInHours;
-
+        $DiffInMinutes = $DiffInMinutes%60;
         $response = [
-            'time left : ' => $diff,
-            'status' => true
+            'days left : ' => $diff_in_days,
+            'hours left : ' => $DiffInHours,
+            'minutes left : ' => $DiffInMinutes,
         ];
         return response()->json($response);
 
