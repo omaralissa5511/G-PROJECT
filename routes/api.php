@@ -174,6 +174,7 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
         Route::get('TrainerReservation/{Tid}', [ReservationController::class, 'TrainerReservation']);
         Route::get('showSpecificReservation/{Rid}', [ReservationController::class, 'showSpecificReservation']);
         Route::delete('cancelReservation/{Rid}', [ReservationController::class, 'cancelReservation']);
+        Route::post('isReserved', [ReservationController::class, 'isReserved']);
 
 
             //TRating
@@ -213,6 +214,7 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
             Route::get('getTodayAuctions',[AuctionController::class,'getTodayAuctions']);
             Route::get('upcoming',[AuctionController::class,'upcoming']);
             Route::post('upcoming1',[AuctionController::class,'upcoming2']);
+            Route::get('OperationTime/{id}',[AuctionController::class,'OperationTime']);
 
 
             //Booking

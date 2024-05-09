@@ -15,7 +15,9 @@ class MessageM extends Model
         'user_id',
         'trainer_id',
         'content',
-        'image'
+        'image',
+        'ROLE',
+        'profile'
     ];
     protected $casts = [
         'image' => 'array',

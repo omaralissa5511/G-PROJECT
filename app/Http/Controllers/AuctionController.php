@@ -49,12 +49,13 @@ class AuctionController extends Controller
             $image->move(public_path('images/HORSE/'), $new_name);
             $imagePaths[] = 'images/HORSE/' . $new_name;
         }
-
+        $limitTime = Carbon::createFromFormat('H:i:s', '23:00:00');
         $auction = Auction::create([
             'initialPrice' => $request->initialPrice,
             'description' => $request->description,
             'end' => $request->end,
             'begin' => $request->begin,
+            'limit' =>  $limitTime,
             'profile_id' => $profile_id,
         ]);
 
@@ -315,7 +316,10 @@ class AuctionController extends Controller
         $auctions = Auction::query()
             ->whereDate('begin','<=',$today)
             ->whereDate('end','>=',$today)
-            ->where('status','confirmed')->get();
+            ->where('status','confirmed')
+            ->join('profiles','profiles.id',
+                '=','auctions.id')
+            ->with('horses')->get();
 
         if($auctions->isEmpty()){
             $response = [
@@ -389,6 +393,24 @@ class AuctionController extends Controller
             ];
             return response()->json($response);
         }
+    }
+    public function OperationTime($AID){
+
+        $timeNow = Carbon::now('Asia/Damascus');
+        $auction = Auction::findOrFail($AID);
+        $end = Carbon::parse($auction->end) ;
+        $endHours = Carbon::parse($auction->limit) ;
+          $DiffInHours =  $timeNow->DiffInHours($endHours)-2;
+         $diff_in_days = $timeNow->DiffInDays($end) ;
+
+       $diff =  ( $diff_in_days * 24) + $DiffInHours;
+
+        $response = [
+            'time left : ' => $diff,
+            'status' => true
+        ];
+        return response()->json($response);
+
     }
 }
 

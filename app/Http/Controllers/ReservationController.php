@@ -295,4 +295,45 @@ class ReservationController extends Controller
         ]);
     }
 
+
+    public function isReserved(Request $request){
+
+
+        $validate = Validator::make($request->all(), [
+            'club' => 'required',
+            'user_id' => 'required'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+                'status' => false
+            ]);
+        }
+        $course_id = Reservation::where('user_id',$request->user_id)
+            ->pluck('course_id');
+        $course_id = collect($course_id)->unique()->values()->all();
+        if($course_id){
+            foreach ($course_id as $id){
+                $club_id[] = Course::where('id', $id)->first()->club;
+            }
+          $club_id = collect($club_id)->unique()->values()->all();
+
+            foreach ($club_id as $id) {
+                if ($id == $request->club) {
+                    return response()->json([
+                        'status' => true
+                    ]);
+                }
+            }
+            return response()->json(['status' => false]);
+
+        }else {
+            return response()->json([
+                'status' => false
+            ]);
+        }
+
+    }
 }
