@@ -40,7 +40,8 @@ class TrainerCHAT implements ShouldBroadcast
             'user_id' => $this->message->user_id,
             'trainer_id' => $this->message->trainer_id,
             'content' => $this->message->content,
-            'image' => $this->message->image
+            'ROLE' => $this->message->ROLE,
+            'image' => $this->message->profile
         ];
     }
 }

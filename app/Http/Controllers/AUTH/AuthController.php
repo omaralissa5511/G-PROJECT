@@ -643,6 +643,14 @@ class AuthController extends Controller
                     'status' => false
                 ]);
             }
+            if($user->type == 'Trainer'){
+                $user = User::where('email', $request->email)
+                    ->with('trainers')->first();
+            }
+            else{
+                $user = User::where('email', $request->email)
+                    ->with('profiles')->first();
+            }
             $data['token'] = $user->createToken($request->email)->plainTextToken;
             $data['user'] = $user;
             $role =  $user->roles;

@@ -63,13 +63,13 @@ class User extends Authenticatable
     public function health_care () {
         return $this->hasOne(HealthCare::class);
     }
-    public function profile () {
+    public function profiles () {
         return $this->hasOne(Profile::class);
     }
 //    public function seller_buyer () {
 //        return $this->hasOne(SellerBuyer::class);
 //    }
-    public function trainer () {
+    public function trainers () {
         return $this->hasOne(Trainer::class);
     }
     public function CRating()
