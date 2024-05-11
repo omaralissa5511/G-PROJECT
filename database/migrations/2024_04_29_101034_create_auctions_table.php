@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('end');
             $table->date('begin');
+            $table->time('limit');
             $table->string('description');
             $table->integer('initialPrice');
             $table->unsignedBigInteger('profile_id');
