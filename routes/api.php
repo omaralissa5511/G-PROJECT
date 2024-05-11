@@ -213,6 +213,7 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
             Route::get('getBuyersIN_Auction/{id}',[AuctionController::class,'getBuyersIN_Auction']);
             Route::get('getTodayAuctions',[AuctionController::class,'getTodayAuctions']);
             Route::get('upcoming',[AuctionController::class,'upcoming']);
+            Route::get('upcomingToday',[AuctionController::class,'upcomingToday']);
             Route::post('upcoming1',[AuctionController::class,'upcoming2']);
             Route::get('OperationTime/{id}',[AuctionController::class,'OperationTime']);
 

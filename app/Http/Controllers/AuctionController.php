@@ -18,7 +18,7 @@ class AuctionController extends Controller
     public function AddAuction(Request $request)
     {
 
-        $user_id = Auth::id();
+        $user_id = $request->user_id;
         $profile_id = Profile::where('id',$user_id)->first()->id;
         $validate = Validator::make($request->all(), [
 
@@ -342,7 +342,7 @@ class AuctionController extends Controller
 
         $today = Carbon::now();
         $todayPlusOne = $today->copy()->addDay(1);
-        $towMonthLater = $today->copy()->addMonth(2);
+        $towMonthLater = $today->copy()->addMonth(3);
         $auctions = Auction::query()
             ->whereDate('begin','>=',$todayPlusOne)
             ->whereDate('end','<=',$towMonthLater)
@@ -357,9 +357,12 @@ class AuctionController extends Controller
             ];
             return response()->json($response);
         }else {
+            $dates = collect($auctions)->map(function ($date) {
+                return ['begin_time' => $date];
+            });
             $response = [
                 'message' => 'get successfully.',
-                'dates' => $auctions,
+                'dates' => $dates,
                 'status' => true
             ];
             return response()->json($response);
@@ -368,7 +371,6 @@ class AuctionController extends Controller
 
 
     public function upcoming2(Request $request){
-
 
         $date =  $request->date;
         $auctions = Auction::query()
@@ -394,6 +396,38 @@ class AuctionController extends Controller
             return response()->json($response);
         }
     }
+
+
+    public function upcomingToday(){
+
+        $today = Carbon::now();
+        $auctions = Auction::query()
+            ->whereDate('begin','=',$today)
+            ->where('status','confirmed')
+            ->pluck('begin');
+
+
+        if($auctions->isEmpty()){
+            $response = [
+                'message' => 'no active auctions today.',
+                'status' => false
+            ];
+            return response()->json($response);
+        }else {
+            $dates = collect($auctions)->map(function ($date) {
+                return ['begin_time' => $date];
+            });
+            $response = [
+                'message' => 'get successfully.',
+                'dates' => $dates,
+                'status' => true
+            ];
+            return response()->json($response);
+        }
+    }
+
+
+
     public function OperationTime($AID){
 
         $timeNow = Carbon::now('Asia/Damascus');
