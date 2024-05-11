@@ -15,13 +15,11 @@ use Illuminate\Support\Facades\Validator;
 class AuctionController extends Controller
 {
 
-    public function AddAuction(Request $request)
-    {
+    public function AddAuction(Request $request) {
 
         $user_id = $request->user_id;
         $profile_id = Profile::where('id',$user_id)->first()->id;
         $validate = Validator::make($request->all(), [
-
             'description' => 'required|string|max:250',
             'initialPrice' => 'required|string|max:250',
             'end' => 'required',
@@ -376,9 +374,7 @@ class AuctionController extends Controller
         $auctions = Auction::query()
             ->whereDate('begin','=',$date)
             ->where('status','confirmed')
-            ->join('profiles','profiles.id','='
-                ,'auctions.profile_id')
-            ->with('horses')
+            ->with('horses','profile')
             ->get();
 
         if($auctions->isEmpty()){
