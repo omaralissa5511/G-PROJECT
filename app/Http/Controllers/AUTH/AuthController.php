@@ -171,7 +171,7 @@ class AuthController extends Controller
                 'birth' => $request->birth,
                 'address' => $request->address,
                 'gender' => $request->gender,
-                'image' => $realPath
+                'profile' => $realPath
 
             ]);
 

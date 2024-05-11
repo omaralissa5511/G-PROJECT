@@ -40,12 +40,17 @@ class TrainerController extends Controller
 //            ]);
 //        }
 
-        if($request->image) {
+        $userID = $request->trainer_id;
+        $trainer = Trainer::where('user_id', $userID)->first();
+
+        if ($request->image) {
             $file_extension = $request->image->getClientOriginalExtension();
             $filename = time() . '.' . $file_extension;
             $path = public_path('images/Trainer/PROFILES/');
             $request->image->move($path, $filename);
             $realPath = 'images/Trainer/PROFILES/' . $filename;
+            $trainer->update(['image'=>$realPath]);
+
         }
         if($request->license) {
             $file_extension = $request->license->getClientOriginalExtension();
@@ -53,15 +58,17 @@ class TrainerController extends Controller
             $path = public_path('images/Trainer/license/');
             $request->license->move($path, $filename1);
             $realPath1 = 'images/Trainer/license/' . $filename1;
+            $trainer->update(['license'=>$realPath1]);
         }
-        $userID = $request->trainer_id;
-        $user = User::find($userID)->first();
+
+        $user = User::find($userID);
         if($request->mobile) {
             $user->update(['mobile' => $request->input('mobile'),]);
         }
-        $trainer = Trainer::where('user_id', $userID)->first();
-        $trainer->update($request->all());
-        $trainer->save();
+
+        $requestData = $request->except(['image', 'license']);
+        $trainer->update($requestData);
+
 //        $trainer->update([
 //
 //            'FName' => $request->FName,
@@ -77,7 +84,7 @@ class TrainerController extends Controller
 
         $trainer = Trainer::where('user_id', $userID)->first();
         $data['user'] = $user;
-        $data['trainer'] = $trainer;
+        $data['image'] = $trainer;
 
         $response = [
             'message' => 'profile is updated successfully.',
