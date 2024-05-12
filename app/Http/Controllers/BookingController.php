@@ -112,6 +112,7 @@ class BookingController extends Controller
 
             foreach ($trainerTimes as $trainerTime){
                 $trainertimesss=[
+                'trainerTimeID'=>$trainerTime->id,
                 'booking_date' => $trainerTime->date,
                 'start_time' => $trainerTime->start_time,
                 'end_time' => $trainerTime->end_time,
@@ -179,11 +180,20 @@ class BookingController extends Controller
                 'status' => false
             ]);
         }
+        $bookingId = $trainerTime->booking_id;
 
         $trainerTime->update([
             'booking_id' => null,
             'is_available' => true
         ]);
+
+        $otherTrainerTimes = TrainerTime::where('booking_id', $bookingId)->count();
+        if ($otherTrainerTimes == 0) {
+
+           Booking::destroy($bookingId);
+
+        }
+
 
         return response()->json([
             'message' => 'Booking time cancelled successfully.',

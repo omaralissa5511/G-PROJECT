@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('begin');
             $table->string('description');
             $table->integer('initialPrice');
+            $table->time('limit');
             $table->unsignedBigInteger('profile_id');
             $table->enum('status', ['pending', 'confirmed', 'canceled'])
                 ->default('pending');
