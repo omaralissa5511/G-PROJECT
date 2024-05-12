@@ -22,8 +22,8 @@ class Auction extends Model
     public function horses(){
         return $this->hasOne(Horse::class);
     }
-    public function profile()
-    {
+
+    public function profile(){
         return $this->belongsTo(Profile::class);
     }
 }
