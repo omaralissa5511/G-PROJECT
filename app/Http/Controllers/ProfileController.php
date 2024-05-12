@@ -18,7 +18,7 @@ class ProfileController extends Controller
             ]);
         }
 
-        $profile = $user->profile;
+        $profile = $user->profiles;
 
         if (!$profile) {
             return response()->json([

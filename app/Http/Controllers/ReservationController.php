@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\NotificationE;
 use App\Http\Controllers\Controller;
+use App\Models\CLUB\Booking;
 use App\Models\CLUB\Clas;
 use App\Models\CLUB\Course;
 use App\Models\CLUB\Equestrian_club;
@@ -250,10 +251,11 @@ class ReservationController extends Controller
 
         $user_id = Auth::id();
         $coursesID = Course::where('club',$cID)->pluck('id');
-
         foreach ($coursesID as $cid){
           $reservations[] =  Reservation::where('course_id',$cid)
-              ->where('user_id',$user_id)->get();
+              ->where('user_id',$user_id)
+              ->with('course')
+              ->get();
         }
 
 
@@ -311,29 +313,41 @@ class ReservationController extends Controller
                 'status' => false
             ]);
         }
-        $course_id = Reservation::where('user_id',$request->user_id)
-            ->pluck('course_id');
-        $course_id = collect($course_id)->unique()->values()->all();
-        if($course_id){
-            foreach ($course_id as $id){
-                $club_id[] = Course::where('id', $id)->first()->club;
-            }
-          $club_id = collect($club_id)->unique()->values()->all();
+//        $course_id = Reservation::where('user_id',$request->user_id)
+//            ->pluck('course_id');
+//        $course_id = collect($course_id)->unique()->values()->all();
+//        if($course_id){
+//            foreach ($course_id as $id){
+//                $club_id[] = Course::where('id', $id)->first()->club;
+//            }
+//          $club_id = collect($club_id)->unique()->values()->all();
+//
+//            foreach ($club_id as $id) {
+//                if ($id == $request->club) {
+//                    return response()->json([
+//                        'status' => true
+//                    ]);
+//                }
+//            }
+//            return response()->json(['status' => false]);
+//
+//        }else {
+//            return response()->json([
+//                'status' => false
+//            ]);
+//        }
 
-            foreach ($club_id as $id) {
-                if ($id == $request->club) {
-                    return response()->json([
-                        'status' => true
-                    ]);
-                }
-            }
+        $booking = Booking::whereHas('service', function ($query) use ($request) {
+            $query->where('club_id', $request->club);
+        })->where('user_id', $request->user_id)->first();
+
+        $reservation = Reservation::whereHas('course', function ($query) use ($request) {
+            $query->where('club', $request->club);
+        })->where('user_id', $request->user_id)->first();
+
+       if ($booking || $reservation)
+            return response()->json(['status' => true]);
+        else
             return response()->json(['status' => false]);
-
-        }else {
-            return response()->json([
-                'status' => false
-            ]);
-        }
-
     }
 }

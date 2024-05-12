@@ -30,8 +30,8 @@ class CRatingController extends Controller
     public function getAllReviewsInClub($club_id)
     {
         $reviews = CRating::where('club_id', $club_id)
-            ->whereNotNull('review')  // تحقق من أن الحقل 'review' غير فارغ
-            ->with('user.profile') // إضافة معلومات المستخدم
+            ->whereNotNull('review')
+            ->with('user.profiles')
             ->get();
 
         // تحويل الوقت إلى شكل مقروء بشكل أكبر
@@ -80,7 +80,11 @@ class CRatingController extends Controller
             $query->where('club_id', $request->club_id);
         })->where('user_id', $request->user_id)->first();
 
-        if (!$booking) {
+        $reservation = Reservation::whereHas('course', function ($query) use ($request) {
+            $query->where('club', $request->club_id);
+        })->where('user_id', $request->user_id)->first();
+
+        if (!($booking || $reservation)) {
             return response()->json([
                 'message' => 'You can only rate if you have made a booking previously in this club.',
                 'status' => false
@@ -88,7 +92,7 @@ class CRatingController extends Controller
         }
 
 
-        // تحقق من أن المستخدم لم يقم بتقييم المدرب من قبل
+
         $existingRating = CRating::where('club_id', $request->club_id)
             ->where('user_id', $request->user_id)
             ->first();

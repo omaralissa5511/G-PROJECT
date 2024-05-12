@@ -27,4 +27,9 @@ class Profile extends Model
     {
         return $this->hasMany(Bid::class);
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }
