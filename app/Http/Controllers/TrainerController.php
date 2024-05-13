@@ -16,43 +16,21 @@ use Illuminate\Support\Facades\Validator;
 class TrainerController extends Controller
 {
 
-    public function editTrainer(Request $request)
-    {
-
-//        $validate = Validator::make($request->all(), [
-//            'FName' => 'required|string|max:250',
-//            'mobile' => 'required|max:250',
-//            'LName' => 'required|string|max:250',
-//            'license' => 'required',
-//            'image' => 'required',
-//            'qualifications' => 'required',
-//            'certifications' => 'required',
-//            'experience' => 'required',
-//            'specialties' => 'required',
-//            'address' => 'required'
-//        ]);
-//
-//        if ($validate->fails()) {
-//            return response()->json([
-//                'message' => 'Validation Error!',
-//                'data' => $validate->errors(),
-//                'status' => false
-//            ]);
-//        }
+    public function editTrainer(Request $request) {
 
         $userID = $request->trainer_id;
         $trainer = Trainer::where('user_id', $userID)->first();
 
-        if ($request->image) {
-            $file_extension = $request->image->getClientOriginalExtension();
-            $filename = time() . '.' . $file_extension;
-            $path = public_path('images/Trainer/PROFILES/');
-            $request->image->move($path, $filename);
-            $realPath = 'images/Trainer/PROFILES/' . $filename;
-            $trainer->update(['image'=>$realPath]);
+        if ($request->hasFile('image')) {
+                $file_extension = $request->image->getClientOriginalExtension();
+                $filename = time() . '.' . $file_extension;
+                $path = public_path('images/Trainer/PROFILES/');
+                $request->image->move($path, $filename);
+                $realPath = 'images/Trainer/PROFILES/' . $filename;
+                $trainer->update(['image' => $realPath]);
+            }
 
-        }
-        if($request->license) {
+        if ($request->hasFile('license')) {
             $file_extension = $request->license->getClientOriginalExtension();
             $filename1 = time() . '.' . $file_extension;
             $path = public_path('images/Trainer/license/');
@@ -61,26 +39,17 @@ class TrainerController extends Controller
             $trainer->update(['license'=>$realPath1]);
         }
 
+        $attributes = array_filter($request->all(),function ($value){
+            return !is_null($value);
+        });
+
         $user = User::find($userID);
         if($request->mobile) {
             $user->update(['mobile' => $request->input('mobile'),]);
         }
 
-        $requestData = $request->except(['image', 'license']);
+        $requestData = collect($attributes)->except(['image','license'])->toArray();
         $trainer->update($requestData);
-
-//        $trainer->update([
-//
-//            'FName' => $request->FName,
-//            'LName' => $request->LName,
-//            'address' => $request->address,
-//            'qualifications' => $request->qualifications,
-//            'certifications' => $request->certifications,
-//            'experience' => $request->experience,
-//            'specialties' => $request->gender,
-//            'license' => $realPath1,
-//            'image' => $realPath
-//        ]);
 
         $trainer = Trainer::where('user_id', $userID)->first();
         $data['user'] = $user;

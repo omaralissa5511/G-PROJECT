@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CHAT;
 use App\Events\TrainerCHAT;
 use App\Models\CLUB\Trainer;
 use App\Models\MessageM;
@@ -20,7 +21,7 @@ class MessageController extends Controller
             'trainer_id' => 'required',
             'content' => 'required',
         ]);
-        $message = new MessageM();
+
 //        if($request->file('images')){
 //            $images = $request->file('images');
 //            $imagePaths = [];
@@ -31,24 +32,26 @@ class MessageController extends Controller
 //            }
 //            $message->image = $imagePaths;
 //        }
-//         if($request->file('image')) {
-//             $file_extension = $request->image->getClientOriginalExtension();
-//             $filename = time() . '.' . $file_extension;
-//             $path = public_path('images/CHAT/');
-//             $request->license->move($path, $filename);
-//             $realPath = 'images/CHAT/' . $filename;
-//             $message->image = $realPath;
 //
-//         }
+          $message = new MessageM();
+
+         if($request->file('image')) {
+             $file_extension = $request->image->getClientOriginalExtension();
+             $filename = time() . '.' . $file_extension;
+             $path = public_path('images/CHAT/');
+             $request->image->move($path, $filename);
+             $realPath = 'images/CHAT/' . $filename;
+             $message->image = $realPath;
+
+         }
         $message->user_id = $validatedData['user_id'];
         $message->trainer_id = $validatedData['trainer_id'];
         $message->content = $validatedData['content'];
-        $message->ROLE = $request->ROLE;
-        $message->profile = $request->image;
+        $message->role = $request->role;
         $message->save();
 
 
-        broadcast(new TrainerCHAT($message))->toOthers();
+        broadcast(new CHAT( $message->user_id,$message->trainer_id,$message));
 
         return response()->json(['success' => true,
             'message' => 'MessageM sent successfully.',
