@@ -77,7 +77,11 @@ class TRatingController extends Controller
         $booking =Booking::where('trainer_id', $request->trainer_id)
         ->where('user_id', $request->user_id)->first();
 
-        if (!$booking) {
+        $reservation = Reservation::whereHas('course', function ($query) use ($request) {
+            $query->where('trainer_id', $request->trainer_id);
+        })->where('user_id', $request->user_id)->first();
+
+        if (!($booking || $reservation)) {
             return response()->json([
                 'message' => 'You can only rate if you have made a booking previously.',
                 'status' => false

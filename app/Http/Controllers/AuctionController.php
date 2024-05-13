@@ -18,6 +18,7 @@ class AuctionController extends Controller
     public function AddAuction(Request $request) {
 
         $user_id = $request->user_id;
+
         $profile_id = Profile::where('id',$user_id)->first()->id;
         $validate = Validator::make($request->all(), [
             'description' => 'required|string|max:250',
@@ -144,14 +145,16 @@ class AuctionController extends Controller
 
     public function showAuctionByID($Id)
     {
+        $auctions = Auction::query()
+            ->where('id',$Id)
+            ->where('status','confirmed')
+            ->with('horses', 'profile.user')
+            ->first();
 
-        $auction = Auction::find($Id);
-        $horseImage = Horse::where('auction_id',$auction->id)->first()->images;
-        if ($auction) {
+        if ($auctions) {
 
             $response = [
-                'auction' => $auction,
-                'horseImage' => $horseImage[0],
+                'auction' => $auctions,
                 'status' => true
             ];
             return $response;
@@ -374,7 +377,7 @@ class AuctionController extends Controller
         $auctions = Auction::query()
             ->whereDate('begin','=',$date)
             ->where('status','confirmed')
-            ->with('horses','profile')
+            ->with('horses', 'profile')
             ->get();
 
         if($auctions->isEmpty()){
@@ -398,15 +401,14 @@ class AuctionController extends Controller
 
         $today = Carbon::now();
         $auctions = Auction::query()
-            ->whereDate('begin','=',$today)
+            ->whereDate('begin','<=',$today)
             ->where('status','confirmed')
             ->pluck('begin');
 
 
         if($auctions->isEmpty()){
             $response = [
-                'message' => 'no active auctions today.',
-                'status' => false
+                'message' => 'no active auctions today.',3
             ];
             return response()->json($response);
         }else {

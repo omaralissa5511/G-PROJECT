@@ -183,15 +183,20 @@ public function allTrainersInServiceCourse($service_id)
             $endTime = $time['end_time'];
             $price = $time['price']; // إضافة السعر
 
-            $existingTime = TrainerTime::where('trainer_id', $trainerId)
+            // التحقق من تقاطع الأوقات
+            $overlappingTime = TrainerTime::where('trainer_id', $trainerId)
                 ->where('date', $date)
-                ->where('start_time', $startTime)
-                ->where('end_time', $endTime)
+                ->where(function ($query) use ($startTime, $endTime) {
+                    $query->where(function ($query) use ($startTime, $endTime) {
+                        $query->where('start_time', '<', $endTime)
+                            ->where('end_time', '>', $startTime);
+                    });
+                })
                 ->first();
 
-            if ($existingTime) {
+            if ($overlappingTime) {
                 return response()->json([
-                    'message' => 'This time slot is already available.',
+                    'message' => 'This time slot overlaps with an existing slot.',
                     'date' => $date,
                     'start_time' => $startTime,
                     'end_time' => $endTime,

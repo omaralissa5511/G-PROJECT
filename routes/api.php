@@ -52,11 +52,15 @@ use Illuminate\Support\Facades\Route;
 
 
 
+
         ############### ADMIN ROLE ###############
+
+        Route::post('logout',[AuthController::class,'logout']);
+    ############### ADMIN ROLE ###############
+
     Route::group(['middleware' => ['role_or_permission:ADMIN']], function () {
 
         Route::post('AdminUpdate', [AuthController::class, 'AdminUpdate']);
-
 
         ///// AUCTIONS ////////
         Route::get('getPending_Auctions',[AdminController::class,'getPending_Auctions']);

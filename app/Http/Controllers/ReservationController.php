@@ -251,10 +251,11 @@ class ReservationController extends Controller
 
         $user_id = Auth::id();
         $coursesID = Course::where('club',$cID)->pluck('id');
-
         foreach ($coursesID as $cid){
           $reservations[] =  Reservation::where('course_id',$cid)
-              ->where('user_id',$user_id)->get();
+              ->where('user_id',$user_id)
+              ->with('course')
+              ->get();
         }
 
 
@@ -386,7 +387,9 @@ class ReservationController extends Controller
             $query->where('club', $request->club);
         })->where('user_id', $request->user_id)->first();
 
+
         if ($booking || $reservation)
+
             return response()->json(['status' => true]);
         else
             return response()->json(['status' => false]);
