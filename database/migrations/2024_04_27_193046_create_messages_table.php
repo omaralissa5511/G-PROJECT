@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->integer('trainer_id');
             $table->text('content');
+            $table->string('role');
             $table->string('image')->nullable();
             $table->timestamps();
         });

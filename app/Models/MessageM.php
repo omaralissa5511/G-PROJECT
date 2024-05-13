@@ -16,7 +16,7 @@ class MessageM extends Model
         'trainer_id',
         'content',
         'image',
-        'ROLE',
+        'role',
         'profile'
     ];
     protected $casts = [

@@ -22,7 +22,7 @@ use App\Http\Controllers\TRatingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::post('sendMessage',[MessageController::class,'sendMessage']);
+
 
 
     Route::post('register',[AuthController::class,'register']);
@@ -48,8 +48,16 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
 
 
     Route::middleware('auth:sanctum')->group(function () {
+
+
+
+
+
+        ############### ADMIN ROLE ###############
+
         Route::post('logout',[AuthController::class,'logout']);
     ############### ADMIN ROLE ###############
+
     Route::group(['middleware' => ['role_or_permission:ADMIN']], function () {
 
         Route::post('AdminUpdate', [AuthController::class, 'AdminUpdate']);
@@ -226,6 +234,9 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
 
 
 
+            Route::post('sendMessage/broadcasting/auth',[MessageController::class,'sendMessage']);
+
+
 
             Route::post('getCoursesByUser', [CourseController::class, 'getCoursesByUser']);
 
@@ -235,4 +246,4 @@ Route::post('sendMessage',[MessageController::class,'sendMessage']);
     });
 
 
-//التحقق من فلترة المصفوفة للتخلص من الاشخاص المتشابهين
+

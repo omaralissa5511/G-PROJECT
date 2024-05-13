@@ -73,12 +73,14 @@ class ClubController extends Controller
 //       $user = User::find($userID);
 //       $user -> update(['mobile' => $attributes['mobile']]);
 //   }
-        if (array_key_exists('mobile', $attributes)) {
+
+         if (array_key_exists('mobile', $attributes)) {
             $user = User::find($userID);
             $user -> update(['mobile' => $attributes['mobile']]);
         }
+        $requestData = collect($attributes)->
+        except(['images','license','profile','mobile'])->toArray();
 
-        $requestData = collect($attributes)->except(['images','license','profile'])->toArray();
         $club->update($requestData);
 
         $clubImages = ClubImage::where('club_id', $club->id)->get()->pluck('image_paths')->toArray();
