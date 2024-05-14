@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AppMessageController;
 use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\AUTH\AuthController;
 use App\Http\Controllers\AUTH\VerificationController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CRatingController;
+use App\Http\Controllers\FavoriteAuctionController;
 use App\Http\Controllers\FavoriteClubController;
 use App\Http\Controllers\HorseController;
 use App\Http\Controllers\MessageController;
@@ -41,6 +43,8 @@ use Illuminate\Support\Facades\Route;
     Route::post('/send-password-reset-email', [VerificationController::class, 'sendPasswordResetEmail']);
     Route::post('/reset-password', [VerificationController::class, 'resetPassword']);
 
+    Route::get('getAppMessage',[AppMessageController::class,'getMessage']);
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/change-password', [VerificationController::class, 'changePassword']);
     });
@@ -57,6 +61,9 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
     Route::group(['middleware' => ['role_or_permission:ADMIN']], function () {
 
         Route::post('AdminUpdate', [AuthController::class, 'AdminUpdate']);
+
+        //Add App Message
+        Route::post('updateMessage',[AppMessageController::class,'updateMessage']);
 
         ///// AUCTIONS ////////
         Route::get('getPending_Auctions',[AdminController::class,'getPending_Auctions']);
@@ -196,7 +203,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('updateClubRating',[CRatingController::class,'updateRating']);
             Route::post('deleteClubRating',[CRatingController::class,'deleteRating']);
 
-            // favorite
+            // favorite club
             Route::post('addClubToFavorites',[FavoriteClubController::class,'addClubToFavorites']);
             Route::post('removeClubFromFavorites',[FavoriteClubController::class,'removeClubFromFavorites']);
             Route::get('getFavoriteClubs/{user_id}',[FavoriteClubController::class,'getFavoriteClubs']);
@@ -227,6 +234,11 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::get('getBookingDescription/{booking_id}',[BookingController::class,'getBooking']);
             Route::post('deleteBooking',[BookingController::class,'deleteBooking']);
             Route::post('cancelBookingTime',[BookingController::class,'cancelBookingTime']);
+
+            // favorite Auction
+            Route::post('addAuctionToFavorites',[FavoriteAuctionController::class,'addAuctionToFavorites']);
+            Route::post('removeAuctionFromFavorites',[FavoriteAuctionController::class,'removeAuctionFromFavorites']);
+            Route::get('getFavoriteAuctions/{user_id}',[FavoriteAuctionController::class,'getFavoriteAuctions']);
 
 
 

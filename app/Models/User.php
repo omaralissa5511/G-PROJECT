@@ -90,6 +90,12 @@ class User extends Authenticatable
         return $this->belongsToMany(Equestrian_club::class, 'favorite_clubs');
     }
 
+    public function favoriteAuctions()
+    {
+        return $this->belongsToMany(Auction::class, 'favorite_auctions');
+    }
+
+
     public function bookings()
     {
         return $this->hasMany(Booking::class);
