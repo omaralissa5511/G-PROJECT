@@ -12,7 +12,6 @@ class Auction extends Model
     protected $fillable = ['initialPrice','end','begin','limit',
                    'description','profile_id','status'];
     protected $hidden = [
-        'id',
         'created_at',
         'updated_at',
     ];

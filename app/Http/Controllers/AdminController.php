@@ -101,7 +101,7 @@ class AdminController extends Controller
 
     public function getPending_Auctions(){
 
-        $auction = Auction::where('status','pending')->get();
+        $auction = Auction::where('status','pending')->with('profile')->get();
         if($auction){
             $response = [
                 'auction' => $auction,
@@ -117,9 +117,11 @@ class AdminController extends Controller
 
     }
 
-    public function AuctionApproval($AID,Request $request){
+    public function AuctionApproval(Request $request){
 
+        $AID = $request->id;
         $auction = Auction::find($AID);
+
 
         if($request->status == 'confirmed'){
             $auction -> update(['status' => 'confirmed']);

@@ -45,15 +45,11 @@ use Illuminate\Support\Facades\Route;
         Route::post('/change-password', [VerificationController::class, 'changePassword']);
     });
 
-
+Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
     Route::middleware('auth:sanctum')->group(function () {
 
 
-
-
-
-        ############### ADMIN ROLE ###############
 
         Route::post('logout',[AuthController::class,'logout']);
     ############### ADMIN ROLE ###############
@@ -64,7 +60,7 @@ use Illuminate\Support\Facades\Route;
 
         ///// AUCTIONS ////////
         Route::get('getPending_Auctions',[AdminController::class,'getPending_Auctions']);
-        Route::post('AuctionApproval/{id}',[AdminController::class,'AuctionApproval']);
+        Route::post('AuctionApproval',[AdminController::class,'AuctionApproval']);
 
 
         Route::post('createCategory', [AdminController::class, 'createCategory']);
@@ -234,7 +230,8 @@ use Illuminate\Support\Facades\Route;
 
 
 
-            Route::post('sendMessage/broadcasting/auth',[MessageController::class,'sendMessage']);
+            Route::post('sendMessage/broadcasting/auth',[MessageController::class,'sendMessage'])
+            ->middleware('auth');
 
 
 
