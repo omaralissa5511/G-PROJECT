@@ -7,6 +7,8 @@ use App\Events\TrainerCHAT;
 use App\Models\CLUB\Trainer;
 use App\Models\MessageM;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Pusher\Pusher;
 
 
 class MessageController extends Controller
@@ -57,8 +59,31 @@ class MessageController extends Controller
             'message' => 'MessageM sent successfully.',
             $message]);
     }
-}
 
+
+            public function authenticate(Request $request)
+            {
+
+                $pusher = new Pusher(
+                    env('PUSHER_APP_KEY'),
+                    env('PUSHER_APP_SECRET'),
+                    env('PUSHER_APP_ID'),
+                    [
+                        'cluster' => env('PUSHER_APP_CLUSTER'),
+                        'useTLS' => true,
+                    ]
+                );
+
+                $socketId = $request->input('socketId');
+                $channelName = $request->input('channelName');
+
+                $auth = $pusher->socket_auth($channelName, $socketId);
+
+                return response()->json($auth);
+            }
+
+
+}
 
 
 
