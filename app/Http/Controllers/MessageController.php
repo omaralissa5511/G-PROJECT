@@ -50,39 +50,58 @@ class MessageController extends Controller
         $message->trainer_id = $validatedData['trainer_id'];
         $message->content = $validatedData['content'];
         $message->role = $request->role;
+        $message->user = $request->user;
+        $message->trainer = $request->trainer;
         $message->save();
 
 
         broadcast(new CHAT( $message->user_id,$message->trainer_id,$message));
 
-        return response()->json(['success' => true,
+        return response()->json([
+            'success' => true,
             'message' => 'MessageM sent successfully.',
             $message]);
     }
 
+    public function authenticate(Request $request)
+    {
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true,
+            ]
+        );
 
-            public function authenticate(Request $request)
-            {
+        $socketId = $request->input('socketId');
+        $channelName = $request->input('channelName');
 
-                $pusher = new Pusher(
-                    env('PUSHER_APP_KEY'),
-                    env('PUSHER_APP_SECRET'),
-                    env('PUSHER_APP_ID'),
-                    [
-                        'cluster' => env('PUSHER_APP_CLUSTER'),
-                        'useTLS' => true,
-                    ]
-                );
-
-                $socketId = $request->input('socketId');
-                $channelName = $request->input('channelName');
-
-                $auth = $pusher->socket_auth($channelName, $socketId);
-
-                return response()->json($auth);
-            }
+        return response()->json($pusher->socket_auth($channelName, $socketId));
+    }
 
 
+    public function getChatMessages(Request $request)
+    {
+
+        $userID = $request->user_id;
+        $trainerID = $request->trainer_id;
+        $chat = MessageM::where('user_id', $userID)
+            ->where('trainer_id', $trainerID)->get();
+        if ($chat) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Messages sent successfully.',
+                'chats' => $chat
+            ]);
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'No Messages',
+            ]);
+        }
+    }
 }
 
 

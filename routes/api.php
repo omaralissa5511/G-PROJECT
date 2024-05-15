@@ -228,10 +228,9 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('deleteBooking',[BookingController::class,'deleteBooking']);
             Route::post('cancelBookingTime',[BookingController::class,'cancelBookingTime']);
 
-
-
-            Route::post('sendMessage/broadcasting/auth',[MessageController::class,'sendMessage'])
-            ->middleware('auth');
+            /////////// MESSAGES //////////
+            Route::post('sendMessage',[MessageController::class,'sendMessage']);
+            Route::post('getChatMessages',[MessageController::class,'getChatMessages']);
 
 
 

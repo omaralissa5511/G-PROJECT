@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Clubs;
+use App\Events\NotificationE;
 use App\Http\Controllers\Controller;
 use App\Models\Auction;
 use App\Models\CLUB\Category;
@@ -96,6 +98,8 @@ class AdminController extends Controller
             'data' => $data,
             'status' => true
         ];
+        $message = 'one club have been added added';
+        broadcast(new Clubs( $message));
         return response()->json($response);
     }
 
