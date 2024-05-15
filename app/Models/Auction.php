@@ -25,4 +25,9 @@ class Auction extends Model
     public function profile(){
         return $this->belongsTo(Profile::class);
     }
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'favorite_auctions');
+    }
+
 }
