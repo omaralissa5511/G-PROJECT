@@ -235,6 +235,11 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('deleteBooking',[BookingController::class,'deleteBooking']);
             Route::post('cancelBookingTime',[BookingController::class,'cancelBookingTime']);
 
+
+            /////////// MESSAGES //////////
+            Route::post('sendMessage',[MessageController::class,'sendMessage']);
+            Route::post('getChatMessages',[MessageController::class,'getChatMessages']);
+
             // favorite Auction
             Route::post('addAuctionToFavorites',[FavoriteAuctionController::class,'addAuctionToFavorites']);
             Route::post('removeAuctionFromFavorites',[FavoriteAuctionController::class,'removeAuctionFromFavorites']);
@@ -244,6 +249,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
             Route::post('sendMessage/broadcasting/auth',[MessageController::class,'sendMessage'])
             ->middleware('auth');
+
 
 
 

@@ -42,6 +42,8 @@ class CHAT implements ShouldBroadcast
             'user_id' => $this->message->user_id,
             'trainer_id' => $this->message->trainer_id,
             'content' => $this->message->content,
+            'user' => $this->message->user,
+            'trainer' => $this->message->trainer,
             'role' => $this->message->role,
             'image' => $this->message->image
         ];

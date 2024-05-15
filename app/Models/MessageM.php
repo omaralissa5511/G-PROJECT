@@ -14,6 +14,8 @@ class MessageM extends Model
     protected $fillable = [
         'user_id',
         'trainer_id',
+        'user',
+        'trainer',
         'content',
         'image',
         'role',

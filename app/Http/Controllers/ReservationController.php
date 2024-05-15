@@ -230,20 +230,33 @@ class ReservationController extends Controller
         $user_id = Auth::id();
         $reservations =Reservation::where('user_id', $user_id)->get('course_id');
         $ids = collect($reservations)->unique()->values()->all();
+        if(!$ids){
+            return response()->json([
+                'message' => 'no clubs for you',
+                'status' => false
+            ]);
+        }
         foreach ($ids as $id){
             $Cid[] = $id->course_id;
         }
+
         foreach ($Cid as $id){
             $clubsID[] = Course::where('id',$id)->first()->club;
         }
         foreach ($clubsID as $id){
             $clubs[] = Equestrian_club::where('id',$id)->first();
         }
-
+        if($clubs){
         return response()->json([
             'clubs' => $clubs,
             'status' => true
         ]);
+    } else{
+            return response()->json([
+                'message' => 'no clubs for you',
+                'status' => false
+            ]);
+        }
     }
 
 
