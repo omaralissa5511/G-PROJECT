@@ -18,8 +18,12 @@ return new class extends Migration
             $table->date('birth')->nullable();
             $table->string('gender')->nullable();
             $table->string('address');
+            $table->string('days');
+            $table->time('start')->nullable();
+            $table->time('end')->nullable();
             $table->text('channelName')->default('hi');
             $table->string('license')->nullable();
+            $table->string('images')->nullable();
             $table->string('image')->nullable();
             $table->text('qualifications')->nullable();
             $table->text('certifications')->nullable();
@@ -44,4 +48,8 @@ return new class extends Migration
     {
         Schema::dropIfExists('trainers');
     }
+    protected $casts = [
+        'days' => 'array',
+        'images' => 'array'
+    ];
 };

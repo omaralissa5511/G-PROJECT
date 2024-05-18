@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Bids;
 use App\Models\Auction;
 use App\Models\Bid;
 use App\Models\Horse;
@@ -10,6 +11,7 @@ use App\Models\Profile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
@@ -260,7 +262,10 @@ class AuctionController extends Controller
                 'data' => $bid,
                 'status' => true
             ];
+            $message = 'new bid is offered successfully.';
+            Broadcast(new Bids($message));
             return response()->json($response);
+
 
         } finally {
             $lock->release();
@@ -469,7 +474,7 @@ class AuctionController extends Controller
         }
 
         $insurance = Insurance::create([
-            'insurance ' => $request->insurance,
+            'insurance' => $request->insurance,
             'auction' => $request->Auction_id,
             'profile_id' =>$profile_id
         ]);

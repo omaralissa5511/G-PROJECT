@@ -175,6 +175,9 @@ class CourseController extends Controller
 
         $course = Course::where('id',$id)->first();
 
+            $course->days = json_decode($course->days) ;
+
+
         if($course){
             $response = [
                 'message' => 'course: ',

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('description');
             $table->string('profile');
-            $table->date('day')->nullable();
+            $table->string('day')->nullable();
             $table->time('start')->nullable();
             $table->time('end')->nullable();
             $table->string('license')->nullable();
@@ -39,4 +39,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('equestrian_clubs');
     }
+    protected $casts = [
+        'days' => 'array',
+    ];
 };
