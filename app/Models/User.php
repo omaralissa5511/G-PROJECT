@@ -60,26 +60,33 @@ class User extends Authenticatable
     public function equestrian_club () {
         return $this->hasOne(Equestrian_club::class);
     }
+
     public function health_care () {
         return $this->hasOne(HealthCare::class);
     }
+
     public function profiles () {
         return $this->hasOne(Profile::class);
     }
+
 //    public function seller_buyer () {
 //        return $this->hasOne(SellerBuyer::class);
 //    }
+
     public function trainers () {
         return $this->hasOne(Trainer::class);
     }
+
     public function CRating()
     {
         return $this->hasMany(CRating::class);
     }
+
     public function TRating()
     {
         return $this->hasMany(TRating::class);
     }
+
     public function courses()
     {
         return $this->belongsToMany(Course::class);
@@ -94,7 +101,6 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Auction::class, 'favorite_auctions');
     }
-
 
     public function bookings()
     {
