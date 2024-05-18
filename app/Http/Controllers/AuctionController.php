@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Auction;
 use App\Models\Bid;
 use App\Models\Horse;
+use App\Models\Insurance;
 use App\Models\Profile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -197,7 +198,7 @@ class AuctionController extends Controller
 
         try {
             $user_id = Auth::id();
-            $profile_id = Profile::where('id',$user_id)->first()->id;
+            $profile_id = Profile::where('user_id',$user_id)->first()->id;
             $auctionOWNER = Auction::where('id',$Aid)->first()->profile_id;
             if($auctionOWNER == $profile_id){
                 return response()->json([
@@ -277,7 +278,7 @@ class AuctionController extends Controller
         $currentBid = Bid::where('auction_id',$Aid)->pluck('offeredPrice');
         $MAX_CurrentBid = collect($currentBid)->max();
         $MAX_CurrentBid_owner_id = Bid::where
-        ('offeredPrice','=',70000)->first()->profile_id;
+        ('offeredPrice','=',$MAX_CurrentBid)->first()->profile_id;
         $ownerOFBigBid = Profile::find($MAX_CurrentBid_owner_id);
         if($currentBid->isEmpty()){
 
@@ -305,10 +306,11 @@ class AuctionController extends Controller
         foreach ($TheBuyers_id as $Pid){
 
             $TheBuyers[] = Profile::find($Pid);
-            $TheBuyers[] = Bid::where('profile_id',$Pid)->where
-            ('auction_id',$id)->orderBy('id','desc')->first()->offeredPrice;
+            $TheBuyers2 [] = Profile::where('id',$Pid)->with('bids')->get();
+//            $TheBuyers[] = Bid::where('profile_id',$Pid)->where
+//            ('auction_id',$id)->orderBy('id','desc')->first()->offeredPrice;
         }
-        return response()->json($TheBuyers);
+        return response()->json($TheBuyers2);
     }
 
     public function getTodayAuctions(){
@@ -443,6 +445,35 @@ class AuctionController extends Controller
         ];
         return response()->json($response);
 
+    }
+
+    public function addInsurance (Request $request){
+
+        $validate = Validator::make($request->all(), [
+            'Auction_id' => 'required',
+            'insurance' => 'required',
+
+        ]);
+        $user_id = Auth::id();
+        $profile_id = Profile::where('user_id',$user_id)->first()->id;
+        if ($validate->fails()) {
+            return response()->json([
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+                'status' => false
+            ]);
+        }
+
+        $insurance = Insurance::create([
+            'insurance ' => $request->insurance,
+            'auction' => $request->Auction_id,
+            'profile_id' =>$profile_id
+        ]);
+        return response()->json([
+            'message' => 'done',
+            'the insurance'=> $insurance,
+            'status' => true
+        ]);
     }
 }
 
