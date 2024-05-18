@@ -226,6 +226,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::get('upcomingToday',[AuctionController::class,'upcomingToday']);
             Route::post('upcoming1',[AuctionController::class,'upcoming2']);
             Route::get('OperationTime/{id}',[AuctionController::class,'OperationTime']);
+            Route::post('addInsurance',[AuctionController::class,'addInsurance']);
 
 
             //Booking

@@ -76,9 +76,10 @@ class MessageController extends Controller
         );
 
         $socketId = $request->input('socketId');
-        $channelName = $request->input('channelName');
+        $channelName = $request->input('channel_name');
 
-        return response()->json($pusher->socket_auth($channelName, $socketId));
+        $auth = $pusher->socket_auth($channelName, $socketId);
+        return response()->json($auth);
     }
 
 

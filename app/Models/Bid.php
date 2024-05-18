@@ -20,7 +20,7 @@ class Bid extends Model
     public function auctions(){
         return $this->belongsTo(Auction::class);
     }
-    public function profiles(){
+    public function profile(){
         return $this->belongsTo(Profile::class);
     }
 }

@@ -31,5 +31,8 @@ class Profile extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function insurances(){
+        return $this->hasMany(Insurance::class);
+    }
 
 }
