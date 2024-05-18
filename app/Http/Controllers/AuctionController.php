@@ -305,12 +305,16 @@ class AuctionController extends Controller
           $TheBuyers_id = collect($profiles)->unique()->values()->all();
         foreach ($TheBuyers_id as $Pid){
 
-            $TheBuyers[] = Profile::find($Pid);
-            $TheBuyers2 [] = Profile::where('id',$Pid)->with('bids')->get();
+ //           $TheBuyers[] = Profile::find($Pid);
+            $TheBuyers2 [] = Profile::where('id',$Pid)->with('bids')->first();
 //            $TheBuyers[] = Bid::where('profile_id',$Pid)->where
 //            ('auction_id',$id)->orderBy('id','desc')->first()->offeredPrice;
         }
-        return response()->json($TheBuyers2);
+        $response = [
+            'Buyers' => $TheBuyers2,
+            'status' => true
+        ];
+        return response()->json($response);
     }
 
     public function getTodayAuctions(){
