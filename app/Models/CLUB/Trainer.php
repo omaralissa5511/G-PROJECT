@@ -10,8 +10,8 @@ class Trainer extends Model
     use HasFactory;
 
     protected $fillable = ['FName','channelName','lName','birth','gender',
-        'address','license','image','qualifications','certifications',
-        'experience','specialties','user_id','club_id'];
+        'address','license','image','qualifications','certifications','images',
+        'experience','specialties','user_id','club_id','days','start','end'];
     protected $table = 'trainers';
 
     protected $hidden = [

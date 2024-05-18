@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NotificationE;
+use App\Events\Users;
 use App\Http\Controllers\Controller;
 use App\Models\CLUB\Booking;
 use App\Models\CLUB\Clas;
@@ -14,7 +15,9 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Validator;
+use function Laravel\Prompts\form;
 
 class ReservationController extends Controller
 {
@@ -406,5 +409,36 @@ class ReservationController extends Controller
             return response()->json(['status' => true]);
         else
             return response()->json(['status' => false]);
+    }
+
+    public function sendAlert(){
+
+        $now = Carbon::now();
+        $corses = Course::where('begin','>',$now)->get();
+       foreach ($corses as $is){
+           $CarbonDate = Carbon::parse($is->begin);
+           $is->begin = $CarbonDate->subDay();
+       }
+      $rr=[];
+       foreach ($corses as $id){
+           $RRr = Carbon::parse($id->begin);
+           if($RRr->isSameDay($now))
+               $rr[] = $id;
+            }
+       $bb = [];
+       foreach ($rr as $id){
+           $bb[] = $id->id;
+       }
+
+        foreach ($bb as $id){
+            $users[] = Reservation::where('course_id',$id)->pluck('user_id');
+        }
+
+        $message = 'there is one day left for course beginning';
+        foreach ($users as $user){
+            echo $user;
+             Broadcast(new Users($message,$user));
+        }
+
     }
 }
