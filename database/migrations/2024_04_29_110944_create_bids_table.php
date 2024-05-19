@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('bids', function (Blueprint $table) {
             $table->id();
-            $table->integer('offeredPrice');
+            $table->decimal('offeredPrice', 17, 2);
             $table->unsignedBigInteger('profile_id');
             $table->foreign('profile_id')->references('id')->on
             ('profiles')->onDelete('cascade')->onUpdate('cascade');
