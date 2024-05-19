@@ -58,10 +58,16 @@ class FavoriteAuctionController extends Controller
 
         $favoriteAuctions = $user->favoriteAuctions;
 
+
+        foreach ($favoriteAuctions as $auction) {
+            $auction->horses = $auction->horses;
+        }
+
         return response()->json([
             'favorite_auctions' => $favoriteAuctions,
             'status' => true
         ]);
     }
+
 
 }
