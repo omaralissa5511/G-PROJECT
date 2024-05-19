@@ -10,6 +10,8 @@ class Equestrian_club extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $fillable = ['name','description','address','profile',
+        'day','start','end','license','website','lat','long','user_id'];
     protected $table = 'equestrian_clubs';
 
     protected $hidden = [

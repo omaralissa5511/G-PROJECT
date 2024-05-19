@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Bids;
 use App\Events\Clubs;
 use App\Events\NotificationE;
 use App\Http\Controllers\Controller;
@@ -34,6 +35,7 @@ class AdminController extends Controller
             'lat' => 'required',
             'long' => 'required',
             'address' => 'required'
+
         ]);
 
         if ($validate->fails()) {
@@ -71,6 +73,8 @@ class AdminController extends Controller
             'type' => $request->input('type'),
             'valid' => 'yes',
         ]);
+
+        $day = json_encode($request->day);
         $club = Equestrian_club::create([
             'user_id' => $user->id,
             'name' => $request->name,
@@ -79,6 +83,9 @@ class AdminController extends Controller
             'long' => $request->long,
             'website' => $request->website,
             'lat' => $request->lat,
+            'day' => $day,
+            'start' => $request->start,
+            'end' => $request->end,
             'license' => $realPath,
             'profile' =>$realPath1
         ]);
@@ -154,6 +161,9 @@ class AdminController extends Controller
     {
         $clubs = Equestrian_club::get();
 
+        foreach ($clubs as $club){
+            $club->day = json_decode($club->day) ;
+        }
         if ($clubs) {
 
             $response = [
@@ -355,11 +365,14 @@ class AdminController extends Controller
             'image' =>$realPath
         ]);
 
+        $message = 'new category have added successfully.';
+        Broadcast(new \App\Events\Category($message));
         return response()->json([
             'message' =>'Category is created successfully.',
             'category' => $category,
             'status' => true
         ]);
+
     }
 
     public function getCategories()

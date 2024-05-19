@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Route;
     Route::post('AdminRegister',[AuthController::class,'AdminRegister']);
     Route::post('login',[AuthController::class,'login']);
     Route::post('AdminLogin',[AuthController::class,'AdminLogin']);
+    Route::post('sendAlert',[ReservationController::class,'sendAlert']);
 
 
 

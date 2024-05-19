@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Bids;
 use App\Http\Controllers\Controller;
 use App\Models\CLUB\ClubImage;
 use App\Models\CLUB\Equestrian_club;
@@ -158,6 +159,16 @@ class ClubController extends Controller
             ]);
         }
 
+        if($request->hasFile('images')){
+            $images = $request->file('images');
+            $imagePaths = [];
+            foreach ($images as $image) {
+                $new_name = rand() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('images/Trainer/'), $new_name);
+                $imagePaths[] = 'images/Trainer/' . $new_name;
+            }
+        }
+
 
         $file_extension = $request->image->getClientOriginalExtension();
         $filename = time() . '.' . $file_extension;
@@ -179,12 +190,13 @@ class ClubController extends Controller
             'valid' => 'yes',
         ]);
            $user_id = Auth::id();
+        $days = json_encode($request->days);
            $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
         $trainer = Trainer::create([
             'user_id' => $user->id,
             'club_id' => $club_id,
             'FName' => $request->FName,
-            'LName' => $request->LName,
+            'lName' => $request->LName,
             'birth' => $request->birth,
             'address' => $request->address,
             'gender' => $request->gender,
@@ -192,10 +204,18 @@ class ClubController extends Controller
             'certifications' => $request->certifications,
             'experience' => $request->experience,
             'specialties' => $request->gender,
+            'days' => $days,
+            'start' => $request->start,
+            'end' => $request->end,
             'channelName' => 'testCHANNEL',
             'license' => $realPath1,
-            'image' => $realPath
+            'image' => $realPath,
+            'images' =>'$imagePaths'
         ]);
+        if($request->hasFile('images')){
+            $trainer->images = $imagePaths;
+        }
+
         $channelName =  'trainer_'. $trainer->id;
         $trainer->channelName = $channelName;
         $trainer->save();
@@ -211,6 +231,8 @@ class ClubController extends Controller
             'status' => true
         ];
 
+        $message = 'new trainer have added successfully.';
+        Broadcast(new \App\Events\Trainer($message));
         return response()->json($response);
     }
 
@@ -219,6 +241,9 @@ class ClubController extends Controller
         $user_id = Auth::id();
         $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
         $trainers = Trainer::where('club_id',$club_id)->get();
+        foreach ($trainers as $course){
+            $course->days = json_decode($course->days) ;
+        }
         if($trainers){
             $response = [
                 'message' => 'club trainers found : ',
