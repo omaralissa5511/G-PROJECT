@@ -16,8 +16,7 @@ class Equestrian_club extends Model
 
     protected $hidden = [
         'created_at',
-        'updated_at',
-        'user_id'
+        'updated_at'
     ];
 
     public function trainer (){
