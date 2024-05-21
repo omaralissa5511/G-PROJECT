@@ -269,6 +269,7 @@ class ClubController extends Controller
 
             foreach ($trainers as $trainer){
                 $trainer->days = json_decode($trainer->days);
+                $trainer->images = json_decode($trainer->images);
             }
 
             $response = [
