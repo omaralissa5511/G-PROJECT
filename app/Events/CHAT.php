@@ -29,7 +29,8 @@ class CHAT implements ShouldBroadcast
 
     public function broadcastOn(): Channel
     {
-        return new PrivateChannel("private.chat");
+        return new PrivateChannel
+        ("private.chat".$this->userID.'-'.$this->trainer_id);
 
     }
     public function broadcastAs()
