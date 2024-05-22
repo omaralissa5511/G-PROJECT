@@ -29,7 +29,7 @@ class TRatingController extends Controller
     {
         $reviews = TRating::where('trainer_id', $trainer_id)
             ->whereNotNull('review')  // تحقق من أن الحقل 'review' غير فارغ
-            ->with('user.profile') // إضافة معلومات المدرب
+            ->with('user.profiles') // إضافة معلومات المدرب
             ->get();
 
         // تحويل الوقت إلى شكل مقروء بشكل أكبر

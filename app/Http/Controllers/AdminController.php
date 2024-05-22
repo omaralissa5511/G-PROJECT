@@ -185,7 +185,6 @@ class AdminController extends Controller
 
     public function searchClubByName($name)
     {
-
         $clubs = Equestrian_club::where('name', 'LIKE', $name . '%')->get();
 
         if ($clubs->isEmpty()) {
@@ -195,14 +194,16 @@ class AdminController extends Controller
                 'status' => false
             ];
         } else {
-            $clubImages = ClubImage::where('club_id', $clubs[0]->id)->pluck('image_paths')->toArray();
+
             foreach ($clubs as $club) {
-                $club->day = json_decode($club->day);
+                $clubImages = ClubImage::where('club_id', $club->id)->pluck('image_paths')->toArray();
+                $club->images = $clubImages;
             }
+
+
             $response = [
                 'message' => 'Club(s) found successfully.',
                 'clubs' => $clubs,
-                'images' => $clubImages,
                 'status' => true
             ];
         }
@@ -234,6 +235,7 @@ class AdminController extends Controller
 
         return $response;
     }
+
 
 
 

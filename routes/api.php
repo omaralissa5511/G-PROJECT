@@ -187,7 +187,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('showSpecificReservation/{Rid}', [ReservationController::class, 'showSpecificReservation']);
         Route::delete('cancelReservation/{Rid}', [ReservationController::class, 'cancelReservation']);
         Route::post('isReserved', [ReservationController::class, 'isReserved']);
-
+        Route::post('isReservedTrainer', [ReservationController::class, 'isReservedTrainer']);
 
             //TRating
             Route::get('allTrainerRating/{trainer_id}',[TRatingController::class,'getAllRatingInTrainer']);
