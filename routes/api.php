@@ -196,6 +196,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('createTrainerRating',[TRatingController::class,'createRating']);
             Route::post('updateTrainerRating',[TRatingController::class,'updateRating']);
             Route::post('deleteTrainerRating',[TRatingController::class,'deleteRating']);
+            Route::post('userHasReviewInTrainer',[TRatingController::class,'userHasReviewInTrainer']);
 
             //CRating
             Route::get('allClubRating/{club_id}',[CRatingController::class,'getAllRatingInClub']);
@@ -204,6 +205,8 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('createClubRating',[CRatingController::class,'createRating']);
             Route::post('updateClubRating',[CRatingController::class,'updateRating']);
             Route::post('deleteClubRating',[CRatingController::class,'deleteRating']);
+            Route::post('userHasReviewInClub',[CRatingController::class,'userHasReviewInClub']);
+
 
             // favorite club
             Route::post('addClubToFavorites',[FavoriteClubController::class,'addClubToFavorites']);

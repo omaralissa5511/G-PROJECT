@@ -198,4 +198,16 @@ class TRatingController extends Controller
         ]);
     }
 
+    public function userHasReviewInTrainer(Request $request){
+
+        $review = TRating::where('trainer_id', $request->trainer_id)
+            ->where('user_id', $request->user_id)
+            ->whereNotNull('review')->first();
+
+        if($review)
+            return response()->json(['status' => true]);
+        else
+            return response()->json(['status' => false]);
+    }
+
 }
