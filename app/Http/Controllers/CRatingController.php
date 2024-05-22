@@ -6,6 +6,7 @@ use App\Models\CLUB\Booking;
 use App\Models\CLUB\CRating;
 use App\Models\CLUB\Reservation;
 
+use App\Models\CLUB\TRating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -200,6 +201,18 @@ class CRatingController extends Controller
             'message' => 'Rating is deleted successfully.',
             'status' => true
         ]);
+    }
+
+    public function userHasReviewInClub(Request $request){
+
+        $review = CRating::where('club_id', $request->club_id)
+            ->where('user_id', $request->user_id)
+            ->whereNotNull('review')->first();
+
+        if($review)
+            return response()->json(['status' => true]);
+        else
+            return response()->json(['status' => false]);
     }
 
 
