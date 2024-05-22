@@ -188,15 +188,18 @@ class AdminController extends Controller
         $clubs = Equestrian_club::where('name', 'LIKE', $name . '%')->get();
 
         if ($clubs->isEmpty()) {
+
             $response = [
                 'message' => 'No clubs found.',
                 'status' => false
             ];
         } else {
+
             foreach ($clubs as $club) {
                 $clubImages = ClubImage::where('club_id', $club->id)->pluck('image_paths')->toArray();
                 $club->images = $clubImages;
             }
+
 
             $response = [
                 'message' => 'Club(s) found successfully.',
@@ -207,6 +210,32 @@ class AdminController extends Controller
 
         return $response;
     }
+
+    public function searchClubByID($id)
+    {
+
+        $club = Equestrian_club::where('id',$id)->first();
+
+        if (!$club) {
+            $response = [
+                'message' => 'No club found.',
+                'status' => false
+            ];
+        } else {
+            $club->day = json_decode($club->day) ;
+            $clubImages = ClubImage::where('club_id', $club->id)->pluck('image_paths')->toArray();
+
+            $response = [
+                'message' => 'Club found successfully.',
+                'club' => $club,
+                'images' => $clubImages,
+                'status' => true
+            ];
+        }
+
+        return $response;
+    }
+
 
 
 

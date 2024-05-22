@@ -82,6 +82,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('showClubs', [AdminController::class, 'showClubs']);
         Route::delete('deleteClub/{userId}', [AdminController::class, 'deleteClub']);
         Route::get('searchClubByname/{name}', [AdminController::class, 'searchClubByName']);
+        Route::get('searchClubByID/{id}', [AdminController::class, 'searchClubByID']);
 
         Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
         Route::get('showService/{id}', [ServiceController::class, 'show']);

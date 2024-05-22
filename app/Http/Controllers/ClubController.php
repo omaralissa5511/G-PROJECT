@@ -266,6 +266,12 @@ class ClubController extends Controller
 
         $trainers = Trainer::where('club_id',$id)->get();
         if($trainers){
+
+            foreach ($trainers as $trainer){
+                $trainer->days = json_decode($trainer->days);
+                $trainer->images = json_decode($trainer->images);
+            }
+
             $response = [
                 'message' => 'club trainers found : ',
                 'trainers' => $trainers,
