@@ -15,7 +15,6 @@ class Trainer extends Model
     protected $table = 'trainers';
 
     protected $hidden = [
-        'id',
         'created_at',
         'updated_at',
     ];
