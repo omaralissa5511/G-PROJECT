@@ -411,6 +411,60 @@ class ReservationController extends Controller
             return response()->json(['status' => false]);
     }
 
+
+    public function isReservedTrainer(Request $request){
+
+
+        $validate = Validator::make($request->all(), [
+            'trainer_id' => 'required',
+            'user_id' => 'required'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+                'status' => false
+            ]);
+        }
+//        $course_id = Reservation::where('user_id',$request->user_id)
+//            ->pluck('course_id');
+//        $course_id = collect($course_id)->unique()->values()->all();
+//        if($course_id){
+//            foreach ($course_id as $id){
+//                $club_id[] = Course::where('id', $id)->first()->club;
+//            }
+//          $club_id = collect($club_id)->unique()->values()->all();
+//
+//            foreach ($club_id as $id) {
+//                if ($id == $request->club) {
+//                    return response()->json([
+//                        'status' => true
+//                    ]);
+//                }
+//            }
+//            return response()->json(['status' => false]);
+//
+//        }else {
+//            return response()->json([
+//                'status' => false
+//            ]);
+//        }
+
+        $booking = Booking::where('trainer_id', $request->trainer_id)->where('user_id', $request->user_id)->first();
+
+        $reservation = Reservation::whereHas('course', function ($query) use ($request) {
+            $query->where('trainer_id', $request->trainer_id);
+        })->where('user_id', $request->user_id)->first();
+
+
+        if ($booking || $reservation)
+
+            return response()->json(['status' => true]);
+        else
+            return response()->json(['status' => false]);
+    }
+
     public function sendAlert(){
 
         $now = Carbon::now();
