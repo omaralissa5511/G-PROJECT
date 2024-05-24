@@ -21,9 +21,15 @@ class ServiceController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    public function getClubServices($id){
+         return " test";
+    }
+
     public function index($id)
     {
-        $services = Service::where('club_id', $id)->get();
+        $club_id = Equestrian_club::where('user_id',$id)->first()->id;
+        $services = Service::where('club_id', $club_id)->get();
 
         return response()->json([
             'services' => $services,
@@ -38,7 +44,6 @@ class ServiceController extends Controller
     public function create(Request $request)
     {
 
-
         $user_id = Auth::id();
 
         $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
@@ -48,7 +53,7 @@ class ServiceController extends Controller
             'name' => 'required',
             'description' => 'required',
             'image'=>'required',
-            'category_id'=>'required',
+            'category'=>'required',
         ]);
 
         if ($validate->fails()) {
@@ -60,23 +65,23 @@ class ServiceController extends Controller
         }
 
 
-        $file_extension = $request->image->getClientOriginalExtension();
-        $filename = time() . '.' . $file_extension;
+        if($request->hasFile('image')){
+            $file_extension = $request->image->getClientOriginalExtension();
+            $filename = time() . '.' . $file_extension;
 
-        $path = public_path('images/SERVICES/');
-        $request->image->move($path, $filename);
-        $realPath = 'images/SERVICES/'.$filename;
+            $path = public_path('images/SERVICES/');
+            $request->image->move($path, $filename);
+            $realPath = 'images/SERVICES/'.$filename;
+        }
 
-
-        $service = Service::create([
+        $service  = Service::create([
             'name' => $request->name,
             'description' =>$request->description,
-            'image' =>$realPath,
-            'category_id'=>$request->category_id,
-
+            'image' => $realPath,
+            'category_id'=>$request->category,
             'club_id'=>$club_id
 
-            
+
 
         ]);
 
@@ -91,9 +96,9 @@ class ServiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show($name)
     {
-        $service = Service::find($id);
+        $service = Service::where('name',$name)->get();
 
         if (!$service) {
             return response()->json([
@@ -103,7 +108,7 @@ class ServiceController extends Controller
         }
 
         return response()->json([
-            'category' => $service,
+            'services' => $service,
             'status' => true
         ]);
 
@@ -115,44 +120,25 @@ class ServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validate = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'image'=>'required'
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json([
-                'message' => 'Validation Error!',
-                'data' => $validate->errors(),
-                'status' => false
-            ]);
-        }
 
         $service = Service::find($id);
 
-        if (!$service) {
-            return response()->json([
-                'message' => 'Service not found!',
-                'status' => false
-            ]);
-        }
+       if($request->hasFile('image')){
+           $file_extension = $request->image->getClientOriginalExtension();
+           $filename = time() . '.' . $file_extension;
+           $path = public_path('images/SERVICES/');
+           $request->image->move($path, $filename);
+           $realPath = 'images/SERVICES/'.$filename;
+           $service->update(['image'=>$realPath]);
+       }
+        $attributes = array_filter($request->all(),function ($value){
+            return !is_null($value);
+        });
 
-        $file_extension = $request->image->getClientOriginalExtension();
-        $filename = time() . '.' . $file_extension;
+        $requestData = collect($attributes)->
+        except(['image'])->toArray();
 
-        $path = public_path('images/SERVICES/');
-        $request->image->move($path, $filename);
-        $realPath = 'images/SERVICES/'.$filename;
-
-
-
-
-        $service->update([
-            'name' => $request->name,
-            'description' =>$request->description,
-            'image'=>$realPath
-        ]);
+        $service->update($requestData);
 
         return response()->json([
             'message' =>'Service is updated successfully.',
@@ -160,7 +146,6 @@ class ServiceController extends Controller
             'status' => true
         ]);
     }
-
 
 
     /**
