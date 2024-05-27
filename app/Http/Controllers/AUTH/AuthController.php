@@ -663,7 +663,7 @@ class AuthController extends Controller
             }
             else{
                 $user = User::where('email', $request->email)
-                    ->with('profiles')->first();
+                    ->with('doctor')->first();
             }
             $data['token'] = $user->createToken($request->email)->plainTextToken;
             $data['user'] = $user;

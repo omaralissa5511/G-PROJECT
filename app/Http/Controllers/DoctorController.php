@@ -101,7 +101,7 @@ class DoctorController extends Controller
         $data['token'] = $user->createToken($request->email)->plainTextToken;
         $data['user'] = $user;
         $data['doctor'] = $doctor;
-        $user->assignRole('DOCTOR');
+        $user->assignRole('SB');
 
         return response()->json([
             'message' => 'User is created successfully.',
