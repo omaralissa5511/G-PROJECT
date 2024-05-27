@@ -19,6 +19,5 @@ class RoleSeeder extends Seeder
         $trainer = Role::create(['name' => 'TRAINER']);
         $SB = Role::create(['name' => 'SB']);
         $user = Role::create(['name' => 'USER']);
-
     }
 }

@@ -106,7 +106,7 @@ class AdminController extends Controller
             'status' => true
         ];
         $message = 'one club have been added added';
-        broadcast(new Clubs( $message));
+        broadcast(new Clubs($message));
         return response()->json($response);
     }
 
@@ -185,7 +185,7 @@ class AdminController extends Controller
 
     public function searchClubByName($name)
     {
-        $clubs = Equestrian_club::where('name', 'LIKE', $name . '%')->get();
+        $clubs = Equestrian_club::where('name', 'LIKE','%'. $name . '%')->get();
 
         if ($clubs->isEmpty()) {
 
@@ -197,7 +197,7 @@ class AdminController extends Controller
 
             foreach ($clubs as $club) {
                 $clubImages = ClubImage::where('club_id', $club->id)->pluck('image_paths')->toArray();
-                $club->images = $clubImages;
+                $club->images = $clubImages[0];
             }
 
 

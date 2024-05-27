@@ -12,7 +12,6 @@ class Bid extends Model
     protected $table = 'bids';
     protected $fillable = ['offeredPrice','profile_id','auction_id'];
     protected $hidden = [
-        'id',
         'created_at',
         'updated_at',
     ];

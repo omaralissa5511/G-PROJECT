@@ -9,8 +9,10 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CRatingController;
+use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\FavoriteAuctionController;
 use App\Http\Controllers\FavoriteClubController;
+use App\Http\Controllers\HealthCareController;
 use App\Http\Controllers\HorseController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
@@ -85,8 +87,24 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('searchClubByname/{name}', [AdminController::class, 'searchClubByName']);
         Route::get('searchClubByID/{id}', [AdminController::class, 'searchClubByID']);
 
-        //Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
+
+        Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
+        Route::get('showService/{id}', [ServiceController::class, 'show']);
         Route::get('showServiceAdmin/{id}', [ServiceController::class, 'show']);
+        ///// Health Care
+        Route::post('createHealthCare', [HealthCareController::class, 'createHealthCare']);
+        Route::post('editHealthCare/{id}', [HealthCareController::class, 'updateHealthCare']);
+        Route::delete('deleteHealthCare/{id}', [HealthCareController::class, 'deleteHealthCare']);
+        Route::get('getAllHealthCares', [HealthCareController::class, 'getAllHealthCares']);
+        Route::get('getHealthCareByID/{id}', [HealthCareController::class, 'getHealthCareByID']);
+        Route::get('searchHealthCareByName/{name}', [HealthCareController::class, 'searchHealthCareByName']);
+
+        ///// Doctors
+        Route::get('allDoctorsInHealthCareAdmin/{id}', [DoctorController::class, 'allDoctorsInHeaalthCare']);
+        Route::get('getDoctorByIDAdmin/{id}', [DoctorController::class, 'getDoctorByID']);
+
+
+
     });
 
 
@@ -113,8 +131,10 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
 
         Route::post('createService', [ServiceController::class, 'create']);
+
         Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
         Route::get('showService/{name}', [ServiceController::class, 'show']);
+
         Route::post('updateService/{id}', [ServiceController::class, 'update']);
         Route::delete('deleteService/{id}', [ServiceController::class, 'destroy']);
 
@@ -147,12 +167,23 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
     ################ TRAINER ROLE ###############
     Route::group(['middleware' => ['role:TRAINER']], function () {
 
-
         Route::post('editTrainer', [TrainerController::class, 'editTrainer']);
         Route::get('MyProfile', [TrainerController::class, 'MyProfile']);
-
-
     });
+    ############### HEALTH CARE ##################
+        Route::group(['middleware' => ['role_or_permission:HEALTH']], function () {
+            Route::post('editHealthCareHealth/{id}', [HealthCareController::class, 'updateHealthCare']);
+            Route::get('getAllHealthCaresHealth', [HealthCareController::class, 'getAllHealthCares']);
+            Route::get('getHealthCareByIDHealth/{id}', [HealthCareController::class, 'getHealthCareByID']);
+
+            /// Doctors
+            Route::post('createDoctor', [DoctorController::class, 'createDoctor']);
+            Route::post('editDoctor/{id}', [DoctorController::class, 'updateDoctor']);
+            Route::delete('deleteDoctor/{id}', [DoctorController::class, 'deleteDoctor']);
+            Route::get('allDoctorsInHealthCare/{id}', [DoctorController::class, 'allDoctorsInHeaalthCare']);
+            Route::get('getDoctorByID/{id}', [DoctorController::class, 'getDoctorByID']);
+
+        });
 
     ################## USER ROLE *******************
         Route::group(['middleware' => ['role_or_permission:USER']], function () {
@@ -258,6 +289,19 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('addAuctionToFavorites',[FavoriteAuctionController::class,'addAuctionToFavorites']);
             Route::post('removeAuctionFromFavorites',[FavoriteAuctionController::class,'removeAuctionFromFavorites']);
             Route::get('getFavoriteAuctions/{user_id}',[FavoriteAuctionController::class,'getFavoriteAuctions']);
+
+
+            //// Health Care
+            Route::get('getAllHealthCaresUser', [HealthCareController::class, 'getAllHealthCares']);
+            Route::get('getHealthCareByIDUser/{id}', [HealthCareController::class, 'getHealthCareByID']);
+            Route::get('searchHealthCareByNameUser/{name}', [HealthCareController::class, 'searchHealthCareByName']);
+
+
+            ///// Doctors
+            Route::get('allDoctorsInHealthCareUser/{id}', [DoctorController::class, 'allDoctorsInHeaalthCare']);
+            Route::get('getDoctorByIDUser/{id}', [DoctorController::class, 'getDoctorByID']);
+
+
 
 
 

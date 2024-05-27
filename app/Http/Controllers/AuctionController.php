@@ -326,9 +326,7 @@ class AuctionController extends Controller
             ->whereDate('begin','<=',$today)
             ->whereDate('end','>=',$today)
             ->where('status','confirmed')
-            ->join('profiles','profiles.id',
-                '=','auctions.profile_id')
-            ->with('horses')->get();
+            ->with('horses', 'profile')->get();
 
         if($auctions->isEmpty()){
             $response = [

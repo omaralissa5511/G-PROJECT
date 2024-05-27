@@ -14,7 +14,6 @@ class Profile extends Model
     protected $table = 'profiles';
 
     protected $hidden = [
-        'id',
         'created_at',
         'updated_at',
         'user_id'
@@ -34,5 +33,16 @@ class Profile extends Model
     public function insurances(){
         return $this->hasMany(Insurance::class);
     }
+
+    public function consultations()
+    {
+        return $this->hasMany(Consultation::class);
+    }
+
+    public function HRatings()
+    {
+        return $this->hasMany(HRating::class);
+    }
+
 
 }

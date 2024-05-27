@@ -15,6 +15,7 @@ class Equestrian_club extends Model
     protected $table = 'equestrian_clubs';
 
     protected $hidden = [
+        'id',
         'created_at',
         'updated_at'
     ];
