@@ -77,7 +77,8 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('allCategory', [AdminController::class, 'getCategories']);
         Route::get('getCategory', [AdminController::class, 'getCategory']);
         Route::post('updateCategory', [AdminController::class, 'updateCategory']);
-        Route::delete('deleteCategory', [AdminController::class, 'deleteCategory']);
+        Route::delete('deleteCategory/{id}', [AdminController::class, 'deleteCategory']);
+        Route::post('getCategoryByName/{name}', [AdminController::class, 'getCategoryByName']);
 
 
         Route::post('AddClub', [AdminController::class, 'AddClub']);
@@ -86,9 +87,10 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('searchClubByname/{name}', [AdminController::class, 'searchClubByName']);
         Route::get('searchClubByID/{id}', [AdminController::class, 'searchClubByID']);
 
+
         Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
         Route::get('showService/{id}', [ServiceController::class, 'show']);
-
+        Route::get('showServiceAdmin/{id}', [ServiceController::class, 'show']);
         ///// Health Care
         Route::post('createHealthCare', [HealthCareController::class, 'createHealthCare']);
         Route::post('editHealthCare/{id}', [HealthCareController::class, 'updateHealthCare']);
@@ -102,11 +104,15 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('getDoctorByIDAdmin/{id}', [DoctorController::class, 'getDoctorByID']);
 
 
+
     });
 
 
     ################ CLUB ROLE ###############
     Route::group(['middleware' => ['role:CLUB']], function () {
+
+
+        Route::get('allServices/{id}', [ServiceController::class, 'index']);
 
         Route::post('editClub', [ClubController::class, 'editClub']);
         Route::get('MyClub', [ClubController::class, 'MyClub']);
@@ -125,13 +131,16 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
 
         Route::post('createService', [ServiceController::class, 'create']);
-        Route::get('allServicesAdmin/{club_id}', [ServiceController::class, 'index']);
-        Route::get('showService/{id}', [ServiceController::class, 'show']);
+
+        Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
+        Route::get('showService/{name}', [ServiceController::class, 'show']);
+
         Route::post('updateService/{id}', [ServiceController::class, 'update']);
         Route::delete('deleteService/{id}', [ServiceController::class, 'destroy']);
 
         Route::post('createCourse', [CourseController::class, 'createCourse']);
         Route::get('MyCourses', [CourseController::class, 'MyCourses']);
+        Route::get('MyCourses2', [CourseController::class, 'MyCourses2']);
         Route::get('getSpecificCourse/{id}', [CourseController::class, 'getSpecificCourse']);
         Route::post('editCourse/{CID}', [CourseController::class, 'editCourse']);
         Route::delete('deleteCourse/{id}', [CourseController::class, 'deleteCourse']);
@@ -141,11 +150,14 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::post('editClass/{class_id}', [ClassController::class, 'editClass']);
 
 
-        Route::post('createService', [ServiceController::class, 'create']);
-        Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
-        Route::get('showService/{id}', [ServiceController::class, 'show']);
-        Route::post('updateService/{id}', [ServiceController::class, 'update']);
-        Route::post('deleteService/{id}', [ServiceController::class, 'destroy']);
+//        Route::post('createService', [ServiceController::class, 'create']);
+//        Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
+//        Route::get('showService/{id}', [ServiceController::class, 'show']);
+//        Route::post('updateService/{id}', [ServiceController::class, 'update']);
+//        Route::post('deleteService/{id}', [ServiceController::class, 'destroy']);
+
+        Route::get('allCategory', [AdminController::class, 'getCategories']);
+
     });
 
 
@@ -179,15 +191,15 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('update', [AuthController::class, 'update']);
 
 
-            Route::get('allCategory', [AdminController::class, 'getCategories']);
+            Route::get('allCategoryU', [AdminController::class, 'getCategories']);
             Route::get('getCategory', [AdminController::class, 'getCategory']);
             Route::get('getCategoryServices/{id}', [CategoryController::class, 'categoryServices']);
             Route::get('getServiceClubs/{id}', [CategoryController::class, 'serviceClubs']);
             Route::get('getClubsInCategory/{id}', [CategoryController::class, 'clubsInCategory']);
 
             Route::get('allTrainersInService/{id}', [TrainerController::class, 'allTrainersInService']);
-            Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
-            Route::get('showService/{id}', [ServiceController::class, 'show']);
+           // Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
+            Route::get('showServiceUser/{id}', [ServiceController::class, 'show']);
 
             Route::get('showAllClubs', [AdminController::class, 'showClubs']);
             Route::get('getTrainerByID/{id}', [TrainerController::class, 'getTrainerByID']);

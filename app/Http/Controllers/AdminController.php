@@ -433,12 +433,30 @@ class AdminController extends Controller
         ]);
     }
 
+    public function getCategoryByName($name)
+    {
+
+        $category = Category::where('name',$name)->first();
+
+
+        if (!$category) {
+            return response()->json([
+                'message' => 'Category not found!',
+                'status' => false
+            ]);
+        }
+
+        return response()->json([
+            'category' => $category,
+            'status' => true
+        ]);
+    }
+
+
     public function updateCategory(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'name' => 'required|unique:categories,name',
-            'description' => 'required',
-            'image'=>'required'
+            'id' => 'required'
         ]);
 
         if ($validate->fails()) {
@@ -449,7 +467,25 @@ class AdminController extends Controller
             ]);
         }
 
+
         $category = Category::find($request->id);
+
+        if($request->hasFile('image')) {
+            $file_extension = $request->image->getClientOriginalExtension();
+            $filename = time() . '.' . $file_extension;
+            $path = public_path('images/CATEGORY/');
+            $request->image->move($path, $filename);
+            $realPath = 'images/CATEGORY/'.$filename;
+            $category->update(['image'=>$realPath]);
+        }
+
+        $attributes = array_filter($request->all(),function ($value){
+            return !is_null($value);
+        });
+        $requestData = collect($attributes)->
+        except(['image','id'])->toArray();
+
+        $category->update($requestData);
 
         if (!$category) {
             return response()->json([
@@ -458,19 +494,6 @@ class AdminController extends Controller
             ]);
         }
 
-        $file_extension = $request->image->getClientOriginalExtension();
-        $filename = time() . '.' . $file_extension;
-        $path = public_path('images/CATEGORY/');
-        $request->image->move($path, $filename);
-        $realPath = 'images/CATEGORY/'.$filename;
-
-
-        $category->update([
-            'name' => $request->name,
-            'description' =>$request->description,
-            'image'=>$realPath
-        ]);
-
         return response()->json([
             'message' =>'Category is updated successfully.',
             'category' => $category,
@@ -478,9 +501,9 @@ class AdminController extends Controller
         ]);
     }
 
-    public function deleteCategory(Request $request)
+    public function deleteCategory( Request $request ,$ID)
     {
-        $category = Category::find($request->id);
+        $category = Category::find($ID);
 
         if (!$category) {
             return response()->json([
@@ -498,6 +521,8 @@ class AdminController extends Controller
     }
 
 }
+
+
 
 
 

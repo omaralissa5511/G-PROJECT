@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\CLUB\Course;
 use App\Models\CLUB\Equestrian_club;
+use App\Models\CLUB\Service;
 use App\Models\CLUB\Trainer;
 use App\Models\User;
 use Carbon\Carbon;
@@ -26,6 +27,7 @@ class CourseController extends Controller
             'service_id' => 'required',
         ]);
 
+        //return $end = Carbon::parse($request->end);
         if ($validate->fails()) {
             return response()->json([
                 'message' => 'Validation Error!',
@@ -33,13 +35,15 @@ class CourseController extends Controller
                 'status' => false
             ]);
         }
+        $begin = Carbon::parse($request->begin);
+        $end = Carbon::parse($request->end);
         $days = json_encode($request->days);
         $user_id = Auth::id();
         $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
         $course = Course::create([
             'description' => $request->description,
-            'begin' => $request->begin,
-            'end' => $request->end,
+            'begin' => $begin,
+            'end' => $end,
             'days' => $days,
             'valid' => true,
             'club'=>$club_id,
@@ -60,35 +64,16 @@ class CourseController extends Controller
 
     public function editCourse($CID,Request $request){
 
-        $validate = Validator::make($request->all(), [
-
-            'description' => 'required|string|max:250',
-            'begin' => 'required',
-            'end' => 'required',
-            'days' => 'required',
-            'valid' => 'required',
-            'duration' => 'required',
-            'trainer_id' => 'required',
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json([
-                'message' => 'Validation Error!',
-                'data' => $validate->errors(),
-                'status' => false
-            ]);
-        }
-
         $course = Course::where('id',$CID)->first();
-        $course -> update([
-            'description' => $request->description,
-            'begin' => $request->begin,
-            'end' => $request->end,
-            'days' => $request->days,
-            'valid' => $request->valid,
-            'duration' => $request->duration,
-            'trainer_id' => $request->trainer_id,
-        ]);
+
+        $attributes = array_filter($request->all(),function ($value){
+            return !is_null($value);
+        });
+        if($attributes['days']){
+            $attributes['days']= json_encode($request->days);
+        }
+        $course->update($attributes);
+
         $course = Course::where('id',$CID)->first();
         $response = [
             'message' => 'course is update successfully.',
@@ -103,7 +88,7 @@ class CourseController extends Controller
     public function MyCourses (){
 
             $user_id = Auth::id();
-            $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
+             $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
             $courses = Course::where('club',$club_id)->get();
             foreach ($courses as $course){
                 $course->days = json_decode($course->days) ;
@@ -125,6 +110,49 @@ class CourseController extends Controller
             }
 
         }
+
+    public function MyCourses2 (){
+
+        $user_id = Auth::id();
+        $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
+        $courses = Course::where('club',$club_id)->get();
+        foreach ($courses as $course){
+            $course->days = json_decode($course->days) ;
+        }
+
+        if($courses){
+            foreach ($courses as $course){
+                $trainerName = Trainer::where('id',$course->trainer_id)
+                    ->first()->FName;
+                $serviceName = Service::where('id',$course->service_id)
+                    ->first()->name;
+                $clubName = Equestrian_club::where('id',$course->club)
+                    ->first()->name;
+                $course->trainer_id = $trainerName;
+                $course->service_id = $serviceName;
+                $course->club = $clubName;
+                if($course->valid == 1){
+                    $course->valid = 'شغال';
+                }
+                if($course->valid == 0){
+                    $course->valid = 'محجوز بالكامل';
+                }
+            }
+             $response = [
+                'message' => 'courses found : ',
+                'courses' => $courses,
+                'status' => true
+            ];
+            return $response;
+        }else{
+            $response = [
+                'message' => 'no courses for you.',
+                'status' => false
+            ];
+            return $response;
+        }
+
+    }
 
 
     public function getCoursesByUser (Request $request){
@@ -173,15 +201,33 @@ class CourseController extends Controller
     public function getSpecificCourse ($id){
 
 
-        $course = Course::where('id',$id)->first();
+        $courses = Course::where('description',$id)->get();
+
+        foreach ($courses as $course){
 
             $course->days = json_decode($course->days) ;
+            $trainerName = Trainer::where('id',$course->trainer_id)
+                ->first()->FName;
+            $serviceName = Service::where('id',$course->service_id)
+                ->first()->name;
+            $clubName = Equestrian_club::where('id',$course->club)
+                ->first()->name;
+            $course->trainer_id = $trainerName;
+            $course->service_id = $serviceName;
+            $course->club = $clubName;
+            if($course->valid == 1){
+                $course->valid = 'شغال';
+            }
+            if($course->valid == 0){
+                $course->valid = 'محجوز بالكامل';
+            }
+        }
 
 
-        if($course){
+        if($courses){
             $response = [
                 'message' => 'course: ',
-                'trainers' => $course,
+                'courses' => $courses,
                 'status' => true
             ];
             return $response;
