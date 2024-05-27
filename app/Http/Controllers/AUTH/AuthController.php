@@ -647,6 +647,18 @@ class AuthController extends Controller
                 $user = User::where('email', $request->email)
                     ->with('trainers')->first();
             }
+            elseif ($user->type == 'profile'){
+                $user = User::where('email', $request->email)
+                    ->with('profiles')->first();
+            }
+            elseif ($user->type == 'Equestrian_club'){
+                $user = User::where('email', $request->email)
+                    ->with('equestrian_club')->first();
+            }
+            elseif ($user->type == 'HealthCare'){
+            $user = User::where('email', $request->email)
+                ->with('health_care')->first();
+            }
             else{
                 $user = User::where('email', $request->email)
                     ->with('profiles')->first();

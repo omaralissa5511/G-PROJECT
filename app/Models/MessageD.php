@@ -5,22 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MessageM extends Model
+class MessageD extends Model
 {
     use HasFactory;
 
-    protected $table = 'messages';
+    protected $table = 'D_messages';
 
     protected $fillable = [
         'user_id',
-        'trainer_id',
+        'doctor_id',
         'user',
-        'trainer',
+        'doctor',
         'content',
         'image',
         'role',
         'time',
-
     ];
     protected $casts = [
         'image' => 'array',

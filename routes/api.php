@@ -107,7 +107,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('allTrainersInServiceBooking/{id}', [TrainerServiceController::class, 'allTrainersInServiceBooking']);// للحجز الفردي
 
         Route::get('allTrainersInServiceCourse/{id}', [TrainerController::class, 'allTrainersInServiceCourse']);
-        Route::get('getTrainerByID/{id}', [TrainerController::class, 'getTrainerByID']);
+        Route::get('club_getTrainerByID/{id}', [TrainerController::class, 'getTrainerByID']);
 
         Route::post('/addAvailableTimes', [TrainerController::class, 'setAvailableTimes']);
 
@@ -126,15 +126,10 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::delete('deleteCourse/{id}', [CourseController::class, 'deleteCourse']);
 
         Route::post('createClass', [ClassController::class, 'createClass']);
-        Route::get('getCourseClasses/{course_id}', [ClassController::class, 'getCourseClasses']);
+        Route::get('getCourseClassesC/{course_id}', [ClassController::class, 'getCourseClasses']);
         Route::post('editClass/{class_id}', [ClassController::class, 'editClass']);
+        Route::delete('deleteClass/{class_id}', [ClassController::class, 'deleteClass']);
 
-
-//        Route::post('createService', [ServiceController::class, 'create']);
-//        Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
-//        Route::get('showService/{id}', [ServiceController::class, 'show']);
-//        Route::post('updateService/{id}', [ServiceController::class, 'update']);
-//        Route::post('deleteService/{id}', [ServiceController::class, 'destroy']);
 
         Route::get('allCategory', [AdminController::class, 'getCategories']);
 
@@ -150,6 +145,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
         Route::post('editTrainer', [TrainerController::class, 'editTrainer']);
         Route::get('MyProfile', [TrainerController::class, 'MyProfile']);
+        Route::get('MyCourses_T', [TrainerController::class, 'MyCourses_T']);
 
 
     });
@@ -167,7 +163,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::get('getClubsInCategory/{id}', [CategoryController::class, 'clubsInCategory']);
 
             Route::get('allTrainersInService/{id}', [TrainerController::class, 'allTrainersInService']);
-           // Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
+            Route::get('allServicesU/{club_id}', [ServiceController::class, 'index']);
             Route::get('showServiceUser/{id}', [ServiceController::class, 'show']);
 
             Route::get('showAllClubs', [AdminController::class, 'showClubs']);
@@ -253,12 +249,13 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             /////////// MESSAGES //////////
             Route::post('sendMessage',[MessageController::class,'sendMessage']);
             Route::post('getChatMessages',[MessageController::class,'getChatMessages']);
+            Route::post('sendDoctor-Message',[MessageController::class,'send_Doctor_Message']);
+            Route::post('getDoctor-ChatMessages',[MessageController::class,'getDoctor_ChatMessages']);
 
             // favorite Auction
             Route::post('addAuctionToFavorites',[FavoriteAuctionController::class,'addAuctionToFavorites']);
             Route::post('removeAuctionFromFavorites',[FavoriteAuctionController::class,'removeAuctionFromFavorites']);
             Route::get('getFavoriteAuctions/{user_id}',[FavoriteAuctionController::class,'getFavoriteAuctions']);
-
 
 
             Route::post('sendMessage/broadcasting/auth',[MessageController::class,'sendMessage'])

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('messages', function (Blueprint $table) {
+        Schema::create('D_messages', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->integer('trainer_id');
+            $table->integer('doctor_id');
             $table->integer('user');
-            $table->integer('trainer')->nullable();
+            $table->integer('doctor')->nullable();
             $table->string('time');
             $table->text('content')->nullable();
             $table->string('role');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('messages');
+        Schema::dropIfExists('D_messages');
     }
 };
