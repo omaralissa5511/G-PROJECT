@@ -12,7 +12,6 @@ class Horse extends Model
     protected $fillable = ['name','color','category','birth',
                            'gender','address','auction_id','images'];
     protected $hidden = [
-        'id',
         'created_at',
         'updated_at',
     ];

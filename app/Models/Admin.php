@@ -17,7 +17,6 @@ class Admin extends Authenticatable
     protected $guard_name = 'spatie';
 
     protected $hidden = [
-        'id',
         'created_at',
         'updated_at',
         'user_id'

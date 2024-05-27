@@ -647,6 +647,7 @@ class AuthController extends Controller
                 $user = User::where('email', $request->email)
                     ->with('trainers')->first();
             }
+
             elseif ($user->type == 'profile'){
                 $user = User::where('email', $request->email)
                     ->with('profiles')->first();
@@ -658,6 +659,7 @@ class AuthController extends Controller
             elseif ($user->type == 'HealthCare'){
             $user = User::where('email', $request->email)
                 ->with('health_care')->first();
+
             }
             else{
                 $user = User::where('email', $request->email)
