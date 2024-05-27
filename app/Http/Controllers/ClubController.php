@@ -130,7 +130,7 @@ class ClubController extends Controller
             'FName' => 'required|string|max:250',
             'mobile' => 'required|max:250',
             'LName' => 'required|string|max:250',
-            'email' => 'required',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'gender' => 'required',
             'license' => 'required',

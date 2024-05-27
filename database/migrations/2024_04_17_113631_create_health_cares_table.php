@@ -15,8 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('address');
-            $table->string('description');
+            $table->text('description');
+            $table->string('profile_image');
             $table->string('license')->nullable();
+            $table->string('website');
+            $table->decimal('lat');
+            $table->decimal('long');
+            $table->string('day')->nullable();
+            $table->time('start')->nullable();
+            $table->time('end')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')
                 ->on('users')->onDelete('cascade')
