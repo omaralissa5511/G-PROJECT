@@ -8,6 +8,7 @@ use App\Models\CLUB\ClubImage;
 use App\Models\CLUB\Equestrian_club;
 use App\Models\CLUB\Trainer;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -170,17 +171,22 @@ class ClubController extends Controller
         }
 
 
-        $file_extension = $request->image->getClientOriginalExtension();
-        $filename = time() . '.' . $file_extension;
-        $path = public_path('images/Trainer/PROFILES/');
-        $request->image->move($path, $filename);
-        $realPath = 'images/Trainer/PROFILES/'.$filename;
+       if($request->hasFile('image')){
+           $file_extension = $request->image->getClientOriginalExtension();
+           $filename = time() . '.' . $file_extension;
+           $path = public_path('images/Trainer/PROFILES/');
+           $request->image->move($path, $filename);
+           $realPath = 'images/Trainer/PROFILES/'.$filename;
 
-        $file_extension = $request->license->getClientOriginalExtension();
-        $filename1 = time() . '.' . $file_extension;
-        $path = public_path('images/Trainer/license/');
-        $request->license->move($path, $filename1);
-        $realPath1 = 'images/Trainer/license/'.$filename1;
+       }
+
+       if($request->hasFile('license')){
+           $file_extension = $request->license->getClientOriginalExtension();
+           $filename1 = time() . '.' . $file_extension;
+           $path = public_path('images/Trainer/license/');
+           $request->license->move($path, $filename1);
+           $realPath1 = 'images/Trainer/license/'.$filename1;
+       }
 
         $user = User::create([
             'mobile' => $request->input('mobile'),
@@ -189,9 +195,16 @@ class ClubController extends Controller
             'type' => $request->input('type'),
             'valid' => 'yes',
         ]);
-           $user_id = Auth::id();
+        $currentTime = Carbon::now();
+
+        $user_id = Auth::id();
+        $begin = Carbon::parse($request->begin);
+        $end = Carbon::parse($request->end);
+
+        $end = $end->format('h:i A');
+        $begin = $begin->format('h:i A');
         $days = json_encode($request->days);
-           $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
+        $club_id = Equestrian_club::where('user_id',$user_id)->first()->id;
         $trainer = Trainer::create([
             'user_id' => $user->id,
             'club_id' => $club_id,
@@ -205,8 +218,8 @@ class ClubController extends Controller
             'experience' => $request->experience,
             'specialties' => $request->gender,
             'days' => $days,
-            'start' => $request->start,
-            'end' => $request->end,
+            'start' => $begin,
+            'end' => $end,
             'channelName' => 'testCHANNEL',
             'license' => $realPath1,
             'image' => $realPath,

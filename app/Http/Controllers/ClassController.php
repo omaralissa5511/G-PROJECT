@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CLUB\Clas;
 use App\Models\CLUB\Course;
 use App\Models\CLUB\Equestrian_club;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -32,13 +33,16 @@ class ClassController extends Controller
             ]);
         }
 
+        $begin = Carbon::parse($request->begin);
+        $end = Carbon::parse($request->end);
+
 
         $clas = Clas::create([
             'class' => $request->class,
             'capacity' => $request->capacity,
             'price' => $request->price,
-            'start' => $request->start,
-            'end' => $request->end,
+            'start' => $begin,
+            'end' => $end,
             'course_id' => $request->course_id,
             'counter' => 0,
             'status' => 0,
@@ -58,33 +62,11 @@ class ClassController extends Controller
 
     public function editClass($class_id,Request $request){
 
-        $validate = Validator::make($request->all(), [
-
-            'start' => 'required',
-            'end' => 'required',
-            'price' => 'required',
-            'class' => 'required',
-            'capacity' => 'required',
-            'course_id' => 'required',
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json([
-                'message' => 'Validation Error!',
-                'data' => $validate->errors(),
-                'status' => false
-            ]);
-        }
-
         $clas = Clas::where('id',$class_id)->first();
-        $clas -> update([
-            'class' => $request->class,
-            'capacity' => $request->capacity,
-            'start' => $request->start,
-            'price' => $request->price,
-            'end' => $request->end,
-            'course_id' => $request->course_id,
-        ]);
+        $attributes = array_filter($request->all(),function ($value){
+            return !is_null($value);
+        });
+        $clas -> update($attributes);
         $clas = Clas::where('id',$class_id)->first();
         $response = [
             'message' => '$class is updated successfully.',
@@ -102,6 +84,13 @@ class ClassController extends Controller
 
         $classes = Clas::where('course_id',$course_id)->get();
         if($classes){
+              forEach($classes as $cla){
+                  if($cla->status == 0){
+                      $cla->status = 'شغال';
+                  }else{
+                      $cla->status = 'مليان';
+                  }
+              }
             $response = [
                 'message' => 'classes found : ',
                 'classes' => $classes,

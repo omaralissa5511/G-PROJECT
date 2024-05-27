@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CLUB\ClubImage;
+use App\Models\CLUB\Course;
 use App\Models\CLUB\Equestrian_club;
 use App\Models\CLUB\Service;
 use App\Models\CLUB\Trainer;
@@ -18,7 +19,10 @@ class TrainerController extends Controller
 
     public function editTrainer(Request $request) {
 
-        $userID = $request->trainer_id;
+        $begin = Carbon::parse($request->begin);
+        $end = Carbon::parse($request->end);
+        $days = json_encode($request->days);
+        $userID = Auth::id();
         $trainer = Trainer::where('user_id', $userID)->first();
 
         if ($request->hasFile('image')) {
@@ -38,6 +42,16 @@ class TrainerController extends Controller
             $realPath1 = 'images/Trainer/license/' . $filename1;
             $trainer->update(['license'=>$realPath1]);
         }
+        if($request->hasFile('images')){
+            $images = $request->file('images');
+            $imagePaths = [];
+            foreach ($images as $image) {
+                $new_name = rand() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('images/Trainer/'), $new_name);
+                $imagePaths[] = 'images/Trainer/' . $new_name;
+                $trainer->update(['images'=>$imagePaths]);
+            }
+        }
 
         $attributes = array_filter($request->all(),function ($value){
             return !is_null($value);
@@ -47,8 +61,18 @@ class TrainerController extends Controller
         if($request->mobile) {
             $user->update(['mobile' => $request->input('mobile'),]);
         }
+        if($request->days) {
+            $trainer->update(['days' => $days]);
+        }
+        if($request->begin) {
+            $trainer->update(['begin' => $begin]);
+        }
+        if($request->end) {
+            $trainer->update(['end' => $end]);
+        }
 
-        $requestData = collect($attributes)->except(['image','license'])->toArray();
+        $requestData = collect($attributes)->except
+        (['image','license','images','days','begin','end'])->toArray();
         $trainer->update($requestData);
 
         $trainer = Trainer::where('user_id', $userID)->first();
@@ -70,13 +94,20 @@ class TrainerController extends Controller
 
         $id = Auth::id();
         $trainer = Trainer::where('user_id', $id)->first();
-
-        $response = [
-
-            'trainer' => $trainer,
-            'status' => true
-        ];
-
+        if($trainer){
+            $trainer->club_id = Equestrian_club::where
+            ('id',$trainer->club_id)->first()->name;
+            $trainer->days = json_decode($trainer->days);
+            $trainer->images = json_decode($trainer->images);
+            $response = [
+                'trainer' => $trainer,
+                'status' => true
+            ];
+        } else{
+            $response = [
+                'status' => false
+            ];
+        }
         return $response;
     }
 
@@ -103,14 +134,21 @@ public function allTrainersInServiceCourse($service_id)
 
     public function getTrainerByID($id)
     {
-
         $trainer = Trainer::where('id', $id)->first();
-
-        $response = [
-            'trainer' => $trainer,
-            'status' => true
-        ];
-
+        if($trainer){
+            $trainer->club_id = Equestrian_club::where
+            ('id',$trainer->club_id)->first()->name;
+            $trainer->days = json_decode($trainer->days);
+            $trainer->images = json_decode($trainer->images);
+            $response = [
+                'trainer' => $trainer,
+                'status' => true
+            ];
+        } else{
+            $response = [
+                'status' => false
+            ];
+        }
         return $response;
     }
 
@@ -220,5 +258,42 @@ public function allTrainersInServiceCourse($service_id)
         ]);
     }
 
+    public function MyCourses_T(){
+
+        $user_id = Auth::id();
+        $trainer_id = Trainer::where('user_id',$user_id)->first()->id;
+        $courses = Course::where('trainer_id',$trainer_id)->get();
+         if($courses){
+             foreach ($courses as $cor){
+                 $cor->days = json_decode($cor->days);
+                 $trainerName = Trainer::where('id',$cor->trainer_id)
+                     ->first()->FName;
+                 $serviceName = Service::where('id',$cor->service_id)
+                     ->first()->name;
+                 $clubName = Equestrian_club::where('id',$cor->club)
+                     ->first()->name;
+                 $cor->trainer_id = $trainerName;
+                 $cor->service_id = $serviceName;
+                 $cor->club = $clubName;
+                 if($cor->valid == 1){
+                     $cor->valid = 'شغال';
+                 }
+                 if($cor->valid == 0){
+                     $cor->valid = 'محجوز بالكامل';
+                 }
+             }
+             return response()->json([
+                 'message' => 'courses found : ',
+                 'status' => true,
+                 'courses' => $courses
+             ]);
+         }else{
+             return response()->json([
+                 'message' => 'no courses found ',
+                 'status' => false,
+             ]);
+         }
+
+    }
 
 }

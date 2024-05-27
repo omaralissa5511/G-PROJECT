@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Events\CHAT;
+use App\Events\DOCTOR_CHAT;
 use App\Events\TrainerCHAT;
 use App\Models\CLUB\Trainer;
+use App\Models\MessageD;
 use App\Models\MessageM;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Pusher\Pusher;
@@ -16,25 +19,11 @@ class MessageController extends Controller
 
     public function sendMessage(Request $request)
     {
-
-
         $validatedData = $request->validate([
             'user_id' => 'required',
             'trainer_id' => 'required',
-            'content' => 'required',
         ]);
 
-//        if($request->file('images')){
-//            $images = $request->file('images');
-//            $imagePaths = [];
-//            foreach ($images as $image) {
-//                $new_name = rand() . '.' . $image->getClientOriginalExtension();
-//                $image->move(public_path('images/CHAT/'), $new_name);
-//                $imagePaths[] = 'images/CHAT/'. $new_name;
-//            }
-//            $message->image = $imagePaths;
-//        }
-//
           $message = new MessageM();
 
          if($request->file('image')) {
@@ -46,12 +35,15 @@ class MessageController extends Controller
              $message->image = $realPath;
 
          }
+        $currentTime = Carbon::now();
+        $formattedTime = $currentTime->format('h:i A');
         $message->user_id = $validatedData['user_id'];
         $message->trainer_id = $validatedData['trainer_id'];
-        $message->content = $validatedData['content'];
+        $message->content = $request->cont;
         $message->role = $request->role;
         $message->user = $request->user;
         $message->trainer = $request->trainer;
+        $message->time = $formattedTime;
         $message->save();
 
 
@@ -78,8 +70,9 @@ class MessageController extends Controller
         $socketId = $request->input('socketId');
         $channelName = $request->input('channel_name');
 
-        $auth = $pusher->socket_auth($channelName, $socketId);
-        return response()->json($auth);
+//        $auth = $pusher->socket_auth($channelName, $socketId);
+//        $auth = \GuzzleHttp\json_decode($auth);
+        return response()->json($pusher->socket_auth($channelName, $socketId));
     }
 
 
@@ -103,6 +96,70 @@ class MessageController extends Controller
             ]);
         }
     }
+
+
+    public function send_Doctor_Message(Request $request)
+    {
+
+
+        $validatedData = $request->validate([
+            'user_id' => 'required',
+            'doctor_id' => 'required',
+        ]);
+
+        $message = new MessageD();
+
+        if($request->file('image')) {
+            $file_extension = $request->image->getClientOriginalExtension();
+            $filename = time() . '.' . $file_extension;
+            $path = public_path('images/CHAT/');
+            $request->image->move($path, $filename);
+            $realPath = 'images/CHAT/' . $filename;
+            $message->image = $realPath;
+
+        }
+        $currentTime = Carbon::now();
+        $formattedTime = $currentTime->format('h:i A');
+        $message->user_id = $validatedData['user_id'];
+        $message->doctor_id = $validatedData['doctor_id'];
+        $message->content = $request->cont;
+        $message->role = $request->role;
+        $message->user = $request->user;
+        $message->doctor = $request->doctor;
+        $message->time = $formattedTime;
+        $message->save();
+
+
+        broadcast(new DOCTOR_CHAT( $message->user_id,$message->doctor_id,$message));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'MessageD sent successfully.',
+            $message]);
+    }
+
+
+    public function getDoctor_ChatMessages(Request $request)
+    {
+
+        $userID = $request->user_id;
+        $doctorID = $request->doctor_id;
+        $chat = MessageD::where('user_id', $userID)
+            ->where('doctor_id', $doctorID)->get();
+        if ($chat) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Messages sent successfully.',
+                'chats' => $chat
+            ]);
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'No Messages',
+            ]);
+        }
+    }
+
 }
 
 
