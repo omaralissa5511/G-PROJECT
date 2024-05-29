@@ -45,5 +45,15 @@ class HealthCare extends Model
         return $this->hasMany(Doctor::class);
     }
 
+    public function HRatings()
+    {
+        return $this->hasMany(HRating::class);
+    }
+
+    public function offers()
+    {
+        return $this->hasMany(Offer::class);
+    }
+
 
 }

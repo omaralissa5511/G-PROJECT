@@ -36,6 +36,15 @@ class ServiceController extends Controller
             'status'=> true
         ]);
     }
+    public function allServicesForUser($id)
+    {
+        $services = Service::where('club_id', $id)->get();
+
+        return response()->json([
+            'services' => $services,
+            'status'=> true
+        ]);
+    }
 
 
     /**

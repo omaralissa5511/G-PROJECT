@@ -5,20 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ConsultationDetails extends Model
+class ConsultationImage extends Model
 {
     use HasFactory;
-
-    protected $fillable=[
+    protected $fillable = [
         'consultation_id',
-        'details',
-        'date',
-        'type'
+        'image',
     ];
 
     protected $hidden=[
-        'consultation_id',
-        'type',
         'created_at',
         'updated_at'
     ];

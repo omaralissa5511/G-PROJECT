@@ -11,18 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('h_ratings', function (Blueprint $table) {
+        Schema::create('offers', function (Blueprint $table) {
             $table->id();
-            $table->integer('rating');
-            $table->text('review')->nullable();
+            $table->Integer('offer_value');
+            $table->text('description')->nullable();
+            $table->date('begin');
+            $table->date('end');
             $table->unsignedBigInteger('health_care_id');
             $table->foreign('health_care_id')->references('id')
                 ->on('health_cares')->onDelete('cascade')->onUpdate('cascade');
-
-            $table->unsignedBigInteger('profile_id');
-            $table->foreign('profile_id')->references('id')
-                ->on('profiles')->onDelete('cascade')->onUpdate('cascade');
-
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('h_ratings');
+        Schema::dropIfExists('offers');
     }
 };

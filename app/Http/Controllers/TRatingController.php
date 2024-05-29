@@ -210,4 +210,23 @@ class TRatingController extends Controller
             return response()->json(['status' => false]);
     }
 
+    public function getRatingIDByUser(Request $request){
+        $user = TRating::where('user_id',$request->user_id)->first();
+        $club = TRating::where('trainer_id',$request->trainer_id)->first();
+        if(!($user && $club ))
+            return response()->json([
+                'message'=>'user not found Rating on this Trainer',
+                'status' => false
+            ]);
+        $rating=TRating::where('user_id',$request->user_id)->where('trainer_id',$request->trainer_id)->first()->id;
+
+        if($rating)
+            return response()->json([
+                'id'=>$rating,
+                'status' => true
+            ]);
+        else
+            return response()->json(['status' => false]);
+    }
+
 }
