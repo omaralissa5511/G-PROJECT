@@ -7,19 +7,21 @@ use App\Models\CLUB\CRating;
 use App\Models\CLUB\Reservation;
 
 use App\Models\CLUB\TRating;
+use App\Models\Consultation;
+use App\Models\HRating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 
-class CRatingController extends Controller
+class HRatingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function getAllRatingInClub($club_id)
+    public function getAllRatingInHealth($health_id)
     {
 
-        $ratings = CRating::where('club_id', $club_id)->get();
+        $ratings = HRating::where('health_care_id', $health_id)->get();
 
         return response()->json([
             'ratings' => $ratings,
@@ -28,11 +30,11 @@ class CRatingController extends Controller
     }
 
 
-    public function getAllReviewsInClub($club_id)
+    public function getAllReviewsInHealth($health_id)
     {
-        $reviews = CRating::where('club_id', $club_id)
+        $reviews = HRating::where('health_care_id', $health_id)
             ->whereNotNull('review')
-            ->with('user.profiles')
+            ->with('profile.user')
             ->get();
 
         // تحويل الوقت إلى شكل مقروء بشكل أكبر
@@ -47,9 +49,9 @@ class CRatingController extends Controller
     }
 
 
-    public function getAverageRating($club_id)
+    public function getAverageRating($health_id)
     {
-        $averageRating = CRating::where('club_id', $club_id)->get()->avg('rating');
+        $averageRating = HRating::where('health_care_id', $health_id)->get()->avg('rating');
         return response()->json([
             'averageRating' => $averageRating,
             'status' => true
@@ -63,8 +65,8 @@ class CRatingController extends Controller
     public function createRating(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'club_id' => 'required',
-            'user_id' => 'required',
+            'health_id' => 'required',
+            'profile_id' => 'required',
             'rating' => 'required|integer|between:1,5'
         ]);
 
@@ -76,38 +78,28 @@ class CRatingController extends Controller
             ]);
         }
 
-
-        $booking = Booking::whereHas('service', function ($query) use ($request) {
-            $query->where('club_id', $request->club_id);
-        })->where('user_id', $request->user_id)->first();
-
-        $reservation = Reservation::whereHas('course', function ($query) use ($request) {
-            $query->where('club', $request->club_id);
-        })->where('user_id', $request->user_id)->first();
-
-        if (!($booking || $reservation)) {
+        $consultation=Consultation::where('profile_id',$request->profile_id)
+            ->where('health_care_id',$request->health_id)->whereNotNull('reply_content')->first();
+        if(!$consultation)
             return response()->json([
-                'message' => 'You can only rate if you have made a booking previously in this club.',
+                'message' => 'You cannot rate because you do not have a responded consultation.',
                 'status' => false
             ]);
-        }
 
-
-
-        $existingRating = CRating::where('club_id', $request->club_id)
-            ->where('user_id', $request->user_id)
+        $existingRating = HRating::where('health_care_id', $request->health_id)
+            ->where('profile_id', $request->profile_id)
             ->first();
         if ($existingRating) {
             return response()->json([
-                'message' => 'You have already rated this club.',
+                'message' => 'You have already rated this Health Care.',
                 'status' => false
             ]);
         }
 
 
-        $rating = CRating::create([
-            'club_id' => $request->club_id,
-            'user_id' => $request->user_id,
+        $rating = HRating::create([
+            'health_care_id' => $request->health_id,
+            'profile_id' => $request->profile_id,
             'rating' => $request->rating,
             'review' => $request->review
         ]);
@@ -125,7 +117,7 @@ class CRatingController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'rating_id' => 'required',
-            'user_id' =>'required',
+            'profile_id' =>'required',
             'rating' => 'required|integer|between:1,5'
         ]);
 
@@ -137,7 +129,7 @@ class CRatingController extends Controller
             ]);
         }
 
-        $rating = CRating::find($request->rating_id);
+        $rating = HRating::find($request->rating_id);
 
         if (!$rating) {
             return response()->json([
@@ -146,7 +138,7 @@ class CRatingController extends Controller
             ]);
         }
 
-        if ($rating->user_id != $request->user()->id) {
+        if ($rating->profile_id != $request->profile_id) {
             return response()->json([
                 'message' => 'You are not authorized to update this rating.',
                 'status' => false
@@ -179,7 +171,7 @@ class CRatingController extends Controller
             ]);
         }
 
-        $rating = CRating::find($request->rating_id);
+        $rating = HRating::find($request->rating_id);
 
         if (!$rating) {
             return response()->json([
@@ -188,7 +180,7 @@ class CRatingController extends Controller
             ]);
         }
 
-        if ($rating->user_id != $request->user()->id) {
+        if ($rating->profile_id != $request->profile_id) {
             return response()->json([
                 'message' => 'You are not authorized to delete this rating.',
                 'status' => false
@@ -203,10 +195,10 @@ class CRatingController extends Controller
         ]);
     }
 
-    public function userHasReviewInClub(Request $request){
+    public function userHasReviewInHealth(Request $request){
 
-        $review = CRating::where('club_id', $request->club_id)
-            ->where('user_id', $request->user_id)
+        $review = HRating::where('health_care_id', $request->health_id)
+            ->where('profile_id', $request->profile_id)
             ->whereNotNull('review')->first();
 
         if($review)
@@ -216,14 +208,14 @@ class CRatingController extends Controller
     }
 
     public function getRatingIDByUser(Request $request){
-        $user = CRating::where('user_id',$request->user_id)->first();
-        $club = CRating::where('club_id',$request->club_id)->first();
-        if(!($user && $club ))
+        $user = HRating::where('profile_id',$request->profile_id)->first();
+        $health = HRating::where('health_care_id',$request->health_id)->first();
+        if(!($user && $health ))
             return response()->json([
-                'message'=>'user not found Rating on this club',
+                'message'=>'user not found Rating on this Health Care',
                 'status' => false
             ]);
-        $rating=CRating::where('user_id',$request->user_id)->where('club_id',$request->club_id)->first()->id;
+        $rating=HRating::where('profile_id',$request->profile_id)->where('health_care_id',$request->health_id)->first()->id;
 
         if($rating)
             return response()->json([
@@ -233,6 +225,4 @@ class CRatingController extends Controller
         else
             return response()->json(['status' => false]);
     }
-
-
 }

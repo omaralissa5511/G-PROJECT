@@ -8,6 +8,7 @@ use App\Models\Bid;
 use App\Models\Horse;
 use App\Models\Insurance;
 use App\Models\Profile;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -326,14 +327,19 @@ class AuctionController extends Controller
             ->whereDate('begin','<=',$today)
             ->whereDate('end','>=',$today)
             ->where('status','confirmed')
-            ->with('horses', 'profile')->get();
+            ->with(['horses', 'profile' => function ($query) {
+                $query->addSelect(['email' => User::select('email')  //لاضافة email لمعلومات ال profile
+                    ->whereColumn('id', 'profiles.user_id')
+                ]);
+            }])
+            ->get();
 
         if($auctions->isEmpty()){
             $response = [
                 'message' => 'no active auctions now.',
                 'status' => false
             ];
-        return response()->json($response);
+            return response()->json($response);
         }else {
             $response = [
                 'message' => 'get successfully.',
@@ -343,6 +349,7 @@ class AuctionController extends Controller
             return response()->json($response);
         }
     }
+
 
 
     public function upcoming(){

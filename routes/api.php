@@ -7,6 +7,7 @@ use App\Http\Controllers\AUTH\VerificationController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClassController;
+use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CRatingController;
 use App\Http\Controllers\DoctorController;
@@ -14,7 +15,9 @@ use App\Http\Controllers\FavoriteAuctionController;
 use App\Http\Controllers\FavoriteClubController;
 use App\Http\Controllers\HealthCareController;
 use App\Http\Controllers\HorseController;
+use App\Http\Controllers\HRatingController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\OfferController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
@@ -183,6 +186,16 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::get('allDoctorsInHealthCare/{id}', [DoctorController::class, 'allDoctorsInHeaalthCare']);
             Route::get('getDoctorByID/{id}', [DoctorController::class, 'getDoctorByID']);
 
+            //// Consultation
+            Route::post('replyConsultation/{id}',[ConsultationController::class,'replyConsultation']);
+            Route::get('allConsultationByHealthCare/{id}',[ConsultationController::class,'allConsultationByHealthCare']);
+            Route::get('allUnansweredConsultationByHealthCare/{id}',[ConsultationController::class,'allUnansweredConsultationsByHealthCare']);
+            Route::get('getConsultationByID/{id}',[ConsultationController::class,'getConsultationByID']);
+
+            /// Offers
+            Route::post('addOffer',[OfferController::class,'addOffer']);
+            Route::delete('deleteOffer/{id}',[OfferController::class,'deleteOffer']);
+
         });
 
     ################## USER ROLE *******************
@@ -198,7 +211,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::get('getClubsInCategory/{id}', [CategoryController::class, 'clubsInCategory']);
 
             Route::get('allTrainersInService/{id}', [TrainerController::class, 'allTrainersInService']);
-            Route::get('allServicesU/{club_id}', [ServiceController::class, 'index']);
+            Route::get('allServicesU/{club_id}', [ServiceController::class, 'allServicesForUser']);
             Route::get('showServiceUser/{id}', [ServiceController::class, 'show']);
 
             Route::get('showAllClubs', [AdminController::class, 'showClubs']);
@@ -236,7 +249,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('updateTrainerRating',[TRatingController::class,'updateRating']);
             Route::post('deleteTrainerRating',[TRatingController::class,'deleteRating']);
             Route::post('userHasReviewInTrainer',[TRatingController::class,'userHasReviewInTrainer']);
-
+            Route::post('getRatingIDByUserTrainer',[TRatingController::class,'getRatingIDByUser']);
             //CRating
             Route::get('allClubRating/{club_id}',[CRatingController::class,'getAllRatingInClub']);
             Route::get('allAverageClubRating/{club_id}',[CRatingController::class,'getAverageRating']);
@@ -245,7 +258,18 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('updateClubRating',[CRatingController::class,'updateRating']);
             Route::post('deleteClubRating',[CRatingController::class,'deleteRating']);
             Route::post('userHasReviewInClub',[CRatingController::class,'userHasReviewInClub']);
+            Route::post('getRatingIDByUserClub',[CRatingController::class,'getRatingIDByUser']);
 
+
+            //HRating
+            Route::get('allHealthRating/{health_id}',[HRatingController::class,'getAllRatingInHealth']);
+            Route::get('allAverageHealthRating/{health_id}',[HRatingController::class,'getAverageRating']);
+            Route::get('getAllReviewsInHealth/{health_id}',[HRatingController::class,'getAllReviewsInHealth']);
+            Route::post('createHealthRating',[HRatingController::class,'createRating']);
+            Route::post('updateHealthRating',[HRatingController::class,'updateRating']);
+            Route::post('deleteHealthRating',[HRatingController::class,'deleteRating']);
+            Route::post('userHasReviewInHealth',[HRatingController::class,'userHasReviewInHealth']);
+            Route::post('getRatingIDByUserHealth',[HRatingController::class,'getRatingIDByUser']);
 
             // favorite club
             Route::post('addClubToFavorites',[FavoriteClubController::class,'addClubToFavorites']);
@@ -304,9 +328,14 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::get('allDoctorsInHealthCareUser/{id}', [DoctorController::class, 'allDoctorsInHeaalthCare']);
             Route::get('getDoctorByIDUser/{id}', [DoctorController::class, 'getDoctorByID']);
 
+            ///// Consultation
+            Route::post('createConsultation',[ConsultationController::class,'createConsultation']);
+            Route::get('allConsultationByUser/{id}',[ConsultationController::class,'allConsultationByUser']);
+            Route::delete('deleteConsultation/{id}',[ConsultationController::class,'deleteConsultation']);
+            Route::get('getConsultationByIDUser/{id}',[ConsultationController::class,'getConsultationByID']);
 
-
-
+            ////// Offers
+            Route::get('getOffersToday',[OfferController::class,'getOffersToday']);
 
 
             Route::post('sendMessage/broadcasting/auth',[MessageController::class,'sendMessage'])
