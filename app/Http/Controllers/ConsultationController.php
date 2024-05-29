@@ -155,6 +155,9 @@ class ConsultationController extends Controller
         foreach ($consultations as $consultation) {
             $consultation->details = $consultation->consultation_details->groupBy('type');
             $consultation->images = $consultation->consultation_images->pluck('image');
+            $consultation->sent_at=Carbon::parse($consultation->sent_at)->format('Y-m-d H:i');
+            if($consultation->reply_sent_at)
+                $consultation->reply_sent_at=Carbon::parse($consultation->reply_sent_at)->format('Y-m-d H:i');
             unset($consultation->consultation_details);
             unset($consultation->consultation_images);
         }
@@ -176,6 +179,10 @@ class ConsultationController extends Controller
         if($cons){
         $consultations = Consultation::where('health_care_id', $id)->get();
             foreach ($consultations as $consultation) {
+                $consultation->sent_at=Carbon::parse($consultation->sent_at)->format('Y-m-d H:i');
+                if($consultation->reply_sent_at)
+                    $consultation->reply_sent_at=Carbon::parse($consultation->reply_sent_at)->format('Y-m-d H:i');
+
                 $consultation->details = $consultation->consultation_details->groupBy('type');
                 $consultation->images = $consultation->consultation_images->pluck('image');
                 unset($consultation->consultation_details);
@@ -199,6 +206,7 @@ class ConsultationController extends Controller
         if($cons){
             $consultations = Consultation::where('health_care_id', $id)->where('reply_content',null)->get();
             foreach ($consultations as $consultation) {
+                $consultation->sent_at=Carbon::parse($consultation->sent_at)->format('Y-m-d H:i');
                 $consultation->details = $consultation->consultation_details->groupBy('type');
                 $consultation->images = $consultation->consultation_images->pluck('image');
                 unset($consultation->consultation_details);
@@ -225,12 +233,18 @@ class ConsultationController extends Controller
         },'health_care'])->first();
 
         if($consultation){
+            $consultation->sent_at=Carbon::parse($consultation->sent_at)->format('Y-m-d H:i');
+            if($consultation->reply_sent_at)
+                $consultation->reply_sent_at=Carbon::parse($consultation->reply_sent_at)->format('Y-m-d H:i');
+
             $consultation->details = $consultation->consultation_details->groupBy('type');
             $consultation->images = $consultation->consultation_images->pluck('image');
             unset($consultation->consultation_details);
             unset($consultation->consultation_images);
 
             $consultation->health_care->day=json_decode($consultation->health_care->day);
+            $consultation->health_care->start=Carbon::parse($consultation->health_care->start)->format('H:i');
+            $consultation->health_care->end=Carbon::parse($consultation->health_care->end)->format('H:i');
 
             return response()->json([
                 "Consultation" => $consultation,

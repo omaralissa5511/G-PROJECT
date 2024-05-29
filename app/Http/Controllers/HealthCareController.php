@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HealthCare;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,6 +15,8 @@ class HealthCareController extends Controller
 
         $healthcares=HealthCare::all();
         foreach ($healthcares as $healthcare){
+            $healthcare->start=Carbon::parse($healthcare->start)->format('H:i');
+            $healthcare->end=Carbon::parse($healthcare->end)->format('H:i');
             $healthcare->day = json_decode($healthcare->day);
             $healthcare->user=$healthcare->user;
         }
@@ -35,6 +38,8 @@ class HealthCareController extends Controller
         }
         $healthCare->user=$healthCare->user;
         $healthCare->day = json_decode($healthCare->day);
+        $healthCare->start=Carbon::parse($healthCare->start)->format('H:i');
+        $healthCare->end=Carbon::parse($healthCare->end)->format('H:i');
         return response()->json([
             'Health_Care' => $healthCare,
             'status' => true
@@ -99,7 +104,7 @@ class HealthCareController extends Controller
             'license' => $realPath,
             'profile_image' =>$realPath1
         ]);
-
+        $healthCare->day = json_decode($healthCare->day);
         $data['token'] = $user->createToken($request->email)->plainTextToken;
         $data['user'] = $user;
         $data['health_care'] = $healthCare;
@@ -197,8 +202,11 @@ class HealthCareController extends Controller
             ]);
         } else {
 
-            foreach ($healthCares as $healthCare)
+            foreach ($healthCares as $healthCare) {
                 $healthCare->day = json_decode($healthCare->day);
+                $healthCare->start = Carbon::parse($healthCare->start)->format('H:i');
+                $healthCare->end = Carbon::parse($healthCare->end)->format('H:i');
+            }
             return response()->json([
                 'message' => 'Health Cares found successfully.',
                 'HealthCares' => $healthCares,
