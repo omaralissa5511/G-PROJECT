@@ -22,7 +22,7 @@ class DoctorController extends Controller
             ]);
         }
         $doctors = Doctor::where('health_care_id',$healthCare_id)
-            ->select('firstName','lastName','description','image')->get();
+            ->select('id','firstName','lastName','description','image')->get();
         return response()->json([
             'Doctors' => $doctors,
             'status' => true
