@@ -13,7 +13,7 @@ class HealthCareController extends Controller
 
     public function getAllHealthCares(){
 
-        $healthcares=HealthCare::select('name','profile_image','description')->get();
+        $healthcares=HealthCare::select('id','name','profile_image','description')->get();
 
         return response()->json([
             'HealthCares' => $healthcares,
