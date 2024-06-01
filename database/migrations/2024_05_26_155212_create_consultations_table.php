@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('reply_sent_at')->nullable();
             $table->string('name');
             $table->string('color');
+            $table->text('symptoms');
             $table->string('age');
             $table->string('gender');
             $table->foreign('profile_id')->references('id')->on('profiles')

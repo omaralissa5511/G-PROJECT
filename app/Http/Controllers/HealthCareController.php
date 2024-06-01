@@ -13,13 +13,8 @@ class HealthCareController extends Controller
 
     public function getAllHealthCares(){
 
-        $healthcares=HealthCare::all();
-        foreach ($healthcares as $healthcare){
-            $healthcare->start=Carbon::parse($healthcare->start)->format('H:i');
-            $healthcare->end=Carbon::parse($healthcare->end)->format('H:i');
-            $healthcare->day = json_decode($healthcare->day);
-            $healthcare->user=$healthcare->user;
-        }
+        $healthcares=HealthCare::select('name','profile_image','description')->get();
+
         return response()->json([
             'HealthCares' => $healthcares,
             'status'=> true

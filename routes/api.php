@@ -270,6 +270,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('deleteHealthRating',[HRatingController::class,'deleteRating']);
             Route::post('userHasReviewInHealth',[HRatingController::class,'userHasReviewInHealth']);
             Route::post('getRatingIDByUserHealth',[HRatingController::class,'getRatingIDByUser']);
+            Route::post('isReservedHealth',[HRatingController::class,'isReservedHealth']);
 
             // favorite club
             Route::post('addClubToFavorites',[FavoriteClubController::class,'addClubToFavorites']);

@@ -21,6 +21,7 @@ class ConsultationController extends Controller
             'age' => 'required',
             'gender' => 'required',
             'color' => 'required',
+            'symptoms' => 'required',
             'question' => 'required',
             'profile_id'=>'required',
             'health_care_id'=>'required'
@@ -42,6 +43,7 @@ class ConsultationController extends Controller
             'age'=>$request->age,
             'gender'=>$request->gender,
             'color'=>$request->color,
+            'symptoms'=>$request->symptoms,
             'content'=>$request->question,
             'sent_at'=>$currentTime,
             'profile_id'=>$request->profile_id,
@@ -63,7 +65,9 @@ class ConsultationController extends Controller
         }
 
         if($request->has('vaccinations')) {
-            $vaccinations = json_decode($request->vaccinations, true);
+
+            $vaccinations = $request->vaccinations;
+
             foreach ($vaccinations as $vaccination) {
                 ConsultationDetails::create([
                     'consultation_id' => $consultation->id,
@@ -75,7 +79,8 @@ class ConsultationController extends Controller
         }
 
         if($request->has('treatments')) {
-            $treatments = json_decode($request->treatments, true);
+ //           $treatments = json_decode($request->treatments, true);
+            $treatments =$request->treatments;
             foreach ($treatments as $treatment) {
                 ConsultationDetails::create([
                     'consultation_id'=>$consultation->id,
@@ -87,7 +92,8 @@ class ConsultationController extends Controller
             }
         }
         if($request->has('medicals')) {
-            $medicals = json_decode($request->medicals, true);
+//            $medicals = json_decode($request->medicals, true);
+            $medicals = $request->medicals;
             foreach ($medicals as $medical) {
                 ConsultationDetails::create([
                     'consultation_id' => $consultation->id,
@@ -276,5 +282,3 @@ class ConsultationController extends Controller
 
     }
 }
-
-
