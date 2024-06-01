@@ -21,11 +21,8 @@ class DoctorController extends Controller
                 'status' => false
             ]);
         }
-
-        $doctors = $healthCare->doctors;
-        foreach ($doctors as $doctor)
-            $doctor->user=$doctor->user;
-
+        $doctors = Doctor::where('health_care_id',$healthCare_id)
+            ->select('firstName','lastName','description','image')->get();
         return response()->json([
             'Doctors' => $doctors,
             'status' => true
@@ -74,7 +71,7 @@ class DoctorController extends Controller
         $filename = time() . '.' . $file_extension;
         $path = public_path('images/Doctor/PROFILES/');
         $request->image->move($path, $filename);
-        $realPath = 'images/Doctors/PROFILES/'.$filename;
+        $realPath = 'images/Doctor/PROFILES/'.$filename;
 
         $user_id = Auth::id();
         $health_care_id = HealthCare::where('user_id',$user_id)->first()->id;
@@ -126,7 +123,7 @@ class DoctorController extends Controller
             $filename = time() . '.' . $file_extension;
             $path = public_path('images/Doctor/PROFILES/');
             $request->image->move($path, $filename);
-            $realPath = 'images/Doctors/PROFILES/'.$filename;
+            $realPath = 'images/Doctor/PROFILES/'.$filename;
             $doctor->update(['image'=>$realPath]);
         }
 

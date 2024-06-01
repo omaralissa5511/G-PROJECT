@@ -225,4 +225,30 @@ class HRatingController extends Controller
         else
             return response()->json(['status' => false]);
     }
+
+
+    public function isReservedHealth(Request $request)
+    {
+
+
+        $validate = Validator::make($request->all(), [
+            'health_id' => 'required',
+            'profile_id' => 'required'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'message' => 'Validation Error!',
+                'data' => $validate->errors(),
+                'status' => false
+            ]);
+        }
+
+        $consultation=Consultation::where('profile_id',$request->profile_id)
+            ->where('health_care_id',$request->health_id)->whereNotNull('reply_content')->first();
+        if($consultation)
+            return response()->json(['status' => true]);
+        else
+            return response()->json(['status' => false]);
+    }
 }

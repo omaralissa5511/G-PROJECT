@@ -198,7 +198,7 @@ class ClubController extends Controller
         $currentTime = Carbon::now();
 
         $user_id = Auth::id();
-        $begin = Carbon::parse($request->begin);
+        $begin = Carbon::parse($request->start);
         $end = Carbon::parse($request->end);
 
         $end = $end->format('h:i A');

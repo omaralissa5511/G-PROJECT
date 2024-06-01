@@ -12,6 +12,7 @@ class Consultation extends Model
         'content', 'sent_at', 'reply_content', 'reply_sent_at',
         'name',
         'age',
+        'symptoms',
         'gender',
         'color',
         'profile_id',

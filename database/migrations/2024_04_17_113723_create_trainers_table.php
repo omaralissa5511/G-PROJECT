@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('gender')->nullable();
             $table->string('address');
             $table->string('days');
-            $table->time('start')->nullable();
-            $table->time('end')->nullable();
+            $table->string('start')->nullable();
+            $table->string('end')->nullable();
             $table->text('channelName')->default('hi');
             $table->string('license')->nullable();
             $table->string('images')->nullable();

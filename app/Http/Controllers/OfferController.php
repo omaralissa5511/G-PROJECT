@@ -96,7 +96,7 @@ class OfferController extends Controller
             }
             return response()->json([
                 'message' => 'get successfully.',
-                '$offers' => $offers,
+                'offers' => $offers,
                 'status' => true
             ]);
         }
