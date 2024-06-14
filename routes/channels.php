@@ -17,12 +17,10 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('private.chat' . $this->userID . '-' . $this->trainer_id,
-    function ($user, $userID, $trainerID) {
-    return (int) $user->id === (int) $userID;
+Broadcast::channel('chat-{Chat_Id}',
+    function ($user, $Chat_Id) {
+   // return (int) $user->id === (int) $userID;
+        return false;
 });
 
-Broadcast::channel('private.chat.Doctor' . $this->userID . '-' . $this->doctor_id,
-    function ($user, $userID, $doctorID) {
-        return (int) $user->id === (int) $userID;
-    });
+
