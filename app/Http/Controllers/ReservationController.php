@@ -102,6 +102,8 @@ class ReservationController extends Controller
 
         broadcast(new NotificationE($user_id, $message));
 
+        $message = 'new Reservation have added successfully.';
+        Broadcast(new \App\Events\Reservation($message));
 
         return response()->json($response);
 

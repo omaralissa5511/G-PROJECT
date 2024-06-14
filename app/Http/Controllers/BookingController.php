@@ -58,7 +58,11 @@ class BookingController extends Controller
                 'is_available'=> false
             ]);
         }
+        $message = 'new Booking have added successfully.';
+        Broadcast(new \App\Events\Booking($message));
 
+        $message = 'TrainerTime have updated.';
+        Broadcast(new \App\Events\TrainerTime($message));
             return response()->json([
                 'message' => "Booking created successfully.",
                 'booking' => $booking,
@@ -161,7 +165,6 @@ class BookingController extends Controller
             ]);
         }
 
-
         $currentUserId = $request->user_id;
         if ($trainerTime->booking->user_id != $currentUserId) {
             return response()->json([
@@ -169,7 +172,6 @@ class BookingController extends Controller
                 'status' => false
             ]);
         }
-
 
         $now = \Carbon\Carbon::now();
         $bookingDateTime = \Carbon\Carbon::parse($trainerTime->date . ' ' . $trainerTime->start_time);
@@ -186,12 +188,15 @@ class BookingController extends Controller
             'booking_id' => null,
             'is_available' => true
         ]);
+        $message = 'TrainerTime updated.';
+        Broadcast(new \App\Events\TrainerTime($message));
+
 
         $otherTrainerTimes = TrainerTime::where('booking_id', $bookingId)->count();
         if ($otherTrainerTimes == 0) {
-
            Booking::destroy($bookingId);
-
+            $message = 'Booking deleted';
+            Broadcast(new \App\Events\Booking($message));
         }
 
 
@@ -234,8 +239,12 @@ class BookingController extends Controller
             'booking_id' => null,
             'is_available' => true
         ]);
+        $message = 'TrainerTime updated.';
+        Broadcast(new \App\Events\TrainerTime($message));
 
         $booking->delete();
+        $message = 'Booking deleted';
+        Broadcast(new \App\Events\Booking($message));
 
         return response()->json([
             'message' => 'Booking deleted successfully.',

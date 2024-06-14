@@ -39,4 +39,8 @@ class Equestrian_club extends Model
     {
         return $this->belongsToMany(User::class, 'favorite_clubs');
     }
+
+    public function offerClubs (){
+        return $this->hasMany(OfferClub::class);
+    }
 }

@@ -10,14 +10,13 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class Clubs implements ShouldBroadcast
+class Reservation
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-
     public $message;
 
-    public function __construct( $message)
+    public function __construct($message)
     {
 
         $this->message = $message;
@@ -25,12 +24,12 @@ class Clubs implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new Channel('club');
+        return new Channel('reservation');
     }
 
     public function broadcastAs()
     {
-        return 'club';
+        return 'reservation';
     }
 
     public function broadcastWith()
