@@ -79,6 +79,8 @@ class ReservationController extends Controller
            Clas::where('course_id',$request->course_id)
                 ->where('class',$request->clas)->update(['status' => 1]);
         }
+        $message2 = 'Clas Updated';
+        Broadcast(new \App\Events\Clas($message2));
 
         $response = [
             'message' => 'reservation is successfully.',
@@ -102,8 +104,8 @@ class ReservationController extends Controller
 
         broadcast(new NotificationE($user_id, $message));
 
-        $message = 'new Reservation have added successfully.';
-        Broadcast(new \App\Events\Reservation($message));
+        $message1 = 'new Reservation have added successfully.';
+        Broadcast(new \App\Events\Reservation($message1));
 
         return response()->json($response);
 
@@ -148,6 +150,8 @@ class ReservationController extends Controller
 
      $reserve = Reservation::where('id',$Rid)->update
      ([ 'number_of_people' => $request -> number_of_people]);
+        $message1 = 'Reservation updated';
+        Broadcast(new \App\Events\Reservation($message1));
 
         $oldCounter = Clas::where('course_id',$request->course_id)
             ->where('class','=',$request->clas)->first()-> counter;
@@ -156,6 +160,10 @@ class ReservationController extends Controller
             ->where('class','=',$request->clas)->update
         (['counter' => ($oldCounter-$OLD_NUMBER_OF_PEOPLE)
             +$request->number_of_people]);
+
+        $message2 = 'Clas Updated';
+        Broadcast(new \App\Events\Clas($message2));
+
 
         $capacity = Clas::where('course_id',$request->course_id)
             ->where('class','=',$request->clas)->first()-> capacity;
@@ -167,6 +175,11 @@ class ReservationController extends Controller
 
             Clas::where('course_id',$request->course_id)
                 ->where('class',$request->clas)->update(['status' => 1]);
+
+
+            $message3 = 'Clas Updated';
+            Broadcast(new \App\Events\Clas($message3));
+
         }
 
         $booking = Reservation::where('id',$Rid)->first();
@@ -212,6 +225,13 @@ class ReservationController extends Controller
                     $clas->update(['counter' => $newCounter]);
                     $clas->save();
                     $reservation->delete();
+
+
+                $message2 = 'Clas Updated';
+                Broadcast(new \App\Events\Clas($message2));
+
+                $message3 = 'Reservation deleted';
+                Broadcast(new \App\Events\Reservation($message3));
 
                 $user_name = Profile::where('user_id',$user_id)->first()->FName;
 
