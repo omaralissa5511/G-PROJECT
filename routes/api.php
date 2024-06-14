@@ -63,6 +63,11 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
     Route::group(['middleware' => ['role_or_permission:ADMIN']], function () {
 
+
+
+        Route::get('getUserForChart', [AdminController::class, 'getUserForChart']);
+
+
         Route::post('AdminUpdate', [AuthController::class, 'AdminUpdate']);
 
         //Add App Message
@@ -167,6 +172,10 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
         Route::get('MyCourses_T', [TrainerController::class, 'MyCourses_T']);
 
+        Route::get('get-allUsers', [MessageController::class, 'getAllUser']);
+        Route::post('sendMessage',[MessageController::class,'sendMessage']);
+        Route::post('getChatMessages',[MessageController::class,'getChatMessages']);
+
 
 
     });
@@ -189,6 +198,18 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::group(['middleware' => ['role_or_permission:USER']], function () {
 
             Route::post('update', [AuthController::class, 'update']);
+            Route::post('sendMessageU',[MessageController::class,'sendMessage']);
+
+
+
+
+            /////////// MESSAGES //////////
+            Route::post('sendMessageU',[MessageController::class,'sendMessage']);
+            Route::post('sendDoctor-Message',[MessageController::class,'send_Doctor_Message']);
+            Route::post('getDoctor-ChatMessages',[MessageController::class,'getDoctor_ChatMessages']);
+
+
+
 
 
             Route::get('allCategoryU', [AdminController::class, 'getCategories']);
@@ -281,11 +302,6 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('cancelBookingTime',[BookingController::class,'cancelBookingTime']);
 
 
-            /////////// MESSAGES //////////
-            Route::post('sendMessage',[MessageController::class,'sendMessage']);
-            Route::post('getChatMessages',[MessageController::class,'getChatMessages']);
-            Route::post('sendDoctor-Message',[MessageController::class,'send_Doctor_Message']);
-            Route::post('getDoctor-ChatMessages',[MessageController::class,'getDoctor_ChatMessages']);
 
             // favorite Auction
             Route::post('addAuctionToFavorites',[FavoriteAuctionController::class,'addAuctionToFavorites']);

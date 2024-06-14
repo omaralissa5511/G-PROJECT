@@ -27,22 +27,20 @@ class CHAT implements ShouldBroadcast
         $this->userID = $userID;
         $this->trainer_id = $trainer_id;
     }
-
-
     public function broadcastOn(): Channel
     {
         return new PrivateChannel
-        ("private.chat".$this->userID.'-'.$this->trainer_id);
+        ("chat-".$this->message->user_id."-".$this->message->trainer_id);
 
     }
     public function broadcastAs()
     {
-        return 'BENZO';
+        return 'CHAT';
     }
-
     public function broadcastWith()
     {
         return [
+            'id' =>$this->message->id,
             'user_id' => $this->message->user_id,
             'trainer_id' => $this->message->trainer_id,
             'content' => $this->message->content,

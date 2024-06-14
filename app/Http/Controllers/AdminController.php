@@ -515,9 +515,27 @@ class AdminController extends Controller
         $category->delete();
 
         return response()->json([
-            'message' =>'Category is deleted successfully.',
+            'message' => 'Category is deleted successfully.',
             'status' => true
         ]);
+    }
+
+    public function getUserForChart(){
+        $users = User::where('type','profile')->get();
+        $trainers = User::where('type','Trainer')->get();
+        $Equestrian_clubs = User::where('type','Equestrian_club')->get();
+
+     $trainers = sizeof($trainers);
+     $users = sizeof($users);
+     $Equestrian_clubs = sizeof($Equestrian_clubs);
+        return response()->json([
+            'users' => $users,
+            'trainers' => $trainers,
+            'equestrian_clubs' =>$Equestrian_clubs,
+            'doctors' => 6,
+            'healthCare' => 7
+        ]);
+
     }
 
 }

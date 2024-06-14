@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Events\CHAT;
 use App\Events\DOCTOR_CHAT;
 use App\Events\TrainerCHAT;
+use App\Events\Users;
 use App\Models\CLUB\Trainer;
 use App\Models\MessageD;
 use App\Models\MessageM;
+use App\Models\Profile;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,17 +49,22 @@ class MessageController extends Controller
         $message->time = $formattedTime;
         $message->save();
 
+        $name = Profile::where('user_id',$request->user_id)->first()->FName;
+        $message->user_id = $name;
+        $mm = MessageM::query()->latest()->first();
 
-        broadcast(new CHAT( $message->user_id,$message->trainer_id,$message));
+
+        broadcast(new CHAT( $message->user_id,$message->trainer_id,$mm));
 
         return response()->json([
             'success' => true,
             'message' => 'MessageM sent successfully.',
-            $message]);
+            $mm]);
     }
 
     public function authenticate(Request $request)
     {
+
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
             env('PUSHER_APP_SECRET'),
@@ -72,7 +80,7 @@ class MessageController extends Controller
 
 //        $auth = $pusher->socket_auth($channelName, $socketId);
 //        $auth = \GuzzleHttp\json_decode($auth);
-        return response()->json($pusher->socket_auth($channelName, $socketId));
+     return response()->json($pusher->socket_auth($channelName, $socketId));
     }
 
 
@@ -158,6 +166,12 @@ class MessageController extends Controller
                 'message' => 'No Messages',
             ]);
         }
+    }
+
+
+    public function getAllUser(){
+        $user = User::where('type','profile')->with('profiles')-> get();
+        return $user;
     }
 
 }
