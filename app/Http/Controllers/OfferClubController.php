@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Offer;
+use App\Models\CLUB\OfferClub;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class OfferController extends Controller
+class OfferClubController extends Controller
 {
 
     public function addOffer(Request $request){
 
         $validate = Validator::make($request->all(), [
-            'health_id' => 'required',
+            'club_id' => 'required',
             'offer_value' => 'required',
             'begin' => 'required|date',
             'end' => 'required|date',
-           ]);
+        ]);
 
         if ($validate->fails()) {
             return response()->json([
@@ -27,7 +27,7 @@ class OfferController extends Controller
             ]);
         }
 
-        $crossOffer = Offer::where('health_care_id', $request->health_id)
+        $crossOffer = OfferClub::where('club_id', $request->club_id)
             ->where(function ($query) use ($request) {
                 $query->where('begin', '<=', $request->end)
                     ->where('end', '>=', $request->begin);
@@ -42,8 +42,8 @@ class OfferController extends Controller
             ]);
         }
 
-        $offer = Offer::create([
-            'health_care_id'=> $request->health_id,
+        $offer = OfferClub::create([
+            'club_id'=> $request->club_id,
             'offer_value'=> $request->offer_value,
             'description'=> $request->description,
             'begin'=> $request->begin,
@@ -59,7 +59,7 @@ class OfferController extends Controller
 
     public function deleteOffer($id)
     {
-        $offer = Offer::find($id);
+        $offer = OfferClub::find($id);
 
         if (!$offer) {
             return response()->json([
@@ -79,7 +79,7 @@ class OfferController extends Controller
     public function getOffersToday(){
 
         $today = Carbon::now();
-        $offers = Offer::query()
+        $offers = OfferClub::query()
             ->whereDate('begin','<=',$today)
             ->whereDate('end','>=',$today)->get();
 
@@ -90,9 +90,9 @@ class OfferController extends Controller
             ]);
         }else {
             foreach ($offers as $offer){
-                $offer->image=$offer->health_care->profile_image;
-                $offer->name=$offer->health_care->name;
-                unset($offer->health_care);
+                $offer->image=$offer->club->profile;
+                $offer->name=$offer->club->name;
+                unset($offer->club);
             }
             return response()->json([
                 'message' => 'get successfully.',

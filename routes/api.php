@@ -17,6 +17,7 @@ use App\Http\Controllers\HealthCareController;
 use App\Http\Controllers\HorseController;
 use App\Http\Controllers\HRatingController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\OfferClubController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
@@ -153,8 +154,11 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::post('editClass/{class_id}', [ClassController::class, 'editClass']);
         Route::delete('deleteClass/{class_id}', [ClassController::class, 'deleteClass']);
 
-
         Route::get('allCategory', [AdminController::class, 'getCategories']);
+
+        /// Offers
+        Route::post('addOfferClub',[OfferClubController::class,'addOffer']);
+        Route::delete('deleteOfferClub/{id}',[OfferClubController::class,'deleteOffer']);
 
     });
 
@@ -335,8 +339,11 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::delete('deleteConsultation/{id}',[ConsultationController::class,'deleteConsultation']);
             Route::get('getConsultationByIDUser/{id}',[ConsultationController::class,'getConsultationByID']);
 
-            ////// Offers
+            ////// Offer Health
             Route::get('getOffersToday',[OfferController::class,'getOffersToday']);
+
+            ////// Offer Club
+            Route::get('getOffersClubToday',[OfferClubController::class,'getOffersToday']);
 
 
             Route::post('sendMessage/broadcasting/auth',[MessageController::class,'sendMessage'])

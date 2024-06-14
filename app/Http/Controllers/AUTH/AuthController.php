@@ -172,7 +172,6 @@ class AuthController extends Controller
                 'address' => $request->address,
                 'gender' => $request->gender,
                 'profile' => $realPath
-
             ]);
 
             $data['token'] = $user->createToken($request->email)->plainTextToken;
@@ -643,12 +642,19 @@ class AuthController extends Controller
                     'status' => false
                 ]);
             }
+
             if($user->type == 'Trainer'){
                 $user = User::where('email', $request->email)
                     ->with('trainers')->first();
             }
 
             elseif ($user->type == 'profile'){
+                if (!$user->email_verified_at) {
+                    return response()->json([
+                        'message' => 'Please verify your email address to login.',
+                        'status' => false
+                    ]);
+                }
                 $user = User::where('email', $request->email)
                     ->with('profiles')->first();
             }
