@@ -32,7 +32,7 @@ class DOCTOR_CHAT implements ShouldBroadcast
     public function broadcastOn(): Channel
     {
         return new PrivateChannel
-        ("private.chat.Doctor".$this->userID.'-'.$this->doctor_id);
+        ("chat-Doctor-".$this->message->user_id.'-'.$this->message->doctor_id);
 
     }
     public function broadcastAs()

@@ -70,6 +70,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
 
         Route::get('getUserForChart', [AdminController::class, 'getUserForChart']);
+        Route::get('getUserDate', [AdminController::class, 'getUserDate']);
 
 
         Route::post('AdminUpdate', [AuthController::class, 'AdminUpdate']);
@@ -176,14 +177,12 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
         Route::post('editTrainer', [TrainerController::class, 'editTrainer']);
         Route::get('MyProfile', [TrainerController::class, 'MyProfile']);
-
         Route::get('MyCourses_T', [TrainerController::class, 'MyCourses_T']);
-
         Route::get('get-allUsers', [MessageController::class, 'getAllUser']);
+
+        //////////// TRAINER MESSAGES  ////////////
         Route::post('sendMessage',[MessageController::class,'sendMessage']);
-        Route::post('getChatMessages',[MessageController::class,'getChatMessages']);
-
-
+        Route::post('getChatMessagesT',[MessageController::class,'getChatMessages']);
 
     });
     ############### HEALTH CARE ##################
@@ -222,8 +221,9 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
             /////////// MESSAGES //////////
             Route::post('sendMessageU',[MessageController::class,'sendMessage']);
+            Route::post('getTrainer-ChatMessagesU',[MessageController::class,'getChatMessages']);
+            Route::post('getDoctor-ChatMessagesU',[MessageController::class,'getDoctor_ChatMessages']);
             Route::post('sendDoctor-Message',[MessageController::class,'send_Doctor_Message']);
-            Route::post('getDoctor-ChatMessages',[MessageController::class,'getDoctor_ChatMessages']);
 
 
 

@@ -11,7 +11,10 @@ use App\Models\CLUB\Category;
 use App\Models\CLUB\ClubImage;
 use App\Models\CLUB\Equestrian_club;
 use App\Models\HealthCare;
+use App\Models\Profile;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -536,6 +539,32 @@ class AdminController extends Controller
             'healthCare' => 7
         ]);
 
+    }
+
+    public function getUserDate(){
+
+         $users =  Profile::query()->pluck('created_at','FName');
+//        $dataArray = get_object_vars($users);
+//         return $dataArray;
+//        foreach ($users as $key => $value) {
+//            $carbon = Carbon::parse($value);
+//            $month = $carbon->format('m'); // Extract month as a numeric string (e.g., 05 for May)
+//            $users =  "$key: $month" . PHP_EOL;
+//        }
+        $monthArray = [];
+
+        foreach ($users as $key => $value) {
+            $timestamp = strtotime($value);
+            $month = date('m', $timestamp); // Extract month as a numeric string
+            $users[$key] = $month; // Add key-value pair to the new array
+        }
+
+
+       // print_r($monthArray);
+        return $users;
+//        $timestamp = strtotime($users['nemo']);
+//        $month = date('m', $timestamp);
+//        return $month;
     }
 
 }
