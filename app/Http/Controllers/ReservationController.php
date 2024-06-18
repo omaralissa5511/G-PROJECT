@@ -470,7 +470,7 @@ class ReservationController extends Controller
 //        }else {
 //            return response()->json([
 //                'status' => false
-//            ]);
+//            ])
 //        }
 
         $booking = Booking::where('trainer_id', $request->trainer_id)->where('user_id', $request->user_id)->first();
