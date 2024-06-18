@@ -71,7 +71,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
         Route::get('getUserForChart', [AdminController::class, 'getUserForChart']);
         Route::get('getUserDate', [AdminController::class, 'getUserDate']);
-
+        Route::get('getUserCountInMonth', [AdminController::class, 'UserInMonth']);
 
         Route::post('AdminUpdate', [AuthController::class, 'AdminUpdate']);
 
