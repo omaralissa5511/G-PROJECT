@@ -538,7 +538,6 @@ class AdminController extends Controller
             'doctors' => 6,
             'healthCare' => 7
         ]);
-
     }
 
     public function getUserDate(){
@@ -565,6 +564,37 @@ class AdminController extends Controller
 //        $timestamp = strtotime($users['nemo']);
 //        $month = date('m', $timestamp);
 //        return $month;
+    }
+
+
+    public function UserInMonth(){
+        $users = User::selectRaw('COUNT(*) as user_count, MONTH(created_at) as month')
+            ->where('type', 'profile')
+            ->whereYear('created_at', now()->year)
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        $months = [
+            1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
+            5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug',
+            9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'
+        ];
+
+        $result = [];
+        foreach ($months as $number => $name) {
+            $result[$name] = 0;
+        }
+
+        foreach ($users as $user) {
+            $monthName = $months[$user->month];
+            $result[$monthName] = $user->user_count;
+        }
+
+        return response()->json([
+            'users' => $result,
+            'status'=> true
+        ]);
     }
 
 }
