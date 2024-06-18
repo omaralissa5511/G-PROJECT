@@ -214,7 +214,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::group(['middleware' => ['role_or_permission:USER']], function () {
 
             Route::post('update', [AuthController::class, 'update']);
-            Route::post('sendMessageU',[MessageController::class,'sendMessage']);
+           // Route::post('sendMessageU',[MessageController::class,'sendMessage']);
 
 
 
@@ -224,6 +224,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('getTrainer-ChatMessagesU',[MessageController::class,'getChatMessages']);
             Route::post('getDoctor-ChatMessagesU',[MessageController::class,'getDoctor_ChatMessages']);
             Route::post('sendDoctor-Message',[MessageController::class,'send_Doctor_Message']);
+
 
 
 
