@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Events\Bids;
 use App\Events\Clubs;
 use App\Events\NotificationE;
+
 use App\Http\Controllers\Controller;
 use App\Models\Auction;
+use App\Models\CLUB\Booking;
 use App\Models\CLUB\Category;
 use App\Models\CLUB\ClubImage;
 use App\Models\CLUB\Equestrian_club;
+use App\Models\CLUB\Reservation;
+use App\Models\CLUB\Trainer;
 use App\Models\HealthCare;
 use App\Models\Profile;
 use App\Models\User;
@@ -597,10 +601,114 @@ class AdminController extends Controller
         ]);
     }
 
+    public function AuctionInMonth()
+    {
+        $auctions = Auction::selectRaw('COUNT(*) as auction_count, MONTH(created_at) as month')
+            ->whereYear('created_at', now()->year)
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        $months = [
+            1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
+            5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug',
+            9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'
+        ];
+
+        $result = [];
+        foreach ($months as $number => $name) {
+            $result[$name] = 0;
+        }
+
+        foreach ($auctions as $auction) {
+            $monthName = $months[$auction->month];
+            $result[$monthName] = $auction->auction_count;
+        }
+
+        return response()->json([
+            'auctions' => $result,
+            'status' => true
+        ]);
+    }
+
+    public function bookingInMonth($id)
+    {
+        $bookings = Booking::whereHas('service', function ($query) use ($id) {
+            $query->where('club_id', $id);
+        })->selectRaw('COUNT(*) as booking_count, MONTH(created_at) as month')
+            ->whereYear('created_at', now()->year)
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        $months = [
+            1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
+            5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug',
+            9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'
+        ];
+
+        $result = [];
+        foreach ($months as $number => $name) {
+            $result[$name] = 0;
+        }
+
+        foreach ($bookings as $booking) {
+            $monthName = $months[$booking->month];
+            $result[$monthName] = $booking->booking_count;
+        }
+
+        return response()->json([
+            'bookings' => $result,
+            'status' => true
+        ]);
+    }
+
+    public function reservationInMonth($id)
+    {
+        $reservations = Reservation::whereHas('course', function ($query) use ($id){
+            $query->where('club', $id);
+        })->selectRaw('COUNT(*) as reservation_count, MONTH(created_at) as month')
+            ->whereYear('created_at', now()->year)
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        $months = [
+            1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
+            5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug',
+            9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec'
+        ];
+
+        $result = [];
+        foreach ($months as $number => $name) {
+            $result[$name] = 0;
+        }
+
+        foreach ($reservations as $reservation) {
+            $monthName = $months[$reservation->month];
+            $result[$monthName] = $reservation->reservation_count;
+        }
+
+        return response()->json([
+            'reservation' => $result,
+            'status' => true
+        ]);
+    }
+
+    public function infoToAdmin(){
+        $users=User::where('type','profile')->count();
+        $trainers=Trainer::count();
+        $bookings=Booking::count();
+        $reservations=Reservation::count();
+        $auctions=Auction::count();
+
+        return response()->json([
+            'users' => $users,
+            'trainers' => $trainers,
+            'bookings' => $bookings,
+            'reservations'=> $reservations,
+            'auctions'=> $auctions,
+            'status' => true
+        ]);
+    }
 }
-
-
-
-
-
-

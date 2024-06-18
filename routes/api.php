@@ -72,6 +72,8 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('getUserForChart', [AdminController::class, 'getUserForChart']);
         Route::get('getUserDate', [AdminController::class, 'getUserDate']);
         Route::get('getUserCountInMonth', [AdminController::class, 'UserInMonth']);
+        Route::get('getAuctionCountInMonth', [AdminController::class, 'AuctionInMonth']);
+        Route::get('getInfoToAdmin', [AdminController::class, 'infoToAdmin']);
 
         Route::post('AdminUpdate', [AuthController::class, 'AdminUpdate']);
 
@@ -120,7 +122,8 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
     ################ CLUB ROLE ###############
     Route::group(['middleware' => ['role:CLUB']], function () {
-
+        Route::get('getBookingCountInMonth/{id}', [AdminController::class, 'BookingInMonth']);
+        Route::get('getReservationCountInMonth/{id}', [AdminController::class, 'ReservationInMonth']);
 
         Route::get('allServices/{id}', [ServiceController::class, 'index']);
 
