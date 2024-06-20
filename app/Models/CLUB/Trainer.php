@@ -54,8 +54,4 @@ class Trainer extends Model
     {
         return $this->hasMany(Booking::class);
     }
-    public function messageMs()
-    {
-        return $this->hasMany(MessageM::class);
-    }
 }

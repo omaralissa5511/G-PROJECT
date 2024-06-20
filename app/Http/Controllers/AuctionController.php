@@ -506,5 +506,17 @@ class AuctionController extends Controller
             'status' => true
         ]);
     }
+
+    public function winner($id){
+        $bid=Bid::where('auction_id',$id)->orderBy('offeredPrice','desc')->with('profile')->first();
+        $user=$bid->profile->user;
+        $bid->profile->email=$user->email;
+        $bid->profile->mobile=$user->mobile;
+        unset($bid->profile->user);
+        return response()->json([
+            'winner'=> $bid,
+            'status' => true
+        ]);
+    }
 }
 

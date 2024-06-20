@@ -329,7 +329,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::post('upcoming1',[AuctionController::class,'upcoming2']);
             Route::get('OperationTime/{id}',[AuctionController::class,'OperationTime']);
             Route::post('addInsurance',[AuctionController::class,'addInsurance']);
-
+            Route::get('winner/{id}',[AuctionController::class,'winner']);
 
             //Booking
             Route::post('addBooking',[BookingController::class,'addBooking']);
