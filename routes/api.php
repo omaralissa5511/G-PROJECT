@@ -24,6 +24,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\SupportController;
 use App\Http\Controllers\TrainerController;
 use App\Http\Controllers\TrainerServiceController;
 use App\Http\Controllers\TRatingController;
@@ -115,6 +116,9 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('allDoctorsInHealthCareAdmin/{id}', [DoctorController::class, 'allDoctorsInHeaalthCare']);
         Route::get('getDoctorByIDAdmin/{id}', [DoctorController::class, 'getDoctorByID']);
 
+        /////// Support
+        Route::get('getAllSupportNotReply',[SupportController::class,'getAllSupportNotReply']);
+        Route::get('replySupport/{id}',[SupportController::class,'reply']);
 
 
     });
@@ -365,10 +369,14 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             ////// Offer Club
             Route::get('getOffersClubToday',[OfferClubController::class,'getOffersToday']);
 
+            /////// Support
+            Route::post('createSupport',[SupportController::class,'create']);
 
             Route::post('sendMessage/broadcasting/auth',[MessageController::class,'sendMessage'])
             ->middleware('auth');
-
+            Route::get('chatsListTrainer/{id}',[MessageController::class,'allTrainerChatsByUser']);
+            Route::get('chatsListDoctor/{id}',[MessageController::class,'allDoctorChatsByUser']);
+            Route::get('isRead/{id}',[MessageController::class,'isReadTrainer']);
 
 
 

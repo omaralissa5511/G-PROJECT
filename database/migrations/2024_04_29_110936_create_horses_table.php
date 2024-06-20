@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('gender')->nullable();
             $table->string('address');
             $table->string('images');
+            $table->string('video');
             $table->unsignedBigInteger('auction_id');
             $table->foreign('auction_id')->references('id')->on('auctions')
                 ->onDelete('cascade')->onUpdate('cascade');
