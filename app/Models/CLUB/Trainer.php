@@ -2,6 +2,7 @@
 
 namespace App\Models\CLUB;
 
+use App\Models\MessageM;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -52,5 +53,9 @@ class Trainer extends Model
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+    public function messageMs()
+    {
+        return $this->hasMany(MessageM::class);
     }
 }

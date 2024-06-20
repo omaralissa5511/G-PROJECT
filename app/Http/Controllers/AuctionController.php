@@ -33,6 +33,7 @@ class AuctionController extends Controller
             'category' => 'required|string|max:250',
             'color' => 'required|string|max:250',
             'images' => 'required',
+            'video'=>'required|file|max:10240',
             'birth' => 'required',
             'gender' => 'required',
             'address' => 'required'
@@ -52,6 +53,13 @@ class AuctionController extends Controller
             $image->move(public_path('images/HORSE/'), $new_name);
             $imagePaths[] = 'images/HORSE/' . $new_name;
         }
+
+        $file_extension = $request->video->getClientOriginalExtension();
+        $filename = time() . '.' . $file_extension;
+        $path = public_path('videos/auction/');
+        $request->video->move($path, $filename);
+        $realPath = 'videos/auction/'.$filename;
+
         $limitTime = Carbon::createFromFormat('H:i:s', '23:00:00');
         $auction = Auction::create([
             'initialPrice' => $request->initialPrice,
@@ -70,8 +78,10 @@ class AuctionController extends Controller
             'birth' => $request->birth,
             'gender' => $request->gender,
             'auction_id' => $auction->id,
-            'images' => $imagePaths
+            'images' => $imagePaths,
+            'video'=> $realPath
         ]);
+
         $data['auction'] = $auction;
         $data['horse'] = $horse;
         $response = [
@@ -98,6 +108,7 @@ class AuctionController extends Controller
             'category' => 'required|string|max:250',
             'color' => 'required|string|max:250',
             'images' => 'required',
+            'video'=>'required',
             'birth' => 'required',
             'gender' => 'required',
             'address' => 'required'
@@ -118,6 +129,14 @@ class AuctionController extends Controller
             $imagePaths[] = 'images/HORSE/' . $new_name;
         }
 
+
+        $file_extension = $request->video->getClientOriginalExtension();
+        $filename = time() . '.' . $file_extension;
+        $path = public_path('videos/auction/');
+        $request->video->move($path, $filename);
+        $realPath = 'videos/auction/'.$filename;
+
+
         $auction = Auction::where('id',$id)->first();
             $auction->update([
             'initialPrice' => $request->initialPrice,
@@ -133,7 +152,8 @@ class AuctionController extends Controller
             'color' => $request->color,
             'birth' => $request->birth,
             'gender' => $request->gender,
-            'images' => $imagePaths
+            'images' => $imagePaths,
+            'video'=>$realPath
         ]);
         $data['auction'] = $auction;
         $data['horse'] = $horse;

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('content')->nullable();
             $table->string('role');
             $table->string('image')->nullable();
+            $table->boolean('read')->default(0); // 0 => not read
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\CLUB\Trainer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,6 +21,7 @@ class MessageM extends Model
         'image',
         'role',
         'time',
+        'read'
 
     ];
     protected $casts = [
