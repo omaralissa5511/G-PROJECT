@@ -186,7 +186,7 @@ class MessageController extends Controller
                 ->orderBy('time', 'desc')
                 ->first();
             $read=MessageM::where('user_id', $id)->where('trainer_id', $trainer->trainer_id)
-                ->where('read',0)->count();
+                ->where('user',0)->where('read',0)->count();
 
             if ($lastMessage) {
                 $chatList[$trainer->trainer_id] = [
@@ -229,7 +229,7 @@ class MessageController extends Controller
                 ->orderBy('time', 'desc')
                 ->first();
             $read=MessageD::where('user_id', $id)->where('doctor_id', $doctor->doctor_id)
-                ->where('read',0)->count();
+                ->where('user',0)->where('read',0)->count();
 
             if ($lastMessage) {
                 $chatList[$doctor->doctor_id] = [
