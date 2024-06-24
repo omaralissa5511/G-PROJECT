@@ -144,10 +144,8 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
 
         Route::post('createService', [ServiceController::class, 'create']);
-
         Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
         Route::get('showService/{name}', [ServiceController::class, 'show']);
-
         Route::post('updateService/{id}', [ServiceController::class, 'update']);
         Route::delete('deleteService/{id}', [ServiceController::class, 'destroy']);
 
@@ -377,7 +375,21 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
             Route::post('stripe-payment', [StripeController::class,'stripePost']);
         });
-    });
+
+
+
+        Route::group(['middleware' => ['role_or_permission:SB']], function () {
+
+            /////////// MESSAGES //////////
+            Route::post('sendMessageU',[MessageController::class,'sendMessage']);
+            Route::post('getTrainer-ChatMessagesU',[MessageController::class,'getChatMessages']);
+            Route::post('getDoctor-ChatMessages',[MessageController::class,'getDoctor_ChatMessages']);
+            Route::post('sendDoctor-Message',[MessageController::class,'send_Doctor_Message']);
+            Route::get('get-allUsers', [MessageController::class, 'getAllUser']);
+
+        });
+
+        });
 
 
 
