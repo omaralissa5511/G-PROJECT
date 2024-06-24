@@ -698,6 +698,7 @@ class AdminController extends Controller
     public function infoToAdmin(){
         $users=User::where('type','profile')->count();
         $trainers=Trainer::count();
+        $clubs=Equestrian_club::count();
         $bookings=Booking::count();
         $reservations=Reservation::count();
         $auctions=Auction::count();
@@ -705,6 +706,7 @@ class AdminController extends Controller
         return response()->json([
             'users' => $users,
             'trainers' => $trainers,
+            'clubs' => $clubs,
             'bookings' => $bookings,
             'reservations'=> $reservations,
             'auctions'=> $auctions,

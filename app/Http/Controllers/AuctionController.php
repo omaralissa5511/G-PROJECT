@@ -21,9 +21,9 @@ class AuctionController extends Controller
 
     public function AddAuction(Request $request) {
 
-        $user_id = $request->user_id;
+         $user_id = $request->user_id;
 
-        $profile_id = Profile::where('id',$user_id)->first()->id;
+        $profile_id = Profile::where('user_id',$user_id)->first()->id;
         $validate = Validator::make($request->all(), [
             'description' => 'required|string|max:250',
             'initialPrice' => 'required|string|max:250',
@@ -507,6 +507,7 @@ class AuctionController extends Controller
         ]);
     }
 
+
     public function winner($id){
         $bid=Bid::where('auction_id',$id)->orderBy('offeredPrice','desc')->with('profile')->first();
         $user=$bid->profile->user;
@@ -517,6 +518,7 @@ class AuctionController extends Controller
             'winner'=> $bid,
             'status' => true
         ]);
+
     }
 }
 
