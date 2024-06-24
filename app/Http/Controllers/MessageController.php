@@ -185,21 +185,22 @@ class MessageController extends Controller
                 ->where('trainer_id', $trainer->trainer_id)
                 ->orderBy('time', 'desc')
                 ->first();
-            $read=MessageM::where('user_id', $id)->where('trainer_id', $trainer->trainer_id)
-                ->where('user',0)->where('read',0)->count();
-
-            if ($lastMessage) {
-                $chatList[$trainer->trainer_id] = [
-                    'trainer_id' => $trainer->trainer_id,
-                    'trainer_name' => $trainerInfo->FName . ' ' . $trainerInfo->lName,
-                    'trainer_image' => $trainerInfo->image,
-                    'last_message' => $lastMessage->content,
-                    'last_message_time' => $lastMessage->time,
-                    'unread_messages' => $read
-                ];
-            }
+            $read = MessageM::where('user_id', $id)->where('trainer_id', $trainer->trainer_id)
+                ->where('user', 0)->where('read', 0)->count();
+            if ($trainerInfo) {
+                if ($lastMessage) {
+                    $chatList[$trainer->trainer_id] = [
+                        'trainer_id' => $trainer->trainer_id,
+                        'trainer_name' => $trainerInfo->FName . ' ' . $trainerInfo->lName,
+                        'trainer_image' => $trainerInfo->image,
+                        'last_message' => $lastMessage->content,
+                        'last_message_time' => $lastMessage->time,
+                        'unread_messages' => $read
+                    ];
+                }
+            }else
+                continue;
         }
-
         // ترتيب القائمة بناءً على الوقت
         usort($chatList, function ($a, $b) {
             return strtotime($b['last_message_time']) - strtotime($a['last_message_time']);
@@ -230,17 +231,19 @@ class MessageController extends Controller
                 ->first();
             $read=MessageD::where('user_id', $id)->where('doctor_id', $doctor->doctor_id)
                 ->where('user',0)->where('read',0)->count();
-
-            if ($lastMessage) {
-                $chatList[$doctor->doctor_id] = [
-                    'doctor_id' => $doctor->doctor_id,
-                    'doctor_name' => $doctorInfo->firstName . ' ' . $doctorInfo->lastName,
-                    'doctor_image' => $doctorInfo->image,
-                    'last_message' => $lastMessage->content,
-                    'last_message_time' => $lastMessage->time,
-                    'unread_messages' => $read
-                ];
-            }
+            if ($doctorInfo) {
+                if ($lastMessage) {
+                    $chatList[$doctor->doctor_id] = [
+                        'doctor_id' => $doctor->doctor_id,
+                        'doctor_name' => $doctorInfo->firstName . ' ' . $doctorInfo->lastName,
+                        'doctor_image' => $doctorInfo->image,
+                        'last_message' => $lastMessage->content,
+                        'last_message_time' => $lastMessage->time,
+                        'unread_messages' => $read
+                    ];
+                }
+            }else
+                continue;
         }
 
         // ترتيب القائمة بناءً على الوقت
