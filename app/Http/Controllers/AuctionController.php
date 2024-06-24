@@ -23,7 +23,7 @@ class AuctionController extends Controller
 
         $user_id = $request->user_id;
 
-        $profile_id = Profile::where('id',$user_id)->first()->id;
+        $profile_id = Profile::where('user_id',$user_id)->first()->id;
         $validate = Validator::make($request->all(), [
             'description' => 'required|string|max:250',
             'initialPrice' => 'required|string|max:250',
@@ -96,8 +96,8 @@ class AuctionController extends Controller
     public function EditAuction(Request $request,$id)
     {
 
-        $user_id = Auth::id();
-        $profile_id = Profile::where('id',$user_id)->first()->id;
+//        $user_id = Auth::id();
+//        $profile_id = Profile::where('id',$user_id)->first()->id;
         $validate = Validator::make($request->all(), [
 
             'description' => 'required|string|max:250',
