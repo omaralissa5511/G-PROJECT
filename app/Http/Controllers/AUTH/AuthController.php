@@ -649,12 +649,12 @@ class AuthController extends Controller
             }
 
             elseif ($user->type == 'profile'){
-                if (!$user->email_verified_at) {
-                    return response()->json([
-                        'message' => 'Please verify your email address to login.',
-                        'status' => false
-                    ]);
-                }
+//                if (!$user->email_verified_at) {
+//                    return response()->json([
+//                        'message' => 'Please verify your email address to login.',
+//                        'status' => false
+//                    ]);
+//                }
                 $user = User::where('email', $request->email)
                     ->with('profiles')->first();
             }
