@@ -381,7 +381,7 @@ class AuthController extends Controller
                 'FName' => $request->FName,
                 'LName' => $request->LName,
                 'address' => $request->address,
-                'image' => $realPath
+                'profile' => $realPath
             ]);
             $profile = Profile::where('user_id',$userID)->first();
             $response = [

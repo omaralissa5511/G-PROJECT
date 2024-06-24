@@ -229,7 +229,7 @@ class AdminController extends Controller
                 'status' => false
             ];
         } else {
-            $club->day = json_decode($club->day) ;
+            $club->day = json_decode($club->day);
             $clubImages = ClubImage::where('club_id', $club->id)->pluck('image_paths')->toArray();
 
             $response = [

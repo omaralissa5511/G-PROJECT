@@ -521,4 +521,3 @@ class AuctionController extends Controller
 
     }
 }
-
