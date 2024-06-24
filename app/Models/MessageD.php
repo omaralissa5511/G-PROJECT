@@ -20,6 +20,7 @@ class MessageD extends Model
         'image',
         'role',
         'time',
+        'read'
     ];
     protected $casts = [
         'image' => 'array',

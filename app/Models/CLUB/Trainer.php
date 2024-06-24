@@ -2,6 +2,7 @@
 
 namespace App\Models\CLUB;
 
+use App\Models\MessageM;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

@@ -7,6 +7,7 @@ use App\Events\DOCTOR_CHAT;
 use App\Events\TrainerCHAT;
 use App\Events\Users;
 use App\Models\CLUB\Trainer;
+use App\Models\Doctor;
 use App\Models\MessageD;
 use App\Models\MessageM;
 use App\Models\Profile;
@@ -174,6 +175,99 @@ class MessageController extends Controller
         return $user;
     }
 
+    public function allTrainerChatsByUser($id)
+    {
+        $trainers = MessageM::where('user_id', $id)->get('trainer_id');
+        $chatList = [];
+        foreach ($trainers as $trainer) {
+            $trainerInfo = Trainer::where('id', $trainer->trainer_id)->first();
+            $lastMessage = MessageM::where('user_id', $id)
+                ->where('trainer_id', $trainer->trainer_id)
+                ->orderBy('time', 'desc')
+                ->first();
+            $read=MessageM::where('user_id', $id)->where('trainer_id', $trainer->trainer_id)
+                ->where('user',0)->where('read',0)->count();
+
+            if ($lastMessage) {
+                $chatList[$trainer->trainer_id] = [
+                    'trainer_id' => $trainer->trainer_id,
+                    'trainer_name' => $trainerInfo->FName . ' ' . $trainerInfo->lName,
+                    'trainer_image' => $trainerInfo->image,
+                    'last_message' => $lastMessage->content,
+                    'last_message_time' => $lastMessage->time,
+                    'unread_messages' => $read
+                ];
+            }
+        }
+
+        // ترتيب القائمة بناءً على الوقت
+        usort($chatList, function ($a, $b) {
+            return strtotime($b['last_message_time']) - strtotime($a['last_message_time']);
+        });
+
+        if (!empty($chatList)) {
+            return response()->json([
+                'chatList' => array_values($chatList), // إعادة ترتيب المفاتيح
+                'status' => true,
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'No messages found for this user.',
+                'status' => false,
+            ]);
+        }
+    }
+
+    public function allDoctorChatsByUser($id)
+    {
+        $doctors = MessageD::where('user_id', $id)->get('doctor_id');
+        $chatList = [];
+        foreach ($doctors as $doctor) {
+            $doctorInfo = Doctor::where('id', $doctor->doctor_id)->first();
+            $lastMessage = MessageD::where('user_id', $id)
+                ->where('doctor_id', $doctor->doctor_id)
+                ->orderBy('time', 'desc')
+                ->first();
+            $read=MessageD::where('user_id', $id)->where('doctor_id', $doctor->doctor_id)
+                ->where('user',0)->where('read',0)->count();
+
+            if ($lastMessage) {
+                $chatList[$doctor->doctor_id] = [
+                    'doctor_id' => $doctor->doctor_id,
+                    'doctor_name' => $doctorInfo->firstName . ' ' . $doctorInfo->lastName,
+                    'doctor_image' => $doctorInfo->image,
+                    'last_message' => $lastMessage->content,
+                    'last_message_time' => $lastMessage->time,
+                    'unread_messages' => $read
+                ];
+            }
+        }
+
+        // ترتيب القائمة بناءً على الوقت
+        usort($chatList, function ($a, $b) {
+            return strtotime($b['last_message_time']) - strtotime($a['last_message_time']);
+        });
+
+        if (!empty($chatList)) {
+            return response()->json([
+                'chatList' => array_values($chatList), // إعادة ترتيب المفاتيح
+                'status' => true,
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'No messages found for this user.',
+                'status' => false,
+            ]);
+        }
+    }
+
+    public function isRead($message_id){
+        $read=MessageM::where('id',$message_id)->update(['read'=>1]);
+        return response()->json([
+            'message' => 'Message is read',
+            'status' => true,
+        ]);
+    }
 }
 
 

@@ -15,12 +15,13 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('trainer_id');
-            $table->integer('user');
+            $table->boolean('user');
             $table->integer('trainer')->nullable();
             $table->string('time');
             $table->text('content')->nullable();
             $table->string('role');
             $table->string('image')->nullable();
+            $table->boolean('read')->default(0); // 0 => not read
             $table->timestamps();
         });
     }
