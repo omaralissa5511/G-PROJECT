@@ -35,7 +35,7 @@ class ClubController extends Controller
 
     public function editClub (Request $request){
 
-        $userID = $request->id;
+        $userID = Auth::id();
         $club = Equestrian_club::where('user_id',$userID)->first();
 
         if($request->hasFile('license')) {
@@ -106,6 +106,7 @@ class ClubController extends Controller
         if($club) {
 
             $clubImages = ClubImage::where('club_id', $club->id)->get()->pluck('image_paths')->toArray();
+            $club->day = json_decode( $club->day);
 
             $response = [
                 'message' => 'club was found successfully.',

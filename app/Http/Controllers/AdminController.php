@@ -42,7 +42,6 @@ class AdminController extends Controller
             'lat' => 'required',
             'long' => 'required',
             'address' => 'required'
-
         ]);
 
         if ($validate->fails()) {
@@ -426,9 +425,10 @@ class AdminController extends Controller
         ]);
     }
 
-    public function getCategory(Request $request)
+    public function getCategory(Request $request,$id)
     {
-        $category = Category::find($request->id);
+
+        $category = Category::find($id);
 
         if (!$category) {
             return response()->json([

@@ -14,7 +14,6 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\FavoriteAuctionController;
 use App\Http\Controllers\FavoriteClubController;
 use App\Http\Controllers\HealthCareController;
-use App\Http\Controllers\HorseController;
 use App\Http\Controllers\HRatingController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OfferClubController;
@@ -28,7 +27,6 @@ use App\Http\Controllers\SupportController;
 use App\Http\Controllers\TrainerController;
 use App\Http\Controllers\TrainerServiceController;
 use App\Http\Controllers\TRatingController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -37,37 +35,31 @@ use Illuminate\Support\Facades\Route;
     Route::post('register',[AuthController::class,'register']);
     Route::post('AdminRegister',[AuthController::class,'AdminRegister']);
     Route::post('login',[AuthController::class,'login']);
-    Route::post('AdminLogin',[AuthController::class,'AdminLogin']);
     Route::post('sendAlert',[ReservationController::class,'sendAlert']);
 
 
 
 
-    //لارسال رمز التحقق
-    Route::post('/send-verification-email', [VerificationController::class, 'sendVerificationEmail']);
-    //للتحقق من رمز التحقق
-    Route::post('/verify', [VerificationController::class, 'verify']);
 
+    Route::post('/send-verification-email', [VerificationController::class, 'sendVerificationEmail']);
+    Route::post('/verify', [VerificationController::class, 'verify']);
     Route::post('/send-password-reset-email', [VerificationController::class, 'sendPasswordResetEmail']);
     Route::post('/reset-password', [VerificationController::class, 'resetPassword']);
-
     Route::get('getAppMessage',[AppMessageController::class,'getMessage']);
+    Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
+
+
+
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/change-password', [VerificationController::class, 'changePassword']);
-    });
-
-Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
-
-    Route::middleware('auth:sanctum')->group(function () {
-
 
 
         Route::post('logout',[AuthController::class,'logout']);
-    ############### ADMIN ROLE ###############
+        Route::post('/change-password', [VerificationController::class, 'changePassword']);
 
+
+        ############### ADMIN ROLE ###############
     Route::group(['middleware' => ['role_or_permission:ADMIN']], function () {
-
 
 
         Route::get('getUserForChart', [AdminController::class, 'getUserForChart']);
@@ -75,7 +67,6 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('getUserCountInMonth', [AdminController::class, 'UserInMonth']);
         Route::get('getAuctionCountInMonth', [AdminController::class, 'AuctionInMonth']);
         Route::get('getInfoToAdmin', [AdminController::class, 'infoToAdmin']);
-
         Route::post('AdminUpdate', [AuthController::class, 'AdminUpdate']);
 
         //Add App Message
@@ -88,7 +79,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
         Route::post('createCategory', [AdminController::class, 'createCategory']);
         Route::get('allCategory', [AdminController::class, 'getCategories']);
-        Route::get('getCategory', [AdminController::class, 'getCategory']);
+        Route::get('getCategory_A/{id}', [AdminController::class, 'getCategory']);
         Route::post('updateCategory', [AdminController::class, 'updateCategory']);
         Route::delete('deleteCategory/{id}', [AdminController::class, 'deleteCategory']);
         Route::post('getCategoryByName/{name}', [AdminController::class, 'getCategoryByName']);
@@ -97,7 +88,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::post('AddClub', [AdminController::class, 'AddClub']);
         Route::get('showClubs', [AdminController::class, 'showClubs']);
         Route::delete('deleteClub/{userId}', [AdminController::class, 'deleteClub']);
-        Route::get('searchClubByname/{name}', [AdminController::class, 'searchClubByName']);
+        Route::get('searchClubByname_A/{name}', [AdminController::class, 'searchClubByName']);
         Route::get('searchClubByID/{id}', [AdminController::class, 'searchClubByID']);
 
 
@@ -126,10 +117,10 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
     ################ CLUB ROLE ###############
     Route::group(['middleware' => ['role:CLUB']], function () {
+
         Route::get('getBookingCountInMonth/{id}', [AdminController::class, 'BookingInMonth']);
         Route::get('getReservationCountInMonth/{id}', [AdminController::class, 'ReservationInMonth']);
 
-        Route::get('allServices/{id}', [ServiceController::class, 'index']);
 
         Route::post('editClub', [ClubController::class, 'editClub']);
         Route::get('MyClub', [ClubController::class, 'MyClub']);
@@ -148,8 +139,8 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
 
         Route::post('createService', [ServiceController::class, 'create']);
-        Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
-        Route::get('showService/{name}', [ServiceController::class, 'show']);
+        Route::get('allServices_C/{club_id}', [ServiceController::class, 'index']);
+        Route::get('showService_C/{name}', [ServiceController::class, 'show']);
         Route::post('updateService/{id}', [ServiceController::class, 'update']);
         Route::delete('deleteService/{id}', [ServiceController::class, 'destroy']);
 
@@ -161,7 +152,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::delete('deleteCourse/{id}', [CourseController::class, 'deleteCourse']);
 
         Route::post('createClass', [ClassController::class, 'createClass']);
-        Route::get('getCourseClassesC/{course_id}', [ClassController::class, 'getCourseClasses']);
+        Route::get('getCourseClasses_C/{course_id}', [ClassController::class, 'getCourseClasses']);
         Route::post('editClass/{class_id}', [ClassController::class, 'editClass']);
         Route::delete('deleteClass/{class_id}', [ClassController::class, 'deleteClass']);
 
@@ -185,13 +176,21 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('MyCourses_T', [TrainerController::class, 'MyCourses_T']);
         Route::get('get-allUsers_T', [MessageController::class, 'getAllUser']);
 
+
         //////////// TRAINER MESSAGES  ////////////
         Route::post('sendMessage',[MessageController::class,'sendMessage']);
         Route::post('getChatMessagesT',[MessageController::class,'getChatMessages']);
 
+
+        ////////////   TRAINER MESSAGES  ////////////
+        Route::post('sendMessage_T',[MessageController::class,'sendMessage']);
+        Route::post('getChatMessages_T',[MessageController::class,'getChatMessages']);
     });
+
+
     ############### HEALTH CARE ##################
         Route::group(['middleware' => ['role_or_permission:HEALTH']], function () {
+
             Route::post('editHealthCareHealth/{id}', [HealthCareController::class, 'updateHealthCare']);
             Route::get('getAllHealthCaresHealth', [HealthCareController::class, 'getAllHealthCares']);
             Route::get('getHealthCareByIDHealth/{id}', [HealthCareController::class, 'getHealthCareByID']);
@@ -219,20 +218,13 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::group(['middleware' => ['role_or_permission:USER']], function () {
 
             Route::post('update', [AuthController::class, 'update']);
-           // Route::post('sendMessageU',[MessageController::class,'sendMessage']);
-
-
 
 
             /////////// MESSAGES //////////
             Route::post('sendMessageU',[MessageController::class,'sendMessage']);
+            Route::post('sendDoctor-Message',[MessageController::class,'send_Doctor_Message']);
             Route::post('getTrainer-ChatMessagesU',[MessageController::class,'getChatMessages']);
             Route::post('getDoctor-ChatMessagesU',[MessageController::class,'getDoctor_ChatMessages']);
-            Route::post('sendDoctor-Message',[MessageController::class,'send_Doctor_Message']);
-
-
-
-
 
 
             Route::get('allCategoryU', [AdminController::class, 'getCategories']);
@@ -257,11 +249,13 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::get('allTrainersInServiceUserCourse/{id}', [TrainerController::class, 'allTrainersInServiceCourse']);
             Route::get('getTrainerByIDUser/{id}', [TrainerController::class, 'getTrainerByID']);
 
-            Route::get('allTrainersInServiceUserCourse/{id}', [TrainerController::class, 'allTrainersInServiceCourse']);
+
+
+            Route::post('getCoursesByUser', [CourseController::class, 'getCoursesByUser']);
 
             Route::get('getProfile/{id}', [ProfileController::class, 'getProfile']);
 
-////// RESERVATION
+            ////// RESERVATION
         Route::post('reserve', [ReservationController::class, 'reserve']);
         Route::post('editReserve/{Rid}', [ReservationController::class, 'editReservation']);
         Route::get('Reserved_User_clubs', [ReservationController::class, 'Reserved_User_clubs']);
@@ -370,15 +364,15 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             /////// Support
             Route::post('createSupport',[SupportController::class,'create']);
 
-            Route::post('sendMessage/broadcasting/auth',[MessageController::class,'sendMessage'])
-            ->middleware('auth');
             Route::get('chatsListTrainer/{id}',[MessageController::class,'allTrainerChatsByUser']);
             Route::get('chatsListDoctor/{id}',[MessageController::class,'allDoctorChatsByUser']);
             Route::get('isRead/{id}',[MessageController::class,'isReadTrainer']);
+
             Route::get('isRead_D/{id}',[MessageController::class,'isReadDoctor']);
 
 
             Route::post('getCoursesByUser', [CourseController::class, 'getCoursesByUser']);
+
 
 
             Route::post('stripe-payment', [StripeController::class,'stripePost']);
@@ -389,8 +383,10 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::group(['middleware' => ['role_or_permission:SB']], function () {
 
             /////////// MESSAGES //////////
+
             Route::post('sendMessageU',[MessageController::class,'sendMessage']);
             Route::post('getTrainer-ChatMessagesU',[MessageController::class,'getChatMessages']);
+
             Route::post('getDoctor-ChatMessages_D',[MessageController::class,'getDoctor_ChatMessages']);
             Route::post('sendDoctor-Message_D',[MessageController::class,'send_Doctor_Message']);
             Route::get('get-allUsers', [MessageController::class, 'getAllUser']);
