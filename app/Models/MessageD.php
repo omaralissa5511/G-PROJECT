@@ -9,7 +9,7 @@ class MessageD extends Model
 {
     use HasFactory;
 
-    protected $table = 'D_messages';
+    protected $table = 'd_messages';
 
     protected $fillable = [
         'user_id',

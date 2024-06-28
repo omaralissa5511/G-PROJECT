@@ -329,9 +329,10 @@ class AuctionController extends Controller
     {
          $profiles = Bid::where('auction_id', $id)->pluck('profile_id');
           $TheBuyers_id = collect($profiles)->unique()->values()->all();
+        $TheBuyers2=[];
         foreach ($TheBuyers_id as $Pid){
 
-            $TheBuyers2 [] = Profile::where('id',$Pid)->with('bids')->first();
+            $TheBuyers2[] = Profile::where('id',$Pid)->with('bids')->first();
         }
         $response = [
             'Buyers' => $TheBuyers2,

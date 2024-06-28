@@ -170,6 +170,7 @@ class AdminController extends Controller
 
         foreach ($clubs as $club){
             $club->day = json_decode($club->day) ;
+            $club->day = explode(',', $club->day[0]);
         }
         if ($clubs) {
 
@@ -230,6 +231,8 @@ class AdminController extends Controller
             ];
         } else {
             $club->day = json_decode($club->day);
+            $club->day = explode(',', $club->day[0]);
+
             $clubImages = ClubImage::where('club_id', $club->id)->pluck('image_paths')->toArray();
 
             $response = [

@@ -249,6 +249,7 @@ class ConsultationController extends Controller
             unset($consultation->consultation_images);
 
             $consultation->health_care->day=json_decode($consultation->health_care->day);
+            $consultation->health_care->day = explode(',', $consultation->health_care->day[0]);
             $consultation->health_care->start=Carbon::parse($consultation->health_care->start)->format('H:i');
             $consultation->health_care->end=Carbon::parse($consultation->health_care->end)->format('H:i');
 

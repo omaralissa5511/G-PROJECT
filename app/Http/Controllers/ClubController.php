@@ -22,6 +22,7 @@ class ClubController extends Controller
     $club = Equestrian_club::where('id',$id)->first();
         $clubImages = ClubImage::where('club_id', $club->id)->get()->pluck('image_paths')->toArray();
         $club->day = json_decode($club->day);
+        $club->day = explode(',', $club->day[0]);
         $response = [
 
             'club' => $club,
@@ -140,7 +141,12 @@ class ClubController extends Controller
             'certifications' => 'required',
             'experience' => 'required',
             'specialties' => 'required',
-            'address' => 'required'
+            'address' => 'required',
+            'birth'=>'required',
+            'days' =>'required',
+            'start' => 'required',
+            'end' =>'required',
+            'images'=>'required'
         ]);
 
         if ($validate->fails()) {
@@ -256,6 +262,7 @@ class ClubController extends Controller
         $trainers = Trainer::where('club_id',$club_id)->get();
         foreach ($trainers as $course){
             $course->days = json_decode($course->days) ;
+            $course->days = explode(',', $course->days[0]);
         }
         if($trainers){
             $response = [
@@ -282,6 +289,7 @@ class ClubController extends Controller
 
             foreach ($trainers as $trainer){
                 $trainer->days = json_decode($trainer->days);
+                $trainer->days = explode(',', $trainer->days[0]);
                 $trainer->images = json_decode($trainer->images);
             }
 

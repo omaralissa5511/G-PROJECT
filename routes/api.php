@@ -165,7 +165,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::post('editClass/{class_id}', [ClassController::class, 'editClass']);
         Route::delete('deleteClass/{class_id}', [ClassController::class, 'deleteClass']);
 
-        Route::get('allCategory', [AdminController::class, 'getCategories']);
+        Route::get('allCategory_C', [AdminController::class, 'getCategories']);
 
         /// Offers
         Route::post('addOfferClub',[OfferClubController::class,'addOffer']);
@@ -183,7 +183,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::post('editTrainer', [TrainerController::class, 'editTrainer']);
         Route::get('MyProfile', [TrainerController::class, 'MyProfile']);
         Route::get('MyCourses_T', [TrainerController::class, 'MyCourses_T']);
-        Route::get('get-allUsers', [MessageController::class, 'getAllUser']);
+        Route::get('get-allUsers_T', [MessageController::class, 'getAllUser']);
 
         //////////// TRAINER MESSAGES  ////////////
         Route::post('sendMessage',[MessageController::class,'sendMessage']);
@@ -375,7 +375,7 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::get('chatsListTrainer/{id}',[MessageController::class,'allTrainerChatsByUser']);
             Route::get('chatsListDoctor/{id}',[MessageController::class,'allDoctorChatsByUser']);
             Route::get('isRead/{id}',[MessageController::class,'isReadTrainer']);
-
+            Route::get('isRead_D/{id}',[MessageController::class,'isReadDoctor']);
 
 
             Route::post('getCoursesByUser', [CourseController::class, 'getCoursesByUser']);
@@ -391,13 +391,9 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             /////////// MESSAGES //////////
             Route::post('sendMessageU',[MessageController::class,'sendMessage']);
             Route::post('getTrainer-ChatMessagesU',[MessageController::class,'getChatMessages']);
-            Route::post('getDoctor-ChatMessages',[MessageController::class,'getDoctor_ChatMessages']);
-            Route::post('sendDoctor-Message',[MessageController::class,'send_Doctor_Message']);
+            Route::post('getDoctor-ChatMessages_D',[MessageController::class,'getDoctor_ChatMessages']);
+            Route::post('sendDoctor-Message_D',[MessageController::class,'send_Doctor_Message']);
             Route::get('get-allUsers', [MessageController::class, 'getAllUser']);
 
         });
-
-        });
-
-
-
+    });
