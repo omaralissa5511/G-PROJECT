@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('D_messages', function (Blueprint $table) {
+        Schema::create('d_messages', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
             $table->integer('doctor_id');
