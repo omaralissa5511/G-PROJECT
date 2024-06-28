@@ -264,8 +264,15 @@ class MessageController extends Controller
         }
     }
 
-    public function isRead($message_id){
+    public function isReadTrainer($message_id){
         $read=MessageM::where('id',$message_id)->update(['read'=>1]);
+        return response()->json([
+            'message' => 'Message is read',
+            'status' => true,
+        ]);
+    }
+    public function isReadDoctor($message_id){
+        $read=MessageD::where('id',$message_id)->update(['read'=>1]);
         return response()->json([
             'message' => 'Message is read',
             'status' => true,

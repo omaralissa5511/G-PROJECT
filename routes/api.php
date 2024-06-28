@@ -176,6 +176,12 @@ use Illuminate\Support\Facades\Route;
         Route::get('MyCourses_T', [TrainerController::class, 'MyCourses_T']);
         Route::get('get-allUsers_T', [MessageController::class, 'getAllUser']);
 
+
+        //////////// TRAINER MESSAGES  ////////////
+        Route::post('sendMessage',[MessageController::class,'sendMessage']);
+        Route::post('getChatMessagesT',[MessageController::class,'getChatMessages']);
+
+
         ////////////   TRAINER MESSAGES  ////////////
         Route::post('sendMessage_T',[MessageController::class,'sendMessage']);
         Route::post('getChatMessages_T',[MessageController::class,'getChatMessages']);
@@ -362,6 +368,13 @@ use Illuminate\Support\Facades\Route;
             Route::get('chatsListDoctor/{id}',[MessageController::class,'allDoctorChatsByUser']);
             Route::get('isRead/{id}',[MessageController::class,'isReadTrainer']);
 
+            Route::get('isRead_D/{id}',[MessageController::class,'isReadDoctor']);
+
+
+            Route::post('getCoursesByUser', [CourseController::class, 'getCoursesByUser']);
+
+
+
             Route::post('stripe-payment', [StripeController::class,'stripePost']);
         });
 
@@ -370,13 +383,13 @@ use Illuminate\Support\Facades\Route;
         Route::group(['middleware' => ['role_or_permission:SB']], function () {
 
             /////////// MESSAGES //////////
+
+            Route::post('sendMessageU',[MessageController::class,'sendMessage']);
+            Route::post('getTrainer-ChatMessagesU',[MessageController::class,'getChatMessages']);
+
             Route::post('getDoctor-ChatMessages_D',[MessageController::class,'getDoctor_ChatMessages']);
             Route::post('sendDoctor-Message_D',[MessageController::class,'send_Doctor_Message']);
             Route::get('get-allUsers', [MessageController::class, 'getAllUser']);
 
         });
-
-        });
-
-
-
+    });

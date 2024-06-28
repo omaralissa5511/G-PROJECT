@@ -92,6 +92,7 @@ class CourseController extends Controller
             $courses = Course::where('club',$club_id)->get();
             foreach ($courses as $course){
                 $course->days = json_decode($course->days) ;
+                $course->days = explode(',', $course->days[0]);
             }
 
             if($courses){
@@ -118,6 +119,7 @@ class CourseController extends Controller
         $courses = Course::where('club',$club_id)->get();
         foreach ($courses as $course){
             $course->days = json_decode($course->days) ;
+            $course->days = explode(',', $course->days[0]);
         }
 
         if($courses){
@@ -178,6 +180,7 @@ class CourseController extends Controller
                            ->where('service_id',$request->service_id)->get();
         foreach ($courses as $course){
             $course->days = json_decode($course->days) ;
+            $course->days = explode(',', $course->days[0]);
         }
 
         if($courses){
@@ -206,6 +209,7 @@ class CourseController extends Controller
         foreach ($courses as $course){
 
             $course->days = json_decode($course->days) ;
+            $course->days = explode(',', $course->days[0]);
             $trainerName = Trainer::where('id',$course->trainer_id)
                 ->first()->FName;
             $serviceName = Service::where('id',$course->service_id)

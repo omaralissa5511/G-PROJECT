@@ -50,6 +50,7 @@ class DoctorController extends Controller
 
         $validate = Validator::make($request->all(), [
             'firstName' => 'required|string|max:250',
+            'lastName' => 'required|string|max:250',
             'mobile' => 'required|max:250',
             'description' => 'required|string|max:250',
             'email' => 'required|email|unique:users,email',
@@ -57,6 +58,8 @@ class DoctorController extends Controller
             'image' => 'required',
             'birth'=>'required',
             'gender'=>'required',
+            'experience'=>'required',
+            'specialties'=>'required',
         ]);
 
         if ($validate->fails()) {

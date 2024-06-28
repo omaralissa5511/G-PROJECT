@@ -58,8 +58,11 @@ class FavoriteClubController extends Controller
         if (!$user) {
             return response()->json(['message' => 'User not found','status' => 'false']);
         }
-
         $favoriteClubs = $user->favoriteClubs;
+        foreach ($favoriteClubs as $favoriteClub){
+            $favoriteClub->day=json_decode($favoriteClub->day);
+            $favoriteClub->day = explode(',', $favoriteClub->day[0]);
+        }
 
         return response()->json([
             'favorite_clubs' => $favoriteClubs,

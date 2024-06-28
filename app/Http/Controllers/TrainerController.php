@@ -98,6 +98,7 @@ class TrainerController extends Controller
             $trainer->club_id = Equestrian_club::where
             ('id',$trainer->club_id)->first()->name;
             $trainer->days = json_decode($trainer->days);
+            $trainer->days = explode(',', $trainer->days[0]);
             $trainer->images = json_decode($trainer->images);
             $response = [
                 'trainer' => $trainer,
@@ -139,6 +140,7 @@ public function allTrainersInServiceCourse($service_id)
             $trainer->club_id = Equestrian_club::where
             ('id',$trainer->club_id)->first()->name;
             $trainer->days = json_decode($trainer->days);
+            $trainer->days = explode(',', $trainer->days[0]);
             $trainer->images = json_decode($trainer->images);
             $response = [
                 'trainer' => $trainer,
@@ -266,6 +268,7 @@ public function allTrainersInServiceCourse($service_id)
          if($courses){
              foreach ($courses as $cor){
                  $cor->days = json_decode($cor->days);
+                 $cor->days = explode(',', $cor->days[0]);
                  $trainerName = Trainer::where('id',$cor->trainer_id)
                      ->first()->FName;
                  $serviceName = Service::where('id',$cor->service_id)

@@ -33,6 +33,7 @@ class HealthCareController extends Controller
         }
         $healthCare->user=$healthCare->user;
         $healthCare->day = json_decode($healthCare->day);
+        $healthCare->day = explode(',', $healthCare->day[0]);
         $healthCare->start=Carbon::parse($healthCare->start)->format('H:i');
         $healthCare->end=Carbon::parse($healthCare->end)->format('H:i');
         return response()->json([
@@ -53,7 +54,10 @@ class HealthCareController extends Controller
             'profile_image' => 'required',
             'lat' => 'required',
             'long' => 'required',
-            'address' => 'required'
+            'address' => 'required',
+            'day' => 'required',
+            'start' => 'required',
+            'end' => 'required'
         ]);
 
         if ($validate->fails()) {
@@ -100,6 +104,7 @@ class HealthCareController extends Controller
             'profile_image' =>$realPath1
         ]);
         $healthCare->day = json_decode($healthCare->day);
+        $healthCare->day = explode(',', $healthCare->day[0]);
         $data['token'] = $user->createToken($request->email)->plainTextToken;
         $data['user'] = $user;
         $data['health_care'] = $healthCare;
@@ -199,6 +204,7 @@ class HealthCareController extends Controller
 
             foreach ($healthCares as $healthCare) {
                 $healthCare->day = json_decode($healthCare->day);
+                $healthCare->day = explode(',', $healthCare->day[0]);
                 $healthCare->start = Carbon::parse($healthCare->start)->format('H:i');
                 $healthCare->end = Carbon::parse($healthCare->end)->format('H:i');
             }
