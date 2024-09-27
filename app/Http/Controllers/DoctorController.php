@@ -142,8 +142,9 @@ class DoctorController extends Controller
         $requestData = collect($attributes)->except(['profile_image','license'])->toArray();
         $doctor->update($requestData);
 
-        $data['user']= $doctor->user;
-
+        $user1=User::where('id',$doctor->user_id)->first();
+        $notificationService = new \App\Services\Api\NotificationService();
+        $notificationService->send($user1, 'Update Doctor', $doctor->firstName .' '. $doctor->lastName .' is updated');
         return response()->json([
             'message' => 'Doctor is updated successfully.',
             'Doctor'=>$doctor,

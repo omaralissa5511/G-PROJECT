@@ -12,8 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+         $schedule->command('send:appointment-reminder')->hourly();
     }
+
+    protected $commands = [
+        \App\Console\Commands\SendAppointmentReminder::class,
+    ];
 
     /**
      * Register the commands for the application.

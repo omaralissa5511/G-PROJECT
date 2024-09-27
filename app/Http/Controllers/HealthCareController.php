@@ -6,6 +6,7 @@ use App\Models\HealthCare;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class HealthCareController extends Controller
@@ -24,6 +25,27 @@ class HealthCareController extends Controller
     public function getHealthCareByID($id){
 
         $healthCare = HealthCare::where('id',$id)->first();
+
+        if (!$healthCare) {
+            return response()->json([
+                'message' => 'Health Care not found!',
+                'status' => false
+            ]);
+        }
+        $healthCare->user=$healthCare->user;
+        $healthCare->day = json_decode($healthCare->day);
+        $healthCare->day = explode(',', $healthCare->day[0]);
+        $healthCare->start=Carbon::parse($healthCare->start)->format('H:i');
+        $healthCare->end=Carbon::parse($healthCare->end)->format('H:i');
+        return response()->json([
+            'Health_Care' => $healthCare,
+            'status' => true
+        ]);
+    }
+
+    public function myHealth(){
+        $id = Auth::id();
+        $healthCare = HealthCare::where('user_id',$id)->first();
 
         if (!$healthCare) {
             return response()->json([
@@ -109,6 +131,12 @@ class HealthCareController extends Controller
         $data['user'] = $user;
         $data['health_care'] = $healthCare;
         $user->assignRole('HEALTH');
+
+        $user2=User::where('type','profile')->get('id');
+        foreach ($user2 as $user){
+            $notificationService = new \App\Services\Api\NotificationService();
+            $notificationService->send($user, 'A Health Care added ', $healthCare->name . ' is added');
+        }
 
         return response()->json([
             'message' => 'User is created successfully.',

@@ -89,6 +89,14 @@ class AuctionController extends Controller
             'data' => $data,
             'status' => true
         ];
+        $user2=User::where('type','profile')->get('id');
+        $profile_name=Profile::where('id',$profile_id)->first()->name;
+        foreach ($user2 as $user) {
+            $notificationService = new \App\Services\Api\NotificationService();
+            $notificationService->send($user, 'A auction added ', $profile_name . ' added ' . $auction->description);
+        }
+        $message='add new auction';
+        Broadcast(new \App\Events\Auction($message));
         return response()->json($response);
     }
 
@@ -162,6 +170,8 @@ class AuctionController extends Controller
             'data' => $data,
             'status' => true
         ];
+        $message='edit auction';
+        Broadcast(new \App\Events\Auction($message));
         return response()->json($response);
     }
 
@@ -284,6 +294,17 @@ class AuctionController extends Controller
                 'status' => true
             ];
             $message = 'new bid is offered successfully.';
+            $profile_name=Profile::where('id',$profile_id)->first()->FName;
+
+            $user2 = Bid::where('auction_id', $Aid)->distinct()->get('profile_id');
+
+            $auctin_name=Auction::where('id',$Aid)->first()->description;
+            foreach ($user2 as $user){
+                $user3=Profile::where('id',$user->profile_id)->first();
+
+                $notificationService = new \App\Services\Api\NotificationService();
+                $notificationService->send($user3, 'A bid added','A price quote of '.$bid->offeredPrice.' was provided by '.$profile_name.' on '.$auctin_name.'.');
+            }
             Broadcast(new Bids($message));
             return response()->json($response);
 
@@ -303,9 +324,11 @@ class AuctionController extends Controller
 
         $currentBid = Bid::where('auction_id',$Aid)->pluck('offeredPrice');
         $MAX_CurrentBid = collect($currentBid)->max();
-        $MAX_CurrentBid_owner_id = Bid::where
-        ('offeredPrice','=',$MAX_CurrentBid)->first()->profile_id;
-        $ownerOFBigBid = Profile::find($MAX_CurrentBid_owner_id);
+        if($MAX_CurrentBid) {
+            $MAX_CurrentBid_owner_id = Bid::where
+            ('offeredPrice', '=', $MAX_CurrentBid)->first()->profile_id;
+            $ownerOFBigBid = Profile::find($MAX_CurrentBid_owner_id);
+        }
         if($currentBid->isEmpty()){
 
             $InitialPrice = Auction::where('id',$Aid)->first()->initialPrice;
@@ -510,15 +533,23 @@ class AuctionController extends Controller
 
 
     public function winner($id){
-        $bid=Bid::where('auction_id',$id)->orderBy('offeredPrice','desc')->with('profile')->first();
-        $user=$bid->profile->user;
-        $bid->profile->email=$user->email;
-        $bid->profile->mobile=$user->mobile;
-        unset($bid->profile->user);
-        return response()->json([
-            'winner'=> $bid,
-            'status' => true
-        ]);
+        $auctions=Bid::where('profile_id',$id)->first();
+        $today = Carbon::now();
+        foreach ($auctions as $auction){
+
+            if($auction)
+            $bid=Bid::where('auction_id',$auction->auction_id)->whereDate('end','<=',$today)->orderBy('offeredPrice','desc')->first();
+
+            $user=$bid->profile->user;
+            $bid->profile->email=$user->email;
+            $bid->profile->mobile=$user->mobile;
+            unset($bid->profile->user);
+            return response()->json([
+                'winner'=> $bid,
+                'status' => true
+            ]);
+        }
+
 
     }
 }

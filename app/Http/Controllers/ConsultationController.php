@@ -109,6 +109,14 @@ class ConsultationController extends Controller
         $consultation->images=$consultation->consultation_images->pluck('image');
         unset($consultation->consultation_details);
         unset($consultation->consultation_images);
+
+        //notification
+        $profile_name=Profile::where('id',$consultation->profile_id)->first()->name;
+        $healthCare=HealthCare::where('id',$consultation->health_care_id)->first()->user_id;
+        $user1 = User::where('id',$healthCare)->first();
+        $notificationService = new \App\Services\Api\NotificationService();
+        $notificationService->send($user1, 'A new consultation', 'There is a new consultation by '.$profile_name);
+        // end notification
         return response()->json([
            "message"=>"Consultation is added successfully",
             "Consultation"=>$consultation,
@@ -146,6 +154,15 @@ class ConsultationController extends Controller
         $consultation->images=$consultation->consultation_images->pluck('image');
         unset($consultation->consultation_details);
         unset($consultation->consultation_images);
+
+        //notification
+        $user=Profile::where('id',$consultation->profile_id)->first()->user_id;
+        $healthCare=HealthCare::where('id',$consultation->health_care_id)->first()->name;
+        $user1 = User::where('id',$user)->first();
+        $notificationService = new \App\Services\Api\NotificationService();
+        $notificationService->send($user1, 'Your consultation has been responded to.', 'Your consultation has been responded to.');
+        // end notification
+
         return response()->json([
             "message"=>"The consultation was answered successfully",
             "Consultation"=>$consultation,
