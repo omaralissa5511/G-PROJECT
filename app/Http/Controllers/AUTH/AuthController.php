@@ -649,12 +649,12 @@ class AuthController extends Controller
             }
 
             elseif ($user->type == 'profile'){
-//                if (!$user->email_verified_at) {
-//                    return response()->json([
-//                        'message' => 'Please verify your email address to login.',
-//                        'status' => false
-//                    ]);
-//                }
+                if (!$user->email_verified_at) {
+                    return response()->json([
+                        'message' => 'Please verify your email address to login.',
+                        'status' => false
+                    ]);
+                }
                 $user = User::where('email', $request->email)
                     ->with('profiles')->first();
             }
@@ -667,10 +667,15 @@ class AuthController extends Controller
                 ->with('health_care')->first();
 
             }
-            else{
-                $user = User::where('email', $request->email)
-                    ->with('doctor')->first();
+              elseif ($user->type == 'Doctor'){
+            $user = User::where('email', $request->email)
+                ->with('doctor')->first();
+
             }
+            // else{
+            //     $user = User::where('email', $request->email)
+            //         ->with('doctor')->first();
+            // }
             $data['token'] = $user->createToken($request->email)->plainTextToken;
             $data['user'] = $user;
             $role =  $user->roles;

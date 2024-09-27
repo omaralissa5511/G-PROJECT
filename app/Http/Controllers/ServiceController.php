@@ -4,12 +4,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Events\Category;
 use App\Models\CLUB\ClubServise;
 use App\Models\CLUB\Equestrian_club;
 use App\Models\CLUB\Service;
+use App\Events\Services;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
 
 
 
@@ -93,6 +96,10 @@ class ServiceController extends Controller
 
 
         ]);
+       $message = 'Service is created successfully.';
+        $message2 = 'a club have linked with a service.';
+        broadcast(new Services($message));
+        broadcast(new Category($message2));
 
         return response()->json([
             'message' =>'Service is created successfully.',
@@ -148,6 +155,8 @@ class ServiceController extends Controller
         except(['image'])->toArray();
 
         $service->update($requestData);
+        $message = 'Service is updated successfully.';
+        broadcast(new Services($message));
 
         return response()->json([
             'message' =>'Service is updated successfully.',
@@ -173,6 +182,8 @@ class ServiceController extends Controller
         }
 
         $service->delete();
+        $message = 'Service is deleted successfully.';
+        broadcast(new Services($message));
 
         return response()->json([
             'message' =>'Service is deleted successfully.',

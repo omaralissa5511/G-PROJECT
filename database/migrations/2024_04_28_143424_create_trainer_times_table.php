@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('trainer_times', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('trainer_id');
-            $table->foreign('trainer_id')->references('id')->on('trainers');
+            $table->foreign('trainer_id')->references('id')->on('trainers')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('booking_id')->nullable();
-            $table->foreign('booking_id')->references('id')->on('bookings');
+            $table->foreign('booking_id')->references('id')->on('bookings')->onDelete('cascade')->onUpdate('cascade');
             $table->date('date');
             $table->time('start_time');
             $table->time('end_time');

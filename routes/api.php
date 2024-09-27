@@ -14,7 +14,6 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\FavoriteAuctionController;
 use App\Http\Controllers\FavoriteClubController;
 use App\Http\Controllers\HealthCareController;
-use App\Http\Controllers\HorseController;
 use App\Http\Controllers\HRatingController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OfferClubController;
@@ -28,7 +27,6 @@ use App\Http\Controllers\SupportController;
 use App\Http\Controllers\TrainerController;
 use App\Http\Controllers\TrainerServiceController;
 use App\Http\Controllers\TRatingController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -37,37 +35,32 @@ use Illuminate\Support\Facades\Route;
     Route::post('register',[AuthController::class,'register']);
     Route::post('AdminRegister',[AuthController::class,'AdminRegister']);
     Route::post('login',[AuthController::class,'login']);
-    Route::post('AdminLogin',[AuthController::class,'AdminLogin']);
     Route::post('sendAlert',[ReservationController::class,'sendAlert']);
 
 
 
 
-    //لارسال رمز التحقق
-    Route::post('/send-verification-email', [VerificationController::class, 'sendVerificationEmail']);
-    //للتحقق من رمز التحقق
-    Route::post('/verify', [VerificationController::class, 'verify']);
 
+    Route::post('/send-verification-email', [VerificationController::class, 'sendVerificationEmail']);
+    Route::post('/verify', [VerificationController::class, 'verify']);
     Route::post('/send-password-reset-email', [VerificationController::class, 'sendPasswordResetEmail']);
     Route::post('/reset-password', [VerificationController::class, 'resetPassword']);
-
     Route::get('getAppMessage',[AppMessageController::class,'getMessage']);
+    Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
+
+ Route::post('pusher/authenticate_V2',[MessageController::class,'authenticate_V2']);
+
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/change-password', [VerificationController::class, 'changePassword']);
-    });
-
-Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
-
-    Route::middleware('auth:sanctum')->group(function () {
-
 
 
         Route::post('logout',[AuthController::class,'logout']);
-    ############### ADMIN ROLE ###############
+        Route::post('/change-password', [VerificationController::class, 'changePassword']);
 
+
+        ############### ADMIN ROLE ###############
     Route::group(['middleware' => ['role_or_permission:ADMIN']], function () {
-
+        Route::post('getTrainerTimes_A',[TrainerController::class,'getTrainerTimes']);
 
 
         Route::get('getUserForChart', [AdminController::class, 'getUserForChart']);
@@ -75,7 +68,6 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('getUserCountInMonth', [AdminController::class, 'UserInMonth']);
         Route::get('getAuctionCountInMonth', [AdminController::class, 'AuctionInMonth']);
         Route::get('getInfoToAdmin', [AdminController::class, 'infoToAdmin']);
-
         Route::post('AdminUpdate', [AuthController::class, 'AdminUpdate']);
 
         //Add App Message
@@ -84,20 +76,31 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         ///// AUCTIONS ////////
         Route::get('getPending_Auctions',[AdminController::class,'getPending_Auctions']);
         Route::post('AuctionApproval',[AdminController::class,'AuctionApproval']);
+            Route::get('showAuctionByID_A/{id}', [AuctionController::class, 'showAuctionByID']);
+            Route::get('getCurrentBid_A/{id}', [AuctionController::class, 'getCurrentBid']);
+            Route::get('getBuyersIN_Auction_A/{id}', [AuctionController::class, 'getBuyersIN_Auction']);
+            Route::get('getTodayAuctions_A', [AuctionController::class, 'getTodayAuctions']);
+            Route::get('upcoming_A', [AuctionController::class, 'upcoming_A']);
+            Route::get('upcomingToday_A', [AuctionController::class, 'upcomingToday_A']);
+            Route::post('upcoming1_A', [AuctionController::class, 'upcoming2']);
+            Route::get('OperationTime_A/{id}', [AuctionController::class, 'OperationTime']);
+                        Route::get('Auction_bids_A/{id}', [AuctionController::class, 'A_bids']);
+
 
 
         Route::post('createCategory', [AdminController::class, 'createCategory']);
         Route::get('allCategory', [AdminController::class, 'getCategories']);
-        Route::get('getCategory', [AdminController::class, 'getCategory']);
+        Route::get('getCategory_A/{id}', [AdminController::class, 'getCategory']);
         Route::post('updateCategory', [AdminController::class, 'updateCategory']);
         Route::delete('deleteCategory/{id}', [AdminController::class, 'deleteCategory']);
         Route::post('getCategoryByName/{name}', [AdminController::class, 'getCategoryByName']);
 
 
         Route::post('AddClub', [AdminController::class, 'AddClub']);
-        Route::get('showClubs', [AdminController::class, 'showClubs']);
+        Route::get('showClubs', [AdminController::class, 'showClubsA']);
+        
         Route::delete('deleteClub/{userId}', [AdminController::class, 'deleteClub']);
-        Route::get('searchClubByname/{name}', [AdminController::class, 'searchClubByName']);
+        Route::get('searchClubByname_A/{name}', [AdminController::class, 'searchClubByName']);
         Route::get('searchClubByID/{id}', [AdminController::class, 'searchClubByID']);
 
 
@@ -119,6 +122,15 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         /////// Support
         Route::get('getAllSupportNotReply',[SupportController::class,'getAllSupportNotReply']);
         Route::get('replySupport/{id}',[SupportController::class,'reply']);
+        
+        ///// Rating
+        Route::get('allAverageHealthRating_A/{health_id}',[HRatingController::class,'getAverageRating']);
+        Route::get('getAllReviewsInHealth_A/{health_id}',[HRatingController::class,'getAllReviewsInHealth']);
+        Route::get('allAverageClubRating_A/{club_id}',[CRatingController::class,'getAverageRating']);
+        Route::get('getAllReviewsInClub_A/{club_id}',[CRatingController::class,'getAllReviewsInClub']);
+        Route::get('allAverageTrainerRating_A/{trainer_id}',[TRatingController::class,'getAverageRating']);
+        Route::get('getAllReviewsInTrainer_A/{trainer_id}',[TRatingController::class,'getAllReviewsInTrainer']);
+
 
 
     });
@@ -126,10 +138,10 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
 
     ################ CLUB ROLE ###############
     Route::group(['middleware' => ['role:CLUB']], function () {
+
         Route::get('getBookingCountInMonth/{id}', [AdminController::class, 'BookingInMonth']);
         Route::get('getReservationCountInMonth/{id}', [AdminController::class, 'ReservationInMonth']);
 
-        Route::get('allServices/{id}', [ServiceController::class, 'index']);
 
         Route::post('editClub', [ClubController::class, 'editClub']);
         Route::get('MyClub', [ClubController::class, 'MyClub']);
@@ -145,11 +157,12 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('club_getTrainerByID/{id}', [TrainerController::class, 'getTrainerByID']);
 
         Route::post('/addAvailableTimes', [TrainerController::class, 'setAvailableTimes']);
+        Route::post('getTrainerTimes_C',[TrainerController::class,'getTrainerTimes']);
 
 
         Route::post('createService', [ServiceController::class, 'create']);
-        Route::get('allServices/{club_id}', [ServiceController::class, 'index']);
-        Route::get('showService/{name}', [ServiceController::class, 'show']);
+        Route::get('allServices_C/{club_id}', [ServiceController::class, 'index']);
+        Route::get('showService_C/{name}', [ServiceController::class, 'show']);
         Route::post('updateService/{id}', [ServiceController::class, 'update']);
         Route::delete('deleteService/{id}', [ServiceController::class, 'destroy']);
 
@@ -159,17 +172,30 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::get('getSpecificCourse/{id}', [CourseController::class, 'getSpecificCourse']);
         Route::post('editCourse/{CID}', [CourseController::class, 'editCourse']);
         Route::delete('deleteCourse/{id}', [CourseController::class, 'deleteCourse']);
+        
+                    Route::get('CourseReservations/{id}', [CourseController::class, 'CourseReservations']);
+
+
+            Route::get('Reserve_Details/{id}', [CourseController::class, 'Reserve_Details']);
+
 
         Route::post('createClass', [ClassController::class, 'createClass']);
-        Route::get('getCourseClassesC/{course_id}', [ClassController::class, 'getCourseClasses']);
+        Route::get('getCourseClasses_C/{course_id}', [ClassController::class, 'getCourseClasses']);
         Route::post('editClass/{class_id}', [ClassController::class, 'editClass']);
         Route::delete('deleteClass/{class_id}', [ClassController::class, 'deleteClass']);
+                    Route::get('getCourse_NONavailable_time_C/{course_id}', [ClassController::class, 'getCourse_NONavailable_time']);
 
-        Route::get('allCategory', [AdminController::class, 'getCategories']);
+
+        Route::get('allCategory_C', [AdminController::class, 'getCategories']);
 
         /// Offers
         Route::post('addOfferClub',[OfferClubController::class,'addOffer']);
         Route::delete('deleteOfferClub/{id}',[OfferClubController::class,'deleteOffer']);
+        
+        /// Rating
+        Route::get('allAverageClubRating_C/{club_id}',[CRatingController::class,'getAverageRating']);
+        Route::get('getAllReviewsInClub_C/{club_id}',[CRatingController::class,'getAllReviewsInClub']);
+
 
     });
 
@@ -183,22 +209,37 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::post('editTrainer', [TrainerController::class, 'editTrainer']);
         Route::get('MyProfile', [TrainerController::class, 'MyProfile']);
         Route::get('MyCourses_T', [TrainerController::class, 'MyCourses_T']);
-        Route::get('get-allUsers', [MessageController::class, 'getAllUser']);
+        Route::get('get-allUsers_T', [MessageController::class, 'getAllUser']);
 
-        //////////// TRAINER MESSAGES  ////////////
-        Route::post('sendMessage',[MessageController::class,'sendMessage']);
-        Route::post('getChatMessagesT',[MessageController::class,'getChatMessages']);
+
+        ////////////   TRAINER MESSAGES  ////////////
+        Route::post('sendMessage_T',[MessageController::class,'sendMessage']);
+        Route::post('getChatMessages_T',[MessageController::class,'getChatMessages']);
+         Route::post('getAllUsersThat_A_Trainer_chatsWith/{id}', [MessageController::class, 'getAllUsersThat_A_Trainer_chatsWith']);
+        Route::get('isReadTrainer_T/{id}',[MessageController::class,'isReadTrainer']);
+        
+        
+        /// Rating
+        Route::get('allAverageTrainerRating_T/{trainer_id}',[TRatingController::class,'getAverageRating']);
+        Route::get('getAllReviewsInTrainer_T/{trainer_id}',[TRatingController::class,'getAllReviewsInTrainer']);
+        
+        Route::post('getTrainerTimes_T',[TrainerController::class,'getTrainerTimes']);
+
 
     });
+
+
     ############### HEALTH CARE ##################
         Route::group(['middleware' => ['role_or_permission:HEALTH']], function () {
+            Route::post('directConsultationToDoctor', [DoctorController::class, 'directConsultationToDoctor']);
             Route::post('editHealthCareHealth/{id}', [HealthCareController::class, 'updateHealthCare']);
             Route::get('getAllHealthCaresHealth', [HealthCareController::class, 'getAllHealthCares']);
             Route::get('getHealthCareByIDHealth/{id}', [HealthCareController::class, 'getHealthCareByID']);
+            Route::get('myHealth', [HealthCareController::class, 'myHealth']);
 
             /// Doctors
             Route::post('createDoctor', [DoctorController::class, 'createDoctor']);
-            Route::post('editDoctor/{id}', [DoctorController::class, 'updateDoctor']);
+           
             Route::delete('deleteDoctor/{id}', [DoctorController::class, 'deleteDoctor']);
             Route::get('allDoctorsInHealthCare/{id}', [DoctorController::class, 'allDoctorsInHeaalthCare']);
             Route::get('getDoctorByID/{id}', [DoctorController::class, 'getDoctorByID']);
@@ -212,6 +253,11 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             /// Offers
             Route::post('addOffer',[OfferController::class,'addOffer']);
             Route::delete('deleteOffer/{id}',[OfferController::class,'deleteOffer']);
+            
+            /////// Rating
+            Route::get('allAverageHealthRating_H/{health_id}',[HRatingController::class,'getAverageRating']);
+            Route::get('getAllReviewsInHealth_H/{health_id}',[HRatingController::class,'getAllReviewsInHealth']);       
+
 
         });
 
@@ -219,20 +265,18 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::group(['middleware' => ['role_or_permission:USER']], function () {
 
             Route::post('update', [AuthController::class, 'update']);
-           // Route::post('sendMessageU',[MessageController::class,'sendMessage']);
+                      Route::get('Clubs_that_made_offer', [ClubController::class, 'Clubs_that_made_offer']);
+                      
+                                  Route::get('health_care_that_made_offer', [HealthCareController::class, 'health_care_that_made_offer']);
 
 
-
+          
 
             /////////// MESSAGES //////////
             Route::post('sendMessageU',[MessageController::class,'sendMessage']);
+            Route::post('sendDoctor-Message',[MessageController::class,'send_Doctor_Message']);
             Route::post('getTrainer-ChatMessagesU',[MessageController::class,'getChatMessages']);
             Route::post('getDoctor-ChatMessagesU',[MessageController::class,'getDoctor_ChatMessages']);
-            Route::post('sendDoctor-Message',[MessageController::class,'send_Doctor_Message']);
-
-
-
-
 
 
             Route::get('allCategoryU', [AdminController::class, 'getCategories']);
@@ -257,11 +301,13 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::get('allTrainersInServiceUserCourse/{id}', [TrainerController::class, 'allTrainersInServiceCourse']);
             Route::get('getTrainerByIDUser/{id}', [TrainerController::class, 'getTrainerByID']);
 
-            Route::get('allTrainersInServiceUserCourse/{id}', [TrainerController::class, 'allTrainersInServiceCourse']);
+
+
+            Route::post('getCoursesByUser', [CourseController::class, 'getCoursesByUser']);
 
             Route::get('getProfile/{id}', [ProfileController::class, 'getProfile']);
 
-////// RESERVATION
+            ////// RESERVATION
         Route::post('reserve', [ReservationController::class, 'reserve']);
         Route::post('editReserve/{Rid}', [ReservationController::class, 'editReservation']);
         Route::get('Reserved_User_clubs', [ReservationController::class, 'Reserved_User_clubs']);
@@ -328,6 +374,11 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             Route::get('OperationTime/{id}',[AuctionController::class,'OperationTime']);
             Route::post('addInsurance',[AuctionController::class,'addInsurance']);
             Route::get('winner/{id}',[AuctionController::class,'winner']);
+            Route::get('Auctions_that_A_User_Participates_in',[AuctionController::class,'Auctions_that_A_User_Participates_in']);
+             Route::get('Auctions_that_A_User_WIN', [AuctionController::class, 'Auctions_that_A_User_WIN']);
+            Route::post('Is_TheUser_In_or_Out_the_Auction', [AuctionController::class, 'Is_TheUser_In_or_Out_the_Auction']);
+
+
 
             //Booking
             Route::post('addBooking',[BookingController::class,'addBooking']);
@@ -370,15 +421,14 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
             /////// Support
             Route::post('createSupport',[SupportController::class,'create']);
 
-            Route::post('sendMessage/broadcasting/auth',[MessageController::class,'sendMessage'])
-            ->middleware('auth');
             Route::get('chatsListTrainer/{id}',[MessageController::class,'allTrainerChatsByUser']);
             Route::get('chatsListDoctor/{id}',[MessageController::class,'allDoctorChatsByUser']);
-            Route::get('isRead/{id}',[MessageController::class,'isReadTrainer']);
+            Route::get('isReadTrainer_U/{id}',[MessageController::class,'isReadTrainer']);
+
+            Route::get('isRead_Doctor_U/{id}',[MessageController::class,'isReadDoctor']);
 
 
 
-            Route::post('getCoursesByUser', [CourseController::class, 'getCoursesByUser']);
 
 
             Route::post('stripe-payment', [StripeController::class,'stripePost']);
@@ -389,15 +439,40 @@ Route::post('pusher/authenticate',[MessageController::class,'authenticate']);
         Route::group(['middleware' => ['role_or_permission:SB']], function () {
 
             /////////// MESSAGES //////////
-            Route::post('sendMessageU',[MessageController::class,'sendMessage']);
-            Route::post('getTrainer-ChatMessagesU',[MessageController::class,'getChatMessages']);
-            Route::post('getDoctor-ChatMessages',[MessageController::class,'getDoctor_ChatMessages']);
-            Route::post('sendDoctor-Message',[MessageController::class,'send_Doctor_Message']);
+            
+             Route::post('editDoctor/{id}', [DoctorController::class, 'updateDoctor']);
+
+            Route::post('getDoctor-ChatMessages_D',[MessageController::class,'getDoctor_ChatMessages']);
+            Route::post('sendDoctor-Message_D',[MessageController::class,'send_Doctor_Message']);
             Route::get('get-allUsers', [MessageController::class, 'getAllUser']);
+           Route::post('getAllUsersThat_A_Doctor_chatsWith/{id}', [MessageController::class, 'getAllUsersThat_A_Doctor_chatsWith']);
+           
+           
+             Route::get('isRead_Doctor_D/{id}',[MessageController::class,'isReadDoctor']);
+
+
+                        //// Consultation
+            Route::post('replyConsultation_D/{id}',[ConsultationController::class,'replyConsultation']);
+            Route::get('allConsultationByHealthCare_D/{id}',[ConsultationController::class,'allConsultationByHealthCare']);
+            Route::get('allUnansweredConsultationByHealthCare_D/{id}',[ConsultationController::class,'allUnansweredConsultationsByHealthCare']);
+            Route::get('getConsultationByID_D/{id}',[ConsultationController::class,'getConsultationByID']);
+            
+                   Route::get('allConslts_R_and_NR_for_specificDoctor_D', [ConsultationController::class, 'allConslts_R_and_NR_for_specificDoctor_D']);
+                   
+              
+            Route::post('edit_Replied_Consultation_D/{id}', [ConsultationController::class, 'edit_Replied_Consultation_D']);
+
+            
+              Route::get('allUnansweredConsultation_D', [ConsultationController::class, 'allUnansweredConsultationsForDoctor']);
+           
+             Route::get('Doctor_MY_Profile', [DoctorController::class, 'Doctor_MY_Profile']);
+             
+               Route::get('getConsultationByDoctorID_D/{id}', [ConsultationController::class, 'getConsultationByDoctorID']);
+               
+               Route::get('getDoctor',[ConsultationController::class,'getDoctor']);
+
+
+
 
         });
-
-        });
-
-
-
+    });

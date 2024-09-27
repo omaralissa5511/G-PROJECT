@@ -25,6 +25,8 @@ class FavoriteAuctionController extends Controller
         }
 
         $user->favoriteAuctions()->attach($auction_id);
+        $message='add Auction to favorite';
+        Broadcast(new \App\Events\FavoriteAuction($message));
 
         return response()->json(['message' => 'The auction has been successfully added to your favorites', 'status' => 'true']);
     }
@@ -42,6 +44,8 @@ class FavoriteAuctionController extends Controller
         }
 
         $user->favoriteAuctions()->detach($auction_id);
+        $message="delete auction fro favorite";
+        Broadcast(new \App\Events\FavoriteAuction($message));
 
         return response()->json(['message' => 'The auction has been successfully removed from favorites','status' => 'true']);
     }

@@ -15,11 +15,16 @@ class Bids implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $bid ;
-    public function __construct($bid)
+    public $offeredPrice;
+    public $auction_id;
+    public $TheBuyer;
+    public $message;
+    public function __construct(Bid $bid,$name,$message)
     {
-
-        $this->bid = $bid;
+       $this->offeredPrice=$bid->offeredPrice;
+       $this->auction_id=$bid->auction_id;
+       $this->TheBuyer=$name;
+       $this->message=$message;
     }
 
     public function broadcastOn()
@@ -35,7 +40,10 @@ class Bids implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            'message' => $this->bid
+            'message' =>$this->message,
+            'offeredPrice' =>$this->offeredPrice,
+            'auction_id' =>$this->auction_id,
+            'TheBuyer' =>$this->TheBuyer,
         ];
     }
 

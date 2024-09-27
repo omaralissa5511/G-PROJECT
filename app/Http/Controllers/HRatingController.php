@@ -104,6 +104,9 @@ class HRatingController extends Controller
             'review' => $request->review
         ]);
 
+        $message = 'new Rating have added successfully.';
+        Broadcast(new \App\Events\HRating($message));
+
         return response()->json([
             'message' => 'Rating is created successfully.',
             'rating' => $rating,
@@ -149,6 +152,9 @@ class HRatingController extends Controller
             'rating' =>$request->rating,
             'review' =>$request->review
         ]);
+        
+        $message = 'A rating is updated';
+        Broadcast(new \App\Events\HRating($message));
 
         return response()->json([
             'message' => 'Rating is updated successfully.',
@@ -188,6 +194,9 @@ class HRatingController extends Controller
         }
 
         $rating->delete();
+
+        $message = 'A rating is deleted';
+        Broadcast(new \App\Events\HRating($message));
 
         return response()->json([
             'message' => 'Rating is deleted successfully.',

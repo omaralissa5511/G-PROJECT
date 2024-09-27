@@ -20,9 +20,9 @@ return new class extends Migration
             $table->boolean('status')->default(false);
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('service_id')->references('id')->on('services');
-            $table->foreign('trainer_id')->references('id')->on('trainers');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('trainer_id')->references('id')->on('trainers')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
