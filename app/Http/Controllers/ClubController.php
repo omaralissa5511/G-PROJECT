@@ -37,6 +37,7 @@ class ClubController extends Controller
     public function editClub (Request $request){
 
          $userID = Auth::id();
+
         $club = Equestrian_club::where('user_id',$userID)->first();
 
         if($request->hasFile('license')) {

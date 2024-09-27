@@ -103,6 +103,7 @@ class DoctorController extends Controller
             'gender'=>'required',
             'experience'=>'required',
             'specialties'=>'required'
+
         ]);
 
         if ($validate->fails()) {
@@ -188,10 +189,15 @@ class DoctorController extends Controller
         $requestData = collect($attributes)->except(['profile_image','license','image'])->toArray();
         $doctor->update($requestData);
 
+
         $data['user']= $doctor->user;
           $doctorId = 0;
           $message = 'a doctor  have been updated';
         broadcast(new Doctors($message,$doctorId));
+
+        $user1=User::where('id',$doctor->user_id)->first();
+        $notificationService = new \App\Services\Api\NotificationService();
+        $notificationService->send($user1, 'Update Doctor', $doctor->firstName .' '. $doctor->lastName .' is updated');
 
         return response()->json([
             'message' => 'Doctor is updated successfully.',

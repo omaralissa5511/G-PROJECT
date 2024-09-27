@@ -156,6 +156,9 @@ class HRatingController extends Controller
         $message = 'A rating is updated';
         Broadcast(new \App\Events\HRating($message));
 
+        $message = 'A rating is updated';
+        Broadcast(new \App\Events\HRating($message));
+
         return response()->json([
             'message' => 'Rating is updated successfully.',
             'rating' => $rating,

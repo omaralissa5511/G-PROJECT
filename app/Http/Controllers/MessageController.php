@@ -303,7 +303,7 @@ class MessageController extends Controller
             'status' => true,
         ]);
     }
-    
+
     public function isReadDoctor($message_id){
         $read=MessageD::where('id',$message_id)->update(['read'=>1]);
         return response()->json([

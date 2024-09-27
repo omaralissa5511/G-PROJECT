@@ -61,6 +61,7 @@ class HealthCareController extends Controller
         $healthCare->user=$healthCare->user;
         $healthCare->day = json_decode($healthCare->day);
         $healthCare->day = explode(',', $healthCare->day[0]);
+
         $healthCare->start=Carbon::parse($healthCare->start)->format('H:i');
         $healthCare->end=Carbon::parse($healthCare->end)->format('H:i');
         return response()->json([
@@ -138,6 +139,12 @@ class HealthCareController extends Controller
         $user->assignRole('HEALTH');
          $message = 'healthcare is added successfully.';
         broadcast(new Health($message));
+
+        $user2=User::where('type','profile')->get('id');
+        foreach ($user2 as $user){
+            $notificationService = new \App\Services\Api\NotificationService();
+            $notificationService->send($user, 'A Health Care added ', $healthCare->name . ' is added');
+        }
 
         return response()->json([
             'message' => 'User is created successfully.',

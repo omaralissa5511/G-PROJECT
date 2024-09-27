@@ -182,6 +182,14 @@ class AuctionController extends Controller
             'data' => $data,
             'status' => true
         ];
+        $user2=User::where('type','profile')->get('id');
+        $profile_name=Profile::where('id',$profile_id)->first()->name;
+        foreach ($user2 as $user) {
+            $notificationService = new \App\Services\Api\NotificationService();
+            $notificationService->send($user, 'A auction added ', $profile_name . ' added ' . $auction->description);
+        }
+        $message='add new auction';
+        Broadcast(new \App\Events\Auction($message));
         return response()->json($response);
     }
 
@@ -335,7 +343,7 @@ class AuctionController extends Controller
             'data' => $data,
             'status' => true
         ];
-        
+
         $message='edit auction';
         Broadcast(new \App\Events\Auction($message));
         return response()->json($response);
@@ -460,7 +468,22 @@ class AuctionController extends Controller
                 'status' => true
             ];
             $message = 'new bid is offered successfully.';
+
             Broadcast(new Bids($bid,$name,$message));
+
+            $profile_name=Profile::where('id',$profile_id)->first()->FName;
+
+            $user2 = Bid::where('auction_id', $Aid)->distinct()->get('profile_id');
+
+            $auctin_name=Auction::where('id',$Aid)->first()->description;
+            foreach ($user2 as $user){
+                $user3=Profile::where('id',$user->profile_id)->first();
+
+                $notificationService = new \App\Services\Api\NotificationService();
+                $notificationService->send($user3, 'A bid added','A price quote of '.$bid->offeredPrice.' was provided by '.$profile_name.' on '.$auctin_name.'.');
+            }
+            
+
             return response()->json($response);
 
 
@@ -480,10 +503,12 @@ class AuctionController extends Controller
 
         $currentBid = Bid::where('auction_id',$Aid)->pluck('offeredPrice');
         $MAX_CurrentBid = collect($currentBid)->max();
+
         if($MAX_CurrentBid){
         $MAX_CurrentBid_owner_id = Bid::where
         ('offeredPrice','=',$MAX_CurrentBid)->first()->profile_id;
         $ownerOFBigBid = Profile::find($MAX_CurrentBid_owner_id);
+          
         }
         if($currentBid->isEmpty()){
 
@@ -508,7 +533,9 @@ class AuctionController extends Controller
     {
          $profiles = Bid::where('auction_id', $id)->pluck('profile_id');
           $TheBuyers_id = collect($profiles)->unique()->values()->all();
+
           $TheBuyers2=[];
+
         foreach ($TheBuyers_id as $Pid){
 
             $TheBuyers2[] = Profile::where('id',$Pid)->with('bids')->first();
@@ -760,6 +787,7 @@ class AuctionController extends Controller
     }
 
     public function winner($id){
+
         $b=Bid::where('auction_id',$id)->first();
         if($b){
         $bid=Bid::where('auction_id',$id)->orderBy('offeredPrice','desc')->with('profile')->first();

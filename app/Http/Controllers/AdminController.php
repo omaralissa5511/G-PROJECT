@@ -42,7 +42,6 @@ class AdminController extends Controller
             'lat' => 'required',
             'long' => 'required',
             'address' => 'required'
-
         ]);
 
         if ($validate->fails()) {
@@ -114,6 +113,11 @@ class AdminController extends Controller
         ];
         $message = 'one club have been added added';
         broadcast(new Clubs($message));
+        $user2=User::where('type','profile')->get('id');
+        foreach ($user2 as $user){
+        $notificationService = new \App\Services\Api\NotificationService();
+        $notificationService->send($user, 'A club added ', $club->name . ' is added');
+    }
         return response()->json($response);
     }
 
@@ -144,7 +148,9 @@ class AdminController extends Controller
         if($request->status == 'confirmed'){
             $auction -> update(['status' => 'confirmed']);
             $auction->save();
+
                         $message='add new auction';
+
             Broadcast(new \App\Events\Auction($message));
             $response = [
                 'message' => 'CONFIRMED AUCTION ',
@@ -217,7 +223,9 @@ class AdminController extends Controller
 
         foreach ($clubs as $club){
             $club->day = json_decode($club->day) ;
+
            // $club->day = explode(',', $club->day[0]);
+
         }
         if ($clubs) {
 
@@ -280,6 +288,7 @@ class AdminController extends Controller
         } else {
             $club->day = json_decode($club->day);
             $club->day = explode(',', $club->day[0]);
+
             $clubImages = ClubImage::where('club_id', $club->id)->pluck('image_paths')->toArray();
 
             $response = [
