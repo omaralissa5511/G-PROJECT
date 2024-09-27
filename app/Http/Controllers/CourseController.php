@@ -6,11 +6,13 @@ use App\Models\CLUB\Equestrian_club;
 use App\Models\CLUB\Service;
 use App\Models\CLUB\Trainer;
 use App\Models\User;
+use App\Models\Profile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Models\CLUB\Reservation;
 
 class CourseController extends Controller
 {
@@ -57,6 +59,8 @@ class CourseController extends Controller
             'course' => $course,
             'status' => true
         ];
+         $message = 'new course have been added .';
+        Broadcast(new \App\Events\Course($message));
 
         return response()->json($response);
 
@@ -65,6 +69,7 @@ class CourseController extends Controller
     public function editCourse($CID,Request $request){
 
         $course = Course::where('id',$CID)->first();
+     
 
         $attributes = array_filter($request->all(),function ($value){
             return !is_null($value);
@@ -72,6 +77,13 @@ class CourseController extends Controller
         if($attributes['days']){
             $attributes['days']= json_encode($request->days);
         }
+          if($attributes['begin']){
+                $attributes['begin']= json_encode($request->begin);
+             
+            }
+            if($attributes['end']){
+                $attributes['end']= json_encode($request->end);
+            }
         $course->update($attributes);
 
         $course = Course::where('id',$CID)->first();
@@ -81,6 +93,8 @@ class CourseController extends Controller
             'status' => true
         ];
 
+       $message = 'new course have been upadted .';
+        Broadcast(new \App\Events\Course($message));
         return response()->json($response);
 
     }
@@ -155,7 +169,20 @@ class CourseController extends Controller
         }
 
     }
+    
+     public function CourseReservations($CID){
 
+        return Reservation::where('course_id',$CID)->get();
+    }
+
+    public function Reserve_Details($rID){
+        $data = [];
+        $reserve =  Reservation::where('id',$rID)->first();
+          $data['person_who_booked'] = Profile::where('user_id',$reserve->user_id)->first()->FName;
+          $data['image'] = Profile::where('user_id',$reserve->user_id)->first()->profile;
+            $data['res'] = $reserve;
+          return $data;
+    }
 
     public function getCoursesByUser (Request $request){
 
@@ -266,8 +293,9 @@ class CourseController extends Controller
             $response = [
                 'message' => 'the course was removed successfully.',
                 'status' => true
-            ];
-
+             ];
+          $message = 'new course have been deleted .';
+        Broadcast(new \App\Events\Course($message));
             return $response;}
         else {
             $response = [

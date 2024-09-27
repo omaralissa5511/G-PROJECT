@@ -265,6 +265,7 @@ public function allTrainersInServiceCourse($service_id)
         $user_id = Auth::id();
         $trainer_id = Trainer::where('user_id',$user_id)->first()->id;
         $courses = Course::where('trainer_id',$trainer_id)->get();
+      //  return $courses;
          if($courses){
              foreach ($courses as $cor){
                  $cor->days = json_decode($cor->days);

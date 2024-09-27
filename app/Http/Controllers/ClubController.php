@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Events\Clubs;
 use App\Events\Bids;
 use App\Http\Controllers\Controller;
 use App\Models\CLUB\ClubImage;
@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Models\CLUB\OfferClub;
 
 class ClubController extends Controller
 {
@@ -35,7 +36,8 @@ class ClubController extends Controller
 
     public function editClub (Request $request){
 
-        $userID = Auth::id();
+         $userID = Auth::id();
+
         $club = Equestrian_club::where('user_id',$userID)->first();
 
         if($request->hasFile('license')) {
@@ -94,6 +96,8 @@ class ClubController extends Controller
             'clubImages' =>$clubImages,
             'status' => true
         ];
+         $message = 'one club have been updated';
+        broadcast(new Clubs($message));
 
         return response()->json($response);
     }
@@ -320,6 +324,8 @@ class ClubController extends Controller
                     'message' => 'trainer was removed successfully.',
                     'status' => true
                 ];
+                     $message = 'new trainer have added deleted.';
+                Broadcast(new \App\Events\Trainer($message));
 
                 return $response;}
             else {
@@ -330,6 +336,17 @@ class ClubController extends Controller
                 return $response;
             }
 
+        }
+        
+      public function Clubs_that_made_offer(){
+
+       $today = Carbon::now();
+        $oofer = OfferClub::where('end','>=',$today)->pluck('club_id');
+            $collection = collect($oofer);
+            $oofer  = $collection->unique();
+            $data['clubs'] = $oofer;
+
+        return $data;
         }
 
 }

@@ -667,10 +667,15 @@ class AuthController extends Controller
                 ->with('health_care')->first();
 
             }
-            else{
-                $user = User::where('email', $request->email)
-                    ->with('doctor')->first();
+              elseif ($user->type == 'Doctor'){
+            $user = User::where('email', $request->email)
+                ->with('doctor')->first();
+
             }
+            // else{
+            //     $user = User::where('email', $request->email)
+            //         ->with('doctor')->first();
+            // }
             $data['token'] = $user->createToken($request->email)->plainTextToken;
             $data['user'] = $user;
             $role =  $user->roles;

@@ -6,6 +6,7 @@ use App\Models\CLUB\Equestrian_club;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\FavoriteClub;
 
 class FavoriteClubController extends Controller
 {
@@ -27,6 +28,8 @@ class FavoriteClubController extends Controller
         }
 
         $user->favoriteClubs()->attach($club_id);
+         $message = 'club is added successfully.';
+        broadcast(new FavoriteClub($message));
 
         return response()->json(['message' => 'The club has been successfully added to your favorites', 'status' => 'true']);
     }
@@ -45,6 +48,8 @@ class FavoriteClubController extends Controller
         }
 
         $user->favoriteClubs()->detach($club_id);
+         $message = 'club is removed successfully.';
+        broadcast(new FavoriteClub($message));
 
         return response()->json(['message' => 'The club has been successfully removed from favorites','status' => 'true']);
     }

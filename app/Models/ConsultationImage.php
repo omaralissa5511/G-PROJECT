@@ -18,6 +18,9 @@ class ConsultationImage extends Model
         'updated_at'
     ];
 
+  protected $casts = [
+        'image' => 'array',
+    ];
     public function consultation(){
         return $this->belongsTo(Consultation::class);
     }

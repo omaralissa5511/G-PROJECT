@@ -20,6 +20,29 @@ use Pusher\Pusher;
 
 class MessageController extends Controller
 {
+    
+    public function authenticate_V2(Request $request)
+    {
+
+//        $pusher = new Pusher(
+//            env('PUSHER_APP_KEY'),
+//            env('PUSHER_APP_SECRET'),
+//            env('PUSHER_APP_ID'),
+//            [
+//                'cluster' => env('PUSHER_APP_CLUSTER'),
+//                'useTLS' => true,
+//            ]
+//        );
+
+//        $socketId = $request->input('socketId');
+//        $channelName = $request->input('channel_name');
+
+//        $auth = $pusher->socket_auth($channelName, $socketId);
+//        $auth = \GuzzleHttp\json_decode($auth);
+       // return response()->json($pusher->socket_auth($channelName, $socketId));
+    }
+
+
 
     public function sendMessage(Request $request)
     {
@@ -65,6 +88,7 @@ class MessageController extends Controller
 
     public function authenticate(Request $request)
     {
+
 
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
@@ -183,19 +207,23 @@ class MessageController extends Controller
             $trainerInfo = Trainer::where('id', $trainer->trainer_id)->first();
             $lastMessage = MessageM::where('user_id', $id)
                 ->where('trainer_id', $trainer->trainer_id)
-                ->orderBy('time', 'desc')
+                ->orderBy('created_at', 'desc')
                 ->first();
             $read = MessageM::where('user_id', $id)->where('trainer_id', $trainer->trainer_id)
                 ->where('user', 0)->where('read', 0)->count();
+            $ids = MessageM::where('user_id', $id)->where('trainer_id', $trainer->trainer_id)
+                ->where('user', 0)->where('read', 0)->pluck('id');
             if ($trainerInfo) {
                 if ($lastMessage) {
                     $chatList[$trainer->trainer_id] = [
                         'trainer_id' => $trainer->trainer_id,
                         'trainer_name' => $trainerInfo->FName . ' ' . $trainerInfo->lName,
                         'trainer_image' => $trainerInfo->image,
+                           'sort' => $lastMessage->created_at,
                         'last_message' => $lastMessage->content,
                         'last_message_time' => $lastMessage->time,
-                        'unread_messages' => $read
+                        'unread_messages' => $read,
+                        'ids'=>$ids
                     ];
                 }
             }else
@@ -203,7 +231,7 @@ class MessageController extends Controller
         }
         // ترتيب القائمة بناءً على الوقت
         usort($chatList, function ($a, $b) {
-            return strtotime($b['last_message_time']) - strtotime($a['last_message_time']);
+            return strtotime($b['sort']) - strtotime($a['sort']);
         });
 
         if (!empty($chatList)) {
@@ -227,19 +255,23 @@ class MessageController extends Controller
             $doctorInfo = Doctor::where('id', $doctor->doctor_id)->first();
             $lastMessage = MessageD::where('user_id', $id)
                 ->where('doctor_id', $doctor->doctor_id)
-                ->orderBy('time', 'desc')
+                ->orderBy('created_at', 'desc')
                 ->first();
             $read=MessageD::where('user_id', $id)->where('doctor_id', $doctor->doctor_id)
                 ->where('user',0)->where('read',0)->count();
+            $ids=MessageD::where('user_id', $id)->where('doctor_id', $doctor->doctor_id)
+                ->where('user',0)->where('read',0)->pluck('id');
             if ($doctorInfo) {
                 if ($lastMessage) {
                     $chatList[$doctor->doctor_id] = [
                         'doctor_id' => $doctor->doctor_id,
                         'doctor_name' => $doctorInfo->firstName . ' ' . $doctorInfo->lastName,
                         'doctor_image' => $doctorInfo->image,
+                        'sort' => $lastMessage->created_at,
                         'last_message' => $lastMessage->content,
                         'last_message_time' => $lastMessage->time,
-                        'unread_messages' => $read
+                        'unread_messages' => $read,
+                        'ids'=>$ids
                     ];
                 }
             }else
@@ -248,7 +280,7 @@ class MessageController extends Controller
 
         // ترتيب القائمة بناءً على الوقت
         usort($chatList, function ($a, $b) {
-            return strtotime($b['last_message_time']) - strtotime($a['last_message_time']);
+            return strtotime($b['sort']) - strtotime($a['sort']);
         });
 
         if (!empty($chatList)) {
@@ -271,12 +303,113 @@ class MessageController extends Controller
             'status' => true,
         ]);
     }
+
     public function isReadDoctor($message_id){
         $read=MessageD::where('id',$message_id)->update(['read'=>1]);
         return response()->json([
             'message' => 'Message is read',
             'status' => true,
         ]);
+    }
+    
+      
+    public function getAllUsersThat_A_Doctor_chatsWith($id)
+    {
+         $users = MessageD::where('doctor_id', $id)->get('user_id');
+        $chatList = [];
+        foreach ($users as $user) {
+            $userInfo = Profile::where('user_id', $user->user_id)->first();
+            $lastMessage = MessageD::where('doctor_id', $id)
+                ->where('user_id', $user->user_id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            $read = MessageD::where('doctor_id', $id)->where('user_id', $user->user_id)
+                ->where('doctor', 0)->where('read', 0)->count();
+            $ids = MessageD::where('user_id', $user->user_id)->
+                where('doctor_id', $id)
+                ->where('doctor', 0)->where('read', 0)->pluck('id');
+            if ($userInfo) {
+                if ($lastMessage) {
+                    $chatList[$user->user_id] = [
+                        'user_id' => $user->user_id,
+                        'user_name' => $userInfo->FName . ' ' . $userInfo->lName,
+                        'last_message' => $lastMessage->content,
+                        'last_message_time' => $lastMessage->time,
+                        'image' => $userInfo->profile,
+                         'sort' => $lastMessage->created_at,
+                        'unread_messages' => $read,
+                        'ids'=>$ids
+                    ];
+                }
+            }else
+                continue;
+        }
+        // ترتيب القائمة بناءً على الوقت
+        usort($chatList, function ($a, $b) {
+            return strtotime($b['sort']) - strtotime($a['sort']);
+        });
+
+        if (!empty($chatList)) {
+            return response()->json([
+                'chatList' => array_values($chatList), // إعادة ترتيب المفاتيح
+                'status' => true,
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'No messages found for this user.',
+                'status' => false,
+            ]);
+        }
+    }
+    
+    
+      public function getAllUsersThat_A_Trainer_chatsWith($id)
+    {
+        $users = MessageM::where('trainer_id', $id)->get('user_id');
+        $chatList = [];
+        foreach ($users as $user) {
+            $userInfo = Profile::where('user_id', $user->user_id)->first();
+            $lastMessage = MessageM::where('trainer_id', $id)
+                ->where('user_id', $user->user_id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            $read = MessageM::where('trainer_id', $id)->where('user_id', $user->user_id)
+                ->where('trainer', 0)->where('read', 0)->count();
+            $ids = MessageM::where('user_id', $user->user_id)->
+            where('trainer_id', $id)
+                ->where('trainer', 0)->where('read', 0)->pluck('id');
+            if ($userInfo) {
+                if ($lastMessage) {
+                    $chatList[$user->user_id] = [
+                        'user_id' => $user->user_id,
+                        'user_name' => $userInfo->FName . ' ' . $userInfo->lName,
+                        'last_message' => $lastMessage->content,
+                        'last_message_time' => $lastMessage->time,
+                        'image' => $userInfo->profile,
+                        'sort' => $lastMessage->created_at,
+                        'unread_messages' => $read,
+                        'ids'=>$ids
+                    ];
+                }
+            }else
+                continue;
+        }
+        // ترتيب القائمة بناءً على الوقت
+        usort($chatList, function ($a, $b) {
+            return strtotime($b['sort']) - strtotime($a['sort']);
+        });
+
+        if (!empty($chatList)) {
+            return response()->json([
+                'chatList' => $chatList, // إعادة ترتيب المفاتيح
+                'status' => true,
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'No messages found for this user.',
+                'status' => false,
+            ]);
+        }
     }
 }
 

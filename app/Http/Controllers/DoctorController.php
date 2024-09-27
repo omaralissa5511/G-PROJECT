@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Doctor;
+use App\Events\Doctors;
+use App\Models\Consultation;
 use App\Models\HealthCare;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Models\MessageD;
+use App\Models\Profile;
+
 
 class DoctorController extends Controller
 {
@@ -28,6 +33,11 @@ class DoctorController extends Controller
             'status' => true
         ]);
     }
+    
+      public function getUnReadConsults(){
+
+      return  $cons = Consultation::where('reply_content',null)->get();
+    }
 
     public function getDoctorByID($id){
 
@@ -45,6 +55,39 @@ class DoctorController extends Controller
             'status' => true
         ]);
     }
+    
+    
+      public function Doctor_MY_Profile(){
+
+         $id= Auth::id();
+         $id=Doctor::where('user_id',$id)->first()->id;
+        $doctor = Doctor::where('id',$id)->first();
+
+        if (!$doctor) {
+            return response()->json([
+                'message' => 'Doctor not found!',
+                'status' => false
+            ]);
+        }
+        $doctor->user=$doctor->user;
+        return response()->json([
+            'Doctor' => $doctor,
+            'status' => true
+        ]);
+    }
+    
+    
+     public function directConsultationToDoctor(Request $request){
+
+    
+        $conID = $request->consultID;
+        $doctorId = $request->doctorID;
+        $consult = Consultation::where('id',$conID)
+            ->update(['doctor_id' => $doctorId]);
+              $message = 'hey doctor you got a new consultation';
+        broadcast(new Doctors($message,$doctorId));
+                return response()->json('success');
+    }
 
     public function createDoctor(Request $request){
 
@@ -59,7 +102,8 @@ class DoctorController extends Controller
             'birth'=>'required',
             'gender'=>'required',
             'experience'=>'required',
-            'specialties'=>'required',
+            'specialties'=>'required'
+
         ]);
 
         if ($validate->fails()) {
@@ -102,6 +146,9 @@ class DoctorController extends Controller
         $data['user'] = $user;
         $data['doctor'] = $doctor;
         $user->assignRole('SB');
+        $doctorId = 0;
+          $message = 'a doctor  have been added';
+        broadcast(new Doctors($message,$doctorId));
 
         return response()->json([
             'message' => 'User is created successfully.',
@@ -139,12 +186,19 @@ class DoctorController extends Controller
             $user -> update(['mobile' => $attributes['mobile']]);
         }
 
-        $requestData = collect($attributes)->except(['profile_image','license'])->toArray();
+        $requestData = collect($attributes)->except(['profile_image','license','image'])->toArray();
         $doctor->update($requestData);
+
+
+        $data['user']= $doctor->user;
+          $doctorId = 0;
+          $message = 'a doctor  have been updated';
+        broadcast(new Doctors($message,$doctorId));
 
         $user1=User::where('id',$doctor->user_id)->first();
         $notificationService = new \App\Services\Api\NotificationService();
         $notificationService->send($user1, 'Update Doctor', $doctor->firstName .' '. $doctor->lastName .' is updated');
+
         return response()->json([
             'message' => 'Doctor is updated successfully.',
             'Doctor'=>$doctor,
@@ -158,6 +212,9 @@ class DoctorController extends Controller
         $user = User::where('id',$doctor->user_id)->first();
         if($user) {
             $user->delete();
+              $doctorId = 0;
+          $message = 'a doctor  have been deleted';
+        broadcast(new Doctors($message,$doctorId));
             return response()->json([
                 'message' => 'Doctor was removed successfully.',
                 'status' => true
@@ -170,4 +227,6 @@ class DoctorController extends Controller
             ]);
 
     }
+    
+  
 }

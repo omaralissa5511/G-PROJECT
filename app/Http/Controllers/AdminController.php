@@ -148,7 +148,9 @@ class AdminController extends Controller
         if($request->status == 'confirmed'){
             $auction -> update(['status' => 'confirmed']);
             $auction->save();
-            $message='add new auction';
+
+                        $message='add new auction';
+
             Broadcast(new \App\Events\Auction($message));
             $response = [
                 'message' => 'CONFIRMED AUCTION ',
@@ -165,6 +167,8 @@ class AdminController extends Controller
                 'auction : ' => $auction,
                 'status' => false
             ];
+             $message = 'one auction have been canceled';
+                    Broadcast(new \App\Events\Auction($message));
             return response()->json($response);
         }
 
@@ -174,9 +178,54 @@ class AdminController extends Controller
     {
         $clubs = Equestrian_club::get();
 
+        // foreach ($clubs as $club){
+        //     $club->day = json_decode($club->day) ;
+        //   //  $club->day = explode(',', $club->day[0]);
+        // }
+        foreach ($clubs as $club) {
+  // Decode the JSON string
+  $days = json_decode($club->day);
+
+  // Check if decoding was successful and the result is an array
+  if (is_array($days)) {
+    // Separate the days using explode()
+    $club->day = explode(',', $days[0]); // Access the first element of the array
+  } else {
+    // Handle potential invalid JSON or decoding failure (optional)
+    // You could log an error, set an empty array, or use a default value
+    $club->day = []; // Example: set an empty array
+  }
+}
+
+       
+        if ($clubs) {
+
+            $response = [
+                'data' => $clubs,
+                'status' => true
+            ];
+
+            return $response;
+        } else {
+            $response = [
+                'message' => 'there is no club',
+                'data' => $clubs,
+                'status' => false
+            ];
+            return $response;
+        }
+
+    }
+    
+     public function showClubsA()
+    {
+        $clubs = Equestrian_club::get();
+
         foreach ($clubs as $club){
             $club->day = json_decode($club->day) ;
-            $club->day = explode(',', $club->day[0]);
+
+           // $club->day = explode(',', $club->day[0]);
+
         }
         if ($clubs) {
 
@@ -196,6 +245,7 @@ class AdminController extends Controller
         }
 
     }
+
 
     public function searchClubByName($name)
     {
@@ -264,7 +314,8 @@ class AdminController extends Controller
                 'message' => 'club was deleted successfully.',
                 'status' => true
             ];
-
+             $message = 'one club have been deleted';
+             broadcast(new Clubs($message));
             return $response;
         } else {
             $response = [
@@ -450,6 +501,7 @@ class AdminController extends Controller
         ]);
     }
 
+
     public function getCategoryByName($name)
     {
 
@@ -510,12 +562,15 @@ class AdminController extends Controller
                 'status' => false
             ]);
         }
+         $message = 'one category have been updated';
+        broadcast(new \App\Events\Category($message));
 
         return response()->json([
             'message' =>'Category is updated successfully.',
             'category' => $category,
             'status' => true
         ]);
+        
     }
 
     public function deleteCategory( Request $request ,$ID)
@@ -530,6 +585,8 @@ class AdminController extends Controller
         }
 
         $category->delete();
+          $message = 'one category have been deleted';
+        broadcast(new \App\Events\Category($message));
 
         return response()->json([
             'message' => 'Category is deleted successfully.',

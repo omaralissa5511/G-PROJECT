@@ -152,6 +152,9 @@ class HRatingController extends Controller
             'rating' =>$request->rating,
             'review' =>$request->review
         ]);
+        
+        $message = 'A rating is updated';
+        Broadcast(new \App\Events\HRating($message));
 
         $message = 'A rating is updated';
         Broadcast(new \App\Events\HRating($message));
