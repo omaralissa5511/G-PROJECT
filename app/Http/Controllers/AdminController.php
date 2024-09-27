@@ -113,6 +113,11 @@ class AdminController extends Controller
         ];
         $message = 'one club have been added added';
         broadcast(new Clubs($message));
+        $user2=User::where('type','profile')->get('id');
+        foreach ($user2 as $user){
+        $notificationService = new \App\Services\Api\NotificationService();
+        $notificationService->send($user, 'A club added ', $club->name . ' is added');
+    }
         return response()->json($response);
     }
 
@@ -143,6 +148,8 @@ class AdminController extends Controller
         if($request->status == 'confirmed'){
             $auction -> update(['status' => 'confirmed']);
             $auction->save();
+            $message='add new auction';
+            Broadcast(new \App\Events\Auction($message));
             $response = [
                 'message' => 'CONFIRMED AUCTION ',
                 'auction : ' => $auction,

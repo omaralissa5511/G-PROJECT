@@ -10,6 +10,7 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CRatingController;
+use App\Http\Controllers\DeviceTokenController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\FavoriteAuctionController;
 use App\Http\Controllers\FavoriteClubController;
@@ -61,6 +62,7 @@ use Illuminate\Support\Facades\Route;
         ############### ADMIN ROLE ###############
     Route::group(['middleware' => ['role_or_permission:ADMIN']], function () {
 
+        Route::post('getTrainerTimes_A',[TrainerController::class,'getTrainerTimes']);
 
         Route::get('getUserForChart', [AdminController::class, 'getUserForChart']);
         Route::get('getUserDate', [AdminController::class, 'getUserDate']);
@@ -111,6 +113,13 @@ use Illuminate\Support\Facades\Route;
         Route::get('getAllSupportNotReply',[SupportController::class,'getAllSupportNotReply']);
         Route::get('replySupport/{id}',[SupportController::class,'reply']);
 
+        ///// Rating
+        Route::get('allAverageHealthRating_A/{health_id}',[HRatingController::class,'getAverageRating']);
+        Route::get('getAllReviewsInHealth_A/{health_id}',[HRatingController::class,'getAllReviewsInHealth']);
+        Route::get('allAverageClubRating_A/{club_id}',[CRatingController::class,'getAverageRating']);
+        Route::get('getAllReviewsInClub_A/{club_id}',[CRatingController::class,'getAllReviewsInClub']);
+        Route::get('allAverageTrainerRating_A/{trainer_id}',[TRatingController::class,'getAverageRating']);
+        Route::get('getAllReviewsInTrainer_A/{trainer_id}',[TRatingController::class,'getAllReviewsInTrainer']);
 
     });
 
@@ -136,6 +145,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('club_getTrainerByID/{id}', [TrainerController::class, 'getTrainerByID']);
 
         Route::post('/addAvailableTimes', [TrainerController::class, 'setAvailableTimes']);
+        Route::post('getTrainerTimes_C',[TrainerController::class,'getTrainerTimes']);
 
 
         Route::post('createService', [ServiceController::class, 'create']);
@@ -162,6 +172,11 @@ use Illuminate\Support\Facades\Route;
         Route::post('addOfferClub',[OfferClubController::class,'addOffer']);
         Route::delete('deleteOfferClub/{id}',[OfferClubController::class,'deleteOffer']);
 
+        /// Rating
+        Route::get('allAverageClubRating_C/{club_id}',[CRatingController::class,'getAverageRating']);
+        Route::get('getAllReviewsInClub_C/{club_id}',[CRatingController::class,'getAllReviewsInClub']);
+
+
     });
 
 
@@ -170,6 +185,7 @@ use Illuminate\Support\Facades\Route;
 
     ################ TRAINER ROLE ###############
     Route::group(['middleware' => ['role:TRAINER']], function () {
+        Route::post('getTrainerTimes_T',[TrainerController::class,'getTrainerTimes']);
 
         Route::post('editTrainer', [TrainerController::class, 'editTrainer']);
         Route::get('MyProfile', [TrainerController::class, 'MyProfile']);
@@ -185,6 +201,10 @@ use Illuminate\Support\Facades\Route;
         ////////////   TRAINER MESSAGES  ////////////
         Route::post('sendMessage_T',[MessageController::class,'sendMessage']);
         Route::post('getChatMessages_T',[MessageController::class,'getChatMessages']);
+
+        /// Rating
+        Route::get('allAverageTrainerRating_T/{trainer_id}',[TRatingController::class,'getAverageRating']);
+        Route::get('getAllReviewsInTrainer_T/{trainer_id}',[TRatingController::class,'getAllReviewsInTrainer']);
     });
 
 
@@ -194,7 +214,7 @@ use Illuminate\Support\Facades\Route;
             Route::post('editHealthCareHealth/{id}', [HealthCareController::class, 'updateHealthCare']);
             Route::get('getAllHealthCaresHealth', [HealthCareController::class, 'getAllHealthCares']);
             Route::get('getHealthCareByIDHealth/{id}', [HealthCareController::class, 'getHealthCareByID']);
-
+            Route::get('myHealth', [HealthCareController::class, 'myHealth']);
             /// Doctors
             Route::post('createDoctor', [DoctorController::class, 'createDoctor']);
             Route::post('editDoctor/{id}', [DoctorController::class, 'updateDoctor']);
@@ -212,6 +232,9 @@ use Illuminate\Support\Facades\Route;
             Route::post('addOffer',[OfferController::class,'addOffer']);
             Route::delete('deleteOffer/{id}',[OfferController::class,'deleteOffer']);
 
+            /////// Rating
+            Route::get('allAverageHealthRating_H/{health_id}',[HRatingController::class,'getAverageRating']);
+            Route::get('getAllReviewsInHealth_H/{health_id}',[HRatingController::class,'getAllReviewsInHealth']);
         });
 
     ################## USER ROLE *******************
@@ -370,9 +393,9 @@ use Illuminate\Support\Facades\Route;
 
             Route::get('isRead_D/{id}',[MessageController::class,'isReadDoctor']);
 
-
-            Route::post('getCoursesByUser', [CourseController::class, 'getCoursesByUser']);
-
+            /// add Device Token
+            Route::post('addToken',[DeviceTokenController::class,'store']);
+            Route::get('getNotification',[\App\Services\Api\NotificationService::class,'index']);
 
 
             Route::post('stripe-payment', [StripeController::class,'stripePost']);

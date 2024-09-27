@@ -101,7 +101,13 @@ class ReservationController extends Controller
             $message['class'] = $reserve->clas;
             $message['status'] = $reserve->status;
 
-
+        // notification
+        $club_id = Course::where('id', $request->course_id)->first('club_id');
+        $club_name = Equestrian_club::where('id',$club_id)->pluck('name')->first();
+        $user1 = User::where('id',$user_id)->first();
+        $notificationService = new \App\Services\Api\NotificationService();
+        $notificationService->send($user1, 'Reservation is done successfully.', 'You have reserved '.$clas->class.' class of course '.$course_description.' at '.$club_name);
+        // end notification
         broadcast(new NotificationE($user_id, $message));
 
         $message1 = 'new Reservation have added successfully.';

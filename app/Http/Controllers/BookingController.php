@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\CLUB\Booking;
+use App\Models\CLUB\Equestrian_club;
+use App\Models\CLUB\Service;
+use App\Models\CLUB\Trainer;
 use App\Models\CLUB\TrainerTime;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -63,6 +66,14 @@ class BookingController extends Controller
 
         $message = 'TrainerTime have updated.';
         Broadcast(new \App\Events\TrainerTime($message));
+        // notification
+        $service_name = Service::where('id', $booking->service_id)->select('name', 'club_id')->first();
+        $club_name = Equestrian_club::where('id',$service_name->club_id)->first('name');
+        $trainer_name = Trainer::where('id',$booking->trainer_id)->pluck('FName')->first();
+        $user1 = User::where('id',$booking->user_id)->first();
+        $notificationService = new \App\Services\Api\NotificationService();
+        $notificationService->send($user1, 'Booking created successfully.', 'You have booked '.$service_name->name.' service and trainer '.$trainer_name.' at '.$club_name->name);
+        // end notification
             return response()->json([
                 'message' => "Booking created successfully.",
                 'booking' => $booking,
